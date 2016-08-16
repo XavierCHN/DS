@@ -1,0 +1,10 @@
+<root>
+    <scripts>
+        <include src = "file://{resources}/scripts/camera.js" />
+    </scripts>
+    <script>
+    </script>
+    <Panel hittest="false">
+
+    </Panel>
+</root>

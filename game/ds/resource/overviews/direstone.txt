@@ -1,8 +1,8 @@
 direstone
 {
 	material materials/overviews/direstone.vmat
-	pos_x -1536
-	pos_y 1536
-	scale 3.000
+	pos_x -1792
+	pos_y 1792
+	scale 3.500
 }
 
