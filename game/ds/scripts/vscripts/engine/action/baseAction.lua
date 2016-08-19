@@ -1,0 +1,1 @@
+baseAction = class({})

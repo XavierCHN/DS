@@ -1,46 +1,8 @@
--- function Attack(args)
--- 	local attacker = args.attacker
--- 	local target = args.target
--- 	local ability = args.ability
-	
--- 	local attacker_has_fs = bit.band(attacker:CheckCustomState(), DS_STATE_FIRST_STRIKE) == DS_STATE_FIRST_STRIKE
--- 	local target_has_fs = bit.band(target:CheckCustomState(), DS_STATE_FIRST_STRIKE) == DS_STATE_FIRST_STRIKE
--- 	-- 攻击者对目标造成伤害的效应
--- 	local damage1 = function()
--- 		if attacker:IsAlive() then
--- 			ApplyDamage({
--- 				attacker = attacker,
--- 				target = target,
--- 				damage = attacker:GetAttackDamage(),
--- 				damage_type = DAMAGE_TYPE_PURE,
--- 			})
--- 		end
--- 	end
--- 	-- 目标对攻击者造成伤害的效应
--- 	local damage2 = function()
--- 		if target:IsAlive() then
--- 			ApplyDamage({
--- 				attacker = target,
--- 				target = attacker,
--- 				damage = target:GetAttackDamage(),
--- 				damage_type = DAMAGE_TYPE_PURE,
--- 			})
--- 		end
--- 	end
--- 	if target_has_fs or attacker_has_fs then
--- 		if target_has_fs then
--- 			-- 先后加入堆叠，不同时间结算
--- 			GameRules.CStack:AddToStack(damage2)
--- 			GameRules.CStack:AddToStack(damage1)
--- 		else
--- 			GameRules.CStack:AddToStack(damage1)
--- 			GameRules.CStack:AddToStack(damage2)
--- 		end
--- 	else
--- 		-- 直接结算两个伤害
--- 		GameRules.CStack:AddToStack(function()
--- 			damage1()
--- 			damage2()
--- 		end)
--- 	end
--- end
+attack = class({},nil,baseAction)
+
+-- 是否是有效动作
+function attack:validate(args)
+end
+
+function attack:run(args)
+end
