@@ -42,7 +42,6 @@ Heroes of Ancients详细规则白皮书
 
     装备 Equipments
     生物 Creatures
-    信使 Couriers
     结界 Enchantments
     瞬间 Instants
     属性 Attributes
@@ -73,7 +72,7 @@ Heroes of Ancients详细规则白皮书
     持续性效应 Continuous Effect
     替代性效应 Replacement Effect
     防止性效应 Prevention Effect
-``` 
+```
 ----
 
 第一章 游戏概念
@@ -109,7 +108,7 @@ Heroes of Ancients详细规则白皮书
 ### 102. 玩家 Players
 102.1. 玩家是指进行游戏的人。进攻玩家是轮到该回合的玩家。其他玩家便是防御玩家。
 
-### 103. 开始游戏 Starting the game 
+### 103. 开始游戏 Starting the game
 103.1. 在游戏开始时，双方玩家将套牌洗牌。
 
 103.2. 在洗牌之后。系统将会随机选择一方玩家来作为先手玩家。
@@ -233,4 +232,4 @@ Heroes of Ancients详细规则白皮书
 
 109.5g 指示物离开战场后将不能以任何方式回到战场上。如果一个指示物将回到战场，它将改为留在当前的区域。它将在下一次状态动作检查时消失。
 
-### 110.打出的牌 
+### 110.打出的牌
