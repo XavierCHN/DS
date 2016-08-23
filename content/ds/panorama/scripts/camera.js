@@ -13,7 +13,7 @@ function LockCamera()
         GameUI.SetCameraPitchMax(90);
         GameUI.SetCameraTargetPosition([0,0,0], 0.1 )
     }
-    GameUI.SetCameraDistance(1400);
+    GameUI.SetCameraDistance(1800);
     $.Schedule(0.1, LockCamera);
 }
 
