@@ -9,7 +9,7 @@ function Hand:constructor(hero)
     -- 刷新高亮状态
     self.hl_state = {}
 
-    PlayerTables:CreateTable("hand_cards_" .. self.playerid, self.cards, {self.playerid})
+    PlayerTables:CreateTable("hand_cards_" .. self.playerid, self:ToIDArray(), {self.playerid})
 end
 
 function Hand:AddCard(card)
@@ -17,7 +17,7 @@ function Hand:AddCard(card)
         print("Attempt to add a nil card to hand" .. self.playerid)
     end
 
-    print("Adding card to hand!")
+    print("Adding card to hand!", card)
 
     table.insert(self.cards, card)
 

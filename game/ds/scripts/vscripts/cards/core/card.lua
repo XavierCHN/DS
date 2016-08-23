@@ -119,19 +119,15 @@ function Card:Validate(ability)
 	end
 end
 
-function Card:GetCardBehavior()
-	return self.data.card_behavior
-end
-
-function Card:SetOwner(owner)
-	self.owner = owner
-end
-
 function Card:ShouldHighLight()
 	-- 特殊的高亮效果
 	local special_high_light = self.data.high_light(self)
 	if special_high_light then
 		return special_high_light
+	end
+
+	if self:GetType() == CARD_TYPE_ATTRIBUTE and not hero:HasUsedAttributeCardThisRound() then
+		return "HighLightAttributeCard"
 	end
 
 	-- 费用足够的高亮效果
@@ -147,18 +143,34 @@ function Card:MeetCostRequirement()
 	local int = self.data.cost.int
 	local mana = self.data.cost.mana
 
-	local hero = self:GetOwner()
-	if hero:GetAttributeStrength() < str then
+	if self.owner:GetAttributeStrength() < str then
 		return false, "str_not_enough"
 	end
-	if hero:GetAttributeAgility() < agi then
+	if self.owner:GetAttributeAgility() < agi then
 		return false, "agi_not_enough"
 	end
-	if hero:GetAttributeIntellect() < int then
+	if self.owner:GetAttributeIntellect() < int then
 		return false, "int_not_enough"
 	end
-	if hero:GetManaPool() < mana then
+	if self.owner:GetManaPool() < mana then
 		return false, "mana_not_enough"
 	end
 	return true
+end
+
+
+function Card:GetCardBehavior()
+	return self.data.card_behavior
+end
+
+function Card:SetOwner(owner)
+	self.owner = owner
+end
+
+function Card:GetOwner()
+	return self.owner
+end
+
+function Card:GetType()
+	return self.data.card_type
 end

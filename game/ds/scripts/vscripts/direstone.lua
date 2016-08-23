@@ -85,13 +85,16 @@ function DS:OnGameRulesStateChanged()
 								p:SetTeam(DOTA_TEAM_BADGUYS)
 								h:SetTeam(DOTA_TEAM_BADGUYS)
 								h:InitDSHeroData()
+
+								GameRules.TurnManager:Init()
+								GameRules.TurnManager:SelectFirstActivePlayer()
+								GameRules.TurnManager:ShuffleAndDrawInitialCards()
+								
 								set = true
 							end
 						end
 					end
-					GameRules.TurnManager:Init()
-					GameRules.TurnManager:SelectFirstActivePlayer()
-					GameRules.TurnManager:ShuffleAndDrawInitialCards()
+					
 				end)
 			else
 				GameRules.TurnManager:Init()
