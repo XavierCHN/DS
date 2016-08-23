@@ -1,0 +1,21 @@
+<root>
+	<scripts>
+		<include src="file://{resources}/scripts/custom_game/hand.js" />
+	</scripts>
+	<styles>
+		<include src="file://{resources}/styles/custom_game/hand.css" />
+	</styles>
+	<snippets>
+		<snippet name="HandCard">
+			<Panel class="HandCardContainer">
+				<Image class="BackGroundImage" id="background_image" />
+				<Panel class="Cover">
+					<Label id="title_text" text="CardName_Unknown" />
+					<Label id="cost_text"  text="0" /> 
+				</Panel>
+			</Panel>
+		</snippet>
+	</snippets>
+	<Panel class="HandRoot">
+	</Panel>
+</root>
