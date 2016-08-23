@@ -1,5 +1,0 @@
-Convars:RegisterCommand("debug_give_modifier",function(_, modName)
-    local p = Convars:GetCommandClient()
-    local h = p:GetAssignedHero()
-    h:AddNewModifier(h,nil,modName,{})
-end,"",FCVAR_CHEAT)

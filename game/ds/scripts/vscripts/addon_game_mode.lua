@@ -1,10 +1,9 @@
-print "\nDire Stone @ XavierCHN \n\n Loading...\n\n"
+print "\nAmazing DotA2 Custom Game Mode Dire Stone Created by XavierCHN is now Loading...\n\n"
 
 -- alias
-ConVars = Convars -- always got a syntax error, this will fix it, lol
+ConVars = Convars -- 妈的这个老是打错，烦死了！
 
 require 'direstone'
-require 'utils.test'
 
 function PreCache(context)
 end

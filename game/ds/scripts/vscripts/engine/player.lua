@@ -1,32 +1,32 @@
 -- 抽牌
-function CDOTA_Player:DrawCard(numCards)
-	print(string.format("player %d is about to draw %d cards", self:GetPlayerID(), numCards))
+function CDOTAPlayer:DrawCard(numCards)
+	self:GetAssignedHero():DrawCard(numCards)
 end
 
-function CDOTA_Player:FillManaPool()
+function CDOTAPlayer:FillManaPool()
 	self:GetAssignedHero():SetManaPool(self:GetAssignedHero():GetMaxManaPool())
 end
 
-function CDOTA_Player:GetManaPool()
+function CDOTAPlayer:GetManaPool()
 	return self:GetAssignedHero():GetManaPool()
 end
 
-function CDOTA_Player:SetManaPool(val)
+function CDOTAPlayer:SetManaPool(val)
 	self:GetAssignedHero():SetManaPool(val)
 end
 
-function CDOTA_Player:GetMaxManaPool()
+function CDOTAPlayer:GetMaxManaPool()
 	return self:GetAssignedHero():GetMaxManaPool()
 end
 
-function CDOTA_Player:SetMaxManaPool(val)
+function CDOTAPlayer:SetMaxManaPool(val)
 	self:GetAssignedHero():SetMaxManaPool(val)
 end
 
-function CDOTA_Player:SetHasUsedAttributeCardThisRound(t)
+function CDOTAPlayer:SetHasUsedAttributeCardThisRound(t)
 	self:GetAssignedHero():SetHasUsedAttributeCardThisRound(t)
 end
 
-function CDOTA_Player:HasUsedAttributeCardThisRound()
+function CDOTAPlayer:HasUsedAttributeCardThisRound()
 	return self:GetAssignedHero():HasUsedAttributeCardThisRound()
 end

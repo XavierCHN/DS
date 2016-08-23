@@ -8,7 +8,7 @@ cost = {}
 
 on_spell_start = function(self)
 	local caster = self:GetCaster()
-	caster:SetBaseStrength(caster:GetBaseStrength() + 1)
+	caster:SetAttributeStrength(caster:GetAttributeStrength() + 1)
 	caster:SetMaxManaPool(caster:GetMaxManaPool() + 1)
 	caster:SetManaPool(caster:GetManaPool() + 1)
 end
