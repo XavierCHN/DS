@@ -1,5 +1,3 @@
-local max_card_number = 10 -- 当前最大的卡牌数量
-
 --[[
 	卡牌Lua的语法规则
 	文件的命名必须为独立的五位数字（卡牌ID前面补0），如00103.lua
@@ -14,6 +12,15 @@ local max_card_number = 10 -- 当前最大的卡牌数量
 	cost = {str=0,agi=0,int=0,mana=0} -- 所需资源，mana为魔法，其余为需要满足的属性需求
 	validate = function(self) end -- 特殊的使用需求
 	on_spell_start = function(self) end -- 卡牌使用的效果，和正常的 Lua Ability写法一样
+
+	-- 不重要的可选
+	prefix_type = "ultimate" --前缀类别，如 无双，会显示在名字中，在交互中有用，默认为空
+	sub_type = { "beast" } -- 副类别，如野兽
+	-- 主类别，前缀类别和后缀类别构成一张卡牌的类别，如 
+	-- 无双生物 ~ 野兽/精怪 
+	-- 基本属性
+	-- 无双属性
+	-- 生物 ~ 半人马/领袖，这些属性在交互之中是有用的
 
 	-- minion类型卡牌的特殊key，如果卡牌类型不是 CARD_TYPE_MINION 的话，以下这些key将会无效
 	atk = 2 -- 攻击力，默认为0
@@ -38,6 +45,9 @@ local max_card_number = 10 -- 当前最大的卡牌数量
 	end
 ]]
 
+local path_prefix = "cards."
+local max_card_number = 10 -- 当前最大的卡牌数量
+
 -- 储存游戏中的全部卡牌
 GameRules.AllCards = {}
 
@@ -47,17 +57,37 @@ local function registerCard(data, id)
 	GameRules.AllCards[id] = data
 end
 
-local registed_card_count = 0
+local rcc = 0
 for id = 1, max_card_number do
-	local f_name = "cards." .. string.format("%05d", id)
+	local f_name = path_prefix .. string.format("%05d", id)
 	local data = pcall(require, f_name)
 	if data then
 		registerCard(require(f_name), id)
-		registed_card_count = registed_card_count + 1
+		rcc = rcc + 1
 	end
 end
-print("number all cards = ", TableCount(GameRules.AllCards))
 
+if IsInToolsMode() then
+	-- 输出所有卡牌的数据到all_card_data.js文件中
+	local all_lines = 'GameUI.CustomUIConfig().AllCards = {\n'
+	for id, data in pairs(GameRules.AllCards) do
+		local line = id .. ":"
+		local d = {}
+		for k,v in pairs(data) do
+			if type(v) ~= "function" and k ~= "_NAME" and k ~= '_PACKAGE' and k ~= '_M' then
+				d[k] = v
+				print(k,v)
+			end
+		end
+		local dd = JSON:encode(d)
+		print("Converted",dd)
+		all_lines = all_lines .. '\t' .. id .. ':' ..dd.. ',\n'
+	end
+	all_lines = all_lines .. '}'
+	local f = io.open('all_card_data.js', 'w')
+	f:write(all_lines)
+	f:close()
+end
 
 
 -- 卡牌核心类
