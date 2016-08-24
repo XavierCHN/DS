@@ -22,7 +22,9 @@ class Hand {
 	constructor(parent: Panel, cardID:number, idx:number) {
         this.panel = $.CreatePanel("Panel", parent, "");
         this.panel.BLoadLayoutSnippet("HandCard");
-        
+
+        this.panel.style.visibility = "collapse"
+
         this.panel.SetPanelEvent("onmouseover", this.showTooltip.bind(this));
         this.panel.SetPanelEvent("onmouseover", this.hideTooltip.bind(this));
         this.panel.SetPanelEvent("onmouseover", this.onLeftClick.bind(this));
@@ -32,8 +34,10 @@ class Hand {
         this.idx = idx;
 
         // set the card image
-        let image = <Image>this.panel.FindChildTraverse("picture");
-        image.SetImage("file://{resources}/images/custom_game/cards/" + this.id + ".png");
+        let image = this.panel.FindChildTraverse("picture");
+        // image.SetImage("file://{resources}/images/custom_game/cards/" + this.id + ".png");
+
+        GameUI.PingMinimapAtLocation( [-1018.375, 5598.75, 256] );
 	}
 
     showTooltip():void{

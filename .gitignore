@@ -2,3 +2,4 @@
 *.vjs_c
 *.vcss_c
 *.vxml_c
+global.d.ts

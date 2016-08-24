@@ -42,4 +42,3 @@ var Hand = (function () {
     };
     return Hand;
 }());
-//# sourceMappingURL=hand.js.map
