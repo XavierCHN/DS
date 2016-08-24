@@ -14,8 +14,8 @@ var BehaviorType;
     BehaviorType[BehaviorType["MULTIPLE_TARGET"] = 3] = "MULTIPLE_TARGET";
 })(BehaviorType || (BehaviorType = {}));
 var Hand = (function () {
+    // highLightStates = []; // todo 卡牌高亮
     function Hand(parent, cardID, idx) {
-        this.highLightStates = [];
         this.panel = $.CreatePanel("Panel", parent, "");
         this.panel.BLoadLayoutSnippet("HandCard");
         this.panel.SetPanelEvent("onmouseover", this.showTooltip.bind(this));
@@ -39,13 +39,6 @@ var Hand = (function () {
         GameEvents.SendCustomGameEventToServer("ds_player_click_card", {
             CardIndex: this.idx,
         });
-    };
-    Hand.prototype.setHighLight = function (highLightState) {
-        this.panel.SetHasClass(highLightState, true);
-    };
-    Hand.prototype.clearHighLight = function () {
-        this.panel.
-        ;
     };
     return Hand;
 }());

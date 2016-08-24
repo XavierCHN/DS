@@ -2,9 +2,11 @@
 	<scripts>
 		<include src="file://{resources}/scripts/custom_game/hand.js" />
 	</scripts>
+	
 	<styles>
 		<include src="file://{resources}/styles/custom_game/hand.css" />
 	</styles>
+
 	<snippets>
 		<snippet name="HandCard">
 			<Panel class="HandCardContainer">
@@ -16,6 +18,7 @@
 			</Panel>
 		</snippet>
 	</snippets>
+	
 	<Panel class="HandRoot">
 	</Panel>
 </root>

@@ -69,22 +69,21 @@ end
 
 if IsInToolsMode() then
 	-- 输出所有卡牌的数据到all_card_data.js文件中
-	local all_lines = 'GameUI.CustomUIConfig().AllCards = {\n'
+	print("writting card data to js file")
+	local all_lines = '$.Msg("Begin to load all card data to game pui;");\nGameUI.CustomUIConfig().AllCards = {\n'
 	for id, data in pairs(GameRules.AllCards) do
 		local line = id .. ":"
 		local d = {}
 		for k,v in pairs(data) do
 			if type(v) ~= "function" and k ~= "_NAME" and k ~= '_PACKAGE' and k ~= '_M' then
 				d[k] = v
-				print(k,v)
 			end
 		end
 		local dd = JSON:encode(d)
-		print("Converted",dd)
 		all_lines = all_lines .. '\t' .. id .. ':' ..dd.. ',\n'
 	end
 	all_lines = all_lines .. '}'
-	local f = io.open('all_card_data.js', 'w')
+	local f = io.open('../../../content/dota_addons/ds/panorama/scripts/all_card_data.js', 'w')
 	f:write(all_lines)
 	f:close()
 end

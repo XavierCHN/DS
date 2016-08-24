@@ -31,7 +31,6 @@ function DS:Init()
     GameRules:SetGoldTickTime(0)
     GameRules:SetCustomGameSetupTimeout(3)
 
-
     self.mode = mode
     GameRules.mode = mode
     GameRules.GameMode = self
@@ -43,7 +42,6 @@ function DS:Init()
 
     GameRules.CardCore:Start()
     ListenToGameEvent("game_rules_state_change",Dynamic_Wrap(DS, "OnGameRulesStateChanged"),self)
-
 end
 
 function DS:OnGameRulesStateChanged()
@@ -69,7 +67,7 @@ function DS:OnGameRulesStateChanged()
 
 			-- 如果是我自己一个人加入了游戏
 			-- 那么随便创建一个电脑
-			if TableCount(GameRules.AllHeroes) == 1 and PlayerResource:GetSteamAccountID(GameRules.AllHeroes[1]:GetPlayerID()) == 86815341 then
+			if TableCount(GameRules.AllHeroes) == 1 then
 				Say(nil,"Why I'm always lonely?" .. GameRules.AllHeroes[1]:GetPlayerID(),false)
 				SendToServerConsole('dota_create_fake_clients')
 				Timers:CreateTimer(function()

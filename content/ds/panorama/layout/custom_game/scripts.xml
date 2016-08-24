@@ -1,6 +1,7 @@
 <root>
     <scripts>
         <include src = "file://{resources}/scripts/camera.js" />
+        <include src = "file://{resources}/scripts/all_card_data.js" />
     </scripts>
     <script>
     </script>
