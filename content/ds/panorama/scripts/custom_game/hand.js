@@ -18,13 +18,13 @@ var Hand = (function () {
     function Hand(parent, cardID, idx) {
         this.panel = $.CreatePanel("Panel", parent, "");
         this.panel.BLoadLayoutSnippet("HandCard");
+        this.panel.style.visibility = "collapse";
         this.panel.SetPanelEvent("onmouseover", this.showTooltip.bind(this));
         this.panel.SetPanelEvent("onmouseover", this.hideTooltip.bind(this));
         this.panel.SetPanelEvent("onmouseover", this.onLeftClick.bind(this));
         // this.panel.SetPanelEvent("onmouseover", this.onRightClick.bind(this));
         this.id = cardID;
         this.idx = idx;
-        // set the card image
         var image = this.panel.FindChildTraverse("picture");
         image.SetImage("file://{resources}/images/custom_game/cards/" + this.id + ".png");
     }

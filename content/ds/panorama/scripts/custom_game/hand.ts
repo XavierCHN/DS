@@ -33,11 +33,8 @@ class Hand {
         this.id = cardID;
         this.idx = idx;
 
-        // set the card image
-        let image = this.panel.FindChildTraverse("picture");
-        // image.SetImage("file://{resources}/images/custom_game/cards/" + this.id + ".png");
-
-        GameUI.PingMinimapAtLocation( [-1018.375, 5598.75, 256] );
+        let image = <Image>this.panel.FindChildTraverse("picture");
+        image.SetImage("file://{resources}/images/custom_game/cards/" + this.id + ".png");
 	}
 
     showTooltip():void{
