@@ -1,29 +1,52 @@
-var handCards = []
-
-function PrefixInteger(num, length) {
-	return (Array(length).join('0') + num).slice(-length);
-}
-
-function ShowHandCards()
-{
-	// TODO 抄一个技能的实现方式！
-	var PlayerTables = GameUI.CustomUIConfig().PlayerTables;
-	var playerID = Players.GetLocalPlayer()
-	var hand = PlayerTables.GetAllTableValues("hand_cards_" + playerID)
-	var parent = $.GetContextPanel()
-	var idx = parent.GetChildCount()
-	for (var i = 0; i < idx -1; i++)
-	{
-
-	}
-	for(var i in hand){
-		var id = PrefixInteger(hand[i], 5)
-		$.Msg(id);
-	}
-	$.Schedule(0.5,ShowHandCards)
-}
-
-(function()
-{
-	ShowHandCards()
-})();
+// 手牌类
+var CardType;
+(function (CardType) {
+    CardType[CardType["ATTRIBUTE"] = 0] = "ATTRIBUTE";
+    CardType[CardType["SPELL"] = 1] = "SPELL";
+    CardType[CardType["MINION"] = 2] = "MINION";
+    CardType[CardType["EQUIPMENT"] = 3] = "EQUIPMENT";
+})(CardType || (CardType = {}));
+var BehaviorType;
+(function (BehaviorType) {
+    BehaviorType[BehaviorType["NO_TARGET"] = 0] = "NO_TARGET";
+    BehaviorType[BehaviorType["SINGLE_TARGET"] = 1] = "SINGLE_TARGET";
+    BehaviorType[BehaviorType["POINT"] = 2] = "POINT";
+    BehaviorType[BehaviorType["MULTIPLE_TARGET"] = 3] = "MULTIPLE_TARGET";
+})(BehaviorType || (BehaviorType = {}));
+var Hand = (function () {
+    function Hand(parent, cardID, idx) {
+        this.highLightStates = [];
+        this.panel = $.CreatePanel("Panel", parent, "");
+        this.panel.BLoadLayoutSnippet("HandCard");
+        this.panel.SetPanelEvent("onmouseover", this.showTooltip.bind(this));
+        this.panel.SetPanelEvent("onmouseover", this.hideTooltip.bind(this));
+        this.panel.SetPanelEvent("onmouseover", this.onLeftClick.bind(this));
+        // this.panel.SetPanelEvent("onmouseover", this.onRightClick.bind(this));
+        this.id = cardID;
+        this.idx = idx;
+        // set the card image
+        var image = this.panel.FindChildTraverse("picture");
+        image.SetImage("file://{resources}/images/custom_game/cards/" + this.id + ".png");
+    }
+    Hand.prototype.showTooltip = function () {
+        // todo
+    };
+    Hand.prototype.hideTooltip = function () {
+        // todo
+    };
+    // 发送指令到服务器，需要服务器验证是否能够使用之后再返回客户端使用proxy来释放马甲技能
+    Hand.prototype.onLeftClick = function () {
+        GameEvents.SendCustomGameEventToServer("ds_player_click_card", {
+            CardIndex: this.idx,
+        });
+    };
+    Hand.prototype.setHighLight = function (highLightState) {
+        this.panel.SetHasClass(highLightState, true);
+    };
+    Hand.prototype.clearHighLight = function () {
+        this.panel.
+        ;
+    };
+    return Hand;
+}());
+//# sourceMappingURL=hand.js.map
