@@ -46,13 +46,12 @@ function CDOTA_BaseNPC_Hero:HasUsedAttributeCardThisRound()
 	return self.huactr
 end
 
--- 设置手上第index张手牌为正在使用的手牌
-function CDOTA_BaseNPC_Hero:SetCurrentActiveCardByIndex(idx)
-	self.cacidx = idx
+function CDOTA_BaseNPC_Hero:SetCurrentActivateCardByUniqueId(uniqueId)
+	self.hdi = uniqueId
 end
 
 function CDOTA_BaseNPC_Hero:GetCurrentActiveCard()
-	return self:GetHandByIndex(self.cacidx)
+	return self:GetHandByUniqueId(self.hdi)
 end
 
 function CDOTA_BaseNPC_Hero:GetHandByUniqueId( uniqueId )
@@ -88,10 +87,6 @@ function CDOTA_BaseNPC_Hero:DiscardCard(uniqueId)
 	})
 
 	self:RemoveCardByUniqueId( uniqueId )
-end
-
-function CDOTA_BaseNPC_Hero:RefreshHand_HL()
-	self.hand:RefreshHand_HL()
 end
 
 function CDOTA_BaseNPC_Hero:FillManaPool()
@@ -142,10 +137,14 @@ function CDOTA_BaseNPC_Hero:GetAttributeIntellect()
 	return self.attribute_int or 0
 end
 
-function CDOTA_BaseNPC_Hero:InitDSHeroData()
+function CDOTA_BaseNPC_Hero:InitDSHero()
 	self.attribute_int = 0
 	self.attribute_agi = 0
 	self.attribute_str = 0
 	self.mp = 0
 	self.mmp = 0
+
+	self:FindAbilityByName('ds_no_target'):SetLevel(1)
+	self:FindAbilityByName('ds_point'):SetLevel(1)
+	self:FindAbilityByName('ds_single_target'):SetLevel(1)
 end

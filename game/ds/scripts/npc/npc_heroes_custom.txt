@@ -1,5 +1,13 @@
 "DOTAHeroes"
 {
+
+  "npc_dota_hero_invoker"
+  {
+    "Ability1"      "ds_point"
+    "Ability2"      "ds_single_target"
+    "Ability3"      "ds_no_target"
+  }
+
   "npc_dota_hero_ancient_apparition_barebones"
   {
     "AbilityLayout"     "6"

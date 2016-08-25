@@ -58,7 +58,7 @@ function DS:OnGameRulesStateChanged()
 					local hero = player:GetAssignedHero()
 					if hero then
 						table.insert(GameRules.AllHeroes, hero)
-						hero:InitDSHeroData()
+						hero:InitDSHero()
 					end
 				end
 			end
@@ -79,7 +79,7 @@ function DS:OnGameRulesStateChanged()
 								table.insert(GameRules.AllHeroes, h)
 								p:SetTeam(DOTA_TEAM_BADGUYS)
 								h:SetTeam(DOTA_TEAM_BADGUYS)
-								h:InitDSHeroData()
+								h:InitDSHero()
 
 								GameRules.TurnManager:Init()
 								GameRules.TurnManager:SelectFirstActivePlayer()

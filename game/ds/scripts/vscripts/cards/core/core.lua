@@ -17,12 +17,12 @@ end
 
 function CardCore:OnPlayerClickCard(args)
     local playerID = args.PlayerID
-    local idx = args.CardIndex
     local player = PlayerResource:GetPlayer(playerID)
     local hero = player:GetAssignedHero()
+    local uniqueId = args.UniqueId
 
     -- 设置当前使用的手牌
-    hero:SetCurrentActiveCardByIndex(idx)
+    hero:SetCurrentActivateCardByUniqueId(uniqueId)
 
     local card = hero:GetCurrentActiveCard()
     local ccb = card:GetCardBehavior()
