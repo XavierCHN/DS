@@ -8,11 +8,7 @@ var schedule;
 // 刷新手牌
 function UpdateHandCards(handCardData) {
     var all_card_data = GameUI.CustomUIConfig().AllCards;
-    $.Msg("handCardData");
-    $.Msg(handCardData);
-    $.Msg('hand card data is changed, refreshing hand card view!');
     var handCardContainer = $("#HandCardContainer");
-    $.Msg(handCardData);
     for (var uniqueId in hand_cards) {
         hand_cards[uniqueId].shouldRemove = true;
     }
@@ -31,10 +27,14 @@ function UpdateHandCards(handCardData) {
         hand_cards[unique_id].shouldRemove = false;
     }
     for (var uniqueId in hand_cards) {
-        // 移除所有需要移除的手牌
         if (hand_cards[uniqueId].shouldRemove) {
+            // 移除所有需要移除的手牌
             hand_cards[uniqueId].Remove();
             delete hand_cards[uniqueId];
+        }
+        else {
+            // 刷新不需要移除的手牌
+            hand_cards[uniqueId].UpdateCardMessage();
         }
     }
 }

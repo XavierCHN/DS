@@ -106,6 +106,7 @@ function Card:constructor(id)
     self.ID = id
     self.UniqueID = DoUniqueString("")
     self.HighLightState = ""
+    self.draw_index = -1
 
     data.card_type = data.card_type or CARD_TYPE_SPELL
     data.card_behavior = data.card_behavior or CARD_BEHAVIOR_NO_TARGET
@@ -218,4 +219,13 @@ end
 
 function Card:GetUniqueID()
     return self.UniqueID
+end
+
+-- 进入手牌的顺序
+function Card:SetDrawIndex(idx)
+    self.draw_index = idx
+end
+
+function Card:GetDrawIndex()
+    return self.draw_index
 end
