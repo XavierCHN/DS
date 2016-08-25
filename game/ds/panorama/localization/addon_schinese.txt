@@ -1,0 +1,34 @@
+"addon"
+{
+	"Unassigned"      								"Unassigned Team"
+	"Spectator"       								"Spectator Team"
+	"Neutrals"        								"Neutral Team"
+	"NoTeam"          								"No Team"
+
+	"DOTA_GoodGuys"   								"天辉"
+	"DOTA_BadGuys"    								"夜魇"
+	
+	"addonname"										"刀塔传奇·遗迹英雄传"
+
+	"test_card_title"		"测试标题"
+	"test_card_type"		"测试类别"
+	"test_card_description"	"描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试"
+
+    "CardName_00001"       "拳头"
+    "CardDescription_00001"  "使用这张卡牌，增加一点力量和一点魔法"
+    "CardLore_00001"		"Giff DIRETIDE or RIOT!"
+
+    "CardType_0"            "属性"
+    "CardType_1"            "法术"
+    "CardType_2"            "生物"
+    "CardType_3"            "装备"
+
+    "PrefixType_basic"      "基本"
+    "PrefixType_ultimate"      "极限"
+    "PrefixType_hero"      "英雄"
+	
+    "SubType_test"          "测试副类别"
+
+    "Ability_ds_flying"     "飞行"
+    "Ability_ds_lifesteal"  "吸血"
+}

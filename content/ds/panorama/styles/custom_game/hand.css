@@ -1,37 +1,142 @@
-.HandRoot
-{
+.HandRoot{
     width:100%;
     height:100%;
 }
 
 #HandCardContainerBackground{
-
     vertical-align: bottom;
     width:100%;
     min-height:210px;
     padding-top:15px;
 }
 
-#HandCardContainer
-{
+#HandCardContainer{
     vertical-align: bottom;
     horizontal-align:center;
     flow-children:right;
-    margin-bottom:-24px;
+    margin-bottom: 12px;
 }
 
-.HandCard :hover{
-    background-color:wheat;
+.HandCardRoot:hover {
+    tranform:translatey(30);
+    pre-transform-scale2d:1;
+    z-index: 1;
 }
 
-.HandCard {
-    background-color:red;
+.HandCardRoot {
+    background-color:gradient( linear, 0% 0%, 0% 100%, from( #FF4D4C ), color-stop( 0.3, #EA5E5E ), color-stop( 0.6, #7B3737 ), to( #5C3230 ) );
 
     vertical-align: bottom;
-    margin-left:5px;
-    margin-right:5px;
+    margin-left:-50px;
 
-    width: 150px;
-	height: 210px;
-	border-radius: 9px;
+    width: 200px;
+	height: 280px;
+	border-radius: 18px;
+
+    transition-property: transform;
+    transition-duration:0.3;
+    transition-timing-function: ease-in-out;
+    pre-transform-scale2d:0.7;
+    z-index: 0;
+}
+
+#Background{
+    margin:8px;
+    border-radius:10px;
+    flow-children:down;
+}
+
+#TopCardSection{
+    width:184px;
+    height:184px;
+}
+
+#CardIllusion{
+    width:184px;
+    height:184px;
+    vertical-align: bottom;
+    horizontal-align:center;
+}
+
+#CardIllusionCompiler{
+    background-image:url("file://{resources}/images/custom_game/cards/00001.png");
+}
+
+#CardOverlay{
+    background-color: gradient( linear, 0% 0%, 0% 100%, from( #00000000 ), color-stop( 1, #00000000) , color-stop( 1, #000000ff),  to( #000000ff) );
+}
+
+#CardTitle{
+    width:100%;
+    height:50px;
+    vertical-align: bottom;
+}
+
+#CardTitleLabels{
+    flow-children:down;
+    padding-left:10px;
+    padding:4px;
+}
+
+#CardTitleLabels Label{
+    color:black;
+}
+
+#CardName{
+    font-size:18px;
+    font-weight: bold;
+}
+
+#CardType{
+    font-size:13px;
+}
+
+
+#CardTitleBackground{
+    width:100%;
+    height:100%;
+    background-color:#FFFFFF;
+    opacity:0.4;
+}
+
+#BottomCardSection{
+    width:100%;
+    height:80px;
+    background-color:grey;
+    padding:5px;
+}
+
+#CardDescription{
+    color:black;
+    font-size:12px;
+}
+
+##CardDescription .Empty{
+    visibility: collapse;
+}
+
+#CardLore{
+    color:black;
+    font-size:10px;
+    vertical-align:bottom;
+    margin-bottom:10px;
+}
+
+#CardLore .Empty{
+    visibility: collapse;
+}
+
+#CardMessage{
+    background-color:lawngreen;
+    vertical-align:bottom;
+    margin-bottom:2px;
+    width:100%;
+}
+
+#CardMessage Label{
+    color:black;
+    font-size:8px;
+}
+#IllusionArtist{
+    horizontal-align:right;
 }

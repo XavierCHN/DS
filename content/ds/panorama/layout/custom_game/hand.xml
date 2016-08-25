@@ -9,32 +9,39 @@
 	</styles>
 
 	<snippets>
-		<snippet name="AttributeCard">
-			<Panel class="HandCard AttributeCardRoot">
-				
-			</Panel>
-		</snippet>
-		<snippet name="MinionCard">
-			<Panel class="HandCard MinionCardRoot">
-			</Panel>
-		</snippet>
-		<snippet name="SpellCard">
-			<Panel class="HandCard SpellCardRoot">
-				
-			</Panel>
-		</snippet>
-		<snippet name="EquipmentCard">
-			<Panel class="HandCard EquipmentCardRoot">
-				
-			</Panel>
-		</snippet>
-		<!--空手牌，在出错的时候使用-->
 		<snippet name="HandCard">
-			<Panel class="HandCard">
-				
+			<Panel class="HandCardRoot">
+				<Panel id="Background">
+					<Panel id="TopCardSection">
+						<Image id="CardIllusion" />
+						<Panel id="CardCost">
+							<Panel id="CardCost_Mana">
+							</Panel>
+							<Panel id="CardCost_Attributes">
+							</Panel>
+						</Panel>
+						<Panel id="CardTitle">
+							<Panel id="CardTitleBackground" />
+							<Panel id="CardTitleLabels">
+								<Label id="CardName" text="#test_card_title"/>
+								<Label id="CardType" text="#test_card_type" />
+							</Panel>
+						</Panel>
+					</Panel>
+					<Panel id="BottomCardSection">
+						<Label id="CardDescription" text="#test_card_description" />
+						<Label id="CardLore" text="#test_card_lore" />
+						<Panel id="CardMessage">
+							<Label id="CardID" />
+							<Label id="IllusionArtist" />
+						</Panel>
+					</Panel>
+				</Panel>
+				<Panel id="CardOverlay" hittest="false" />
 			</Panel>
 		</snippet>
 	</snippets>
+	
 	<Panel class="HandRoot" hittest="false">
 		<Panel id="HandCardContainerBackground" hittest="false">
 			<Panel id="HandCardContainer" hittest="false">

@@ -12,9 +12,10 @@ high_light = function(card) return "HighLightGolden" end -- 高亮，返回高�
 cost = {str=0,agi=0,int=0,mana=0} -- 所需资源，mana为魔法，其余为需要满足的属性需求
 validate = function(self, vPoint ) end -- 特殊的使用需求，根据不同的类型，可能会传入不同的参数
 on_spell_start = function(self) end -- 卡牌使用的效果，和正常的 Lua Ability写法一样
+artist = "Xavier" -- 卡牌插画的作者
 
 -- 不重要的可选
-prefix_type = "ultimate" --前缀类别，如 无双，会显示在名字中，在交互中有用，默认为空
+prefix_type = {"ultimate"} --前缀类别，如 无双，会显示在名字中，在交互中有用，默认为空
 sub_type = { "beast" } -- 副类别，如野兽
 -- 主类别，前缀类别和后缀类别构成一张卡牌的类别，如
 -- 无双生物 ~ 野兽/精怪
@@ -70,7 +71,7 @@ end
 if IsInToolsMode() then
     -- 输出所有卡牌的数据到all_card_data.js文件中
     print("writting card data to js file")
-    local all_lines = '$.Msg("Begin to load all card data to game pui;");\nGameUI.CustomUIConfig().AllCards = {\n'
+    local all_lines = '$.Msg("Card data has refreshed in all_card_data.js;");\nGameUI.CustomUIConfig().AllCards = {\n'
     for id, data in pairs(GameRules.AllCards) do
         local line = tonumber(id) .. ":"
         local d = {}

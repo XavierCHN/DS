@@ -67,7 +67,7 @@ function DS:OnGameRulesStateChanged()
 			if TableCount(GameRules.AllHeroes) == 1 then
 				Say(nil,"Why I'm always lonely?" .. GameRules.AllHeroes[1]:GetPlayerID(),false)
 				SendToServerConsole('dota_create_fake_clients')
-				Timers:CreateTimer(function()
+				Timers:CreateTimer(2, function()
 					local set = false
 					for i = 1, DOTA_MAX_PLAYERS do
 						if not set then

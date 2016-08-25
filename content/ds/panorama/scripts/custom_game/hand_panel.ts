@@ -31,7 +31,7 @@ function UpdateHandCards(handCardData){
         if(!hand_cards[unique_id]){
             let card_data = all_card_data[card_id];
             let card_type = card_data["card_type"];
-            let new_card = new HandCard(handCardContainer, card_id, unique_id, card_type);
+            let new_card = new HandCard(handCardContainer, card_id, unique_id, card_type, card_data);
             hand_cards[unique_id] = new_card;
         }
         // 如果这个id还存在于服务器的hand中，那么标记为不需要移除
