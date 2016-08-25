@@ -23,6 +23,10 @@ function CDOTA_BaseNPC_Hero:DrawCard(numCards)
 		else
 			print(" a player want to draw "..numCards.." cards when his deck is empty!")
 			-- todo end the game!
+
+			if not IsInToolsMode() then
+				GameRules.DS:EndGameWithLoser(self)
+			end
 		end
 	end
 end

@@ -8,15 +8,15 @@ function TurnManager:SelectFirstActivePlayer()
 	-- 先手玩家，后手玩家：不随回合改变
 	-- 主动玩家，被动玩家：每回合改变一次
 	if RollPercentage(50) then
-		self.fp, self.nfp = GameRules.AllPlayers[1], GameRules.AllPlayers[2] 
+		self.fp, self.nfp = GameRules.AllHeroes[1], GameRules.AllHeroes[2] 
 	else
-		self.fp, self.nfp = GameRules.AllPlayers[2], GameRules.AllPlayers[1]
+		self.fp, self.nfp = GameRules.AllHeroes[2], GameRules.AllHeroes[1]
 	end
 	self.ActivePlayer, self.NoneActivePlayer = self.fp, self.nfp -- 主动玩家，被动玩家
 end
 
-function TurnManager:ShuffleAndDrawInitialCards()
-	-- 初始化玩家的卡组，并抽取初始手牌
+-- 初始化玩家的卡组，并抽取初始手牌
+function TurnManager:ShufflePlayerDeckAndDrawInitialCards()
 	for _, hero in pairs(GameRules.AllHeroes) do
 		local player_id = hero:GetPlayerID()
 		local card_list = PlayerResource:GetPlayerCardList(player_id)

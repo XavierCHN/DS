@@ -9,7 +9,6 @@ require 'libraries.timers'
 require 'libraries.playertables'
 
 require 'engine.turn_manager'
-require 'engine.player'
 require 'engine.player_resource'
 require 'engine.hero'
 require 'engine.deck'
@@ -48,15 +47,12 @@ function DS:OnGameRulesStateChanged()
 	local newState = GameRules:State_Get()
 
 	if newState == DOTA_GAMERULES_STATE_PRE_GAME then
-		print("now entering pregame")
 		-- 储存所有玩家和英雄
 		Timers:CreateTimer(2, function()
 			GameRules.AllHeroes = {}
-			GameRules.AllPlayers = {}
 			for playerID = -1, DOTA_MAX_PLAYERS do
 				local player = PlayerResource:GetPlayer(playerID)
 				if player then
-					table.insert(GameRules.AllPlayers, player)
 					local hero = player:GetAssignedHero()
 					if hero then
 						table.insert(GameRules.AllHeroes, hero)
@@ -79,14 +75,13 @@ function DS:OnGameRulesStateChanged()
 								Say(nil, "Found " .. i , false)
 								local h = CreateHeroForPlayer("npc_dota_hero_invoker",p)
 								table.insert(GameRules.AllHeroes, h)
-								table.insert(GameRules.AllPlayers, p)
 								p:SetTeam(DOTA_TEAM_BADGUYS)
 								h:SetTeam(DOTA_TEAM_BADGUYS)
 								h:InitDSHeroData()
 
 								GameRules.TurnManager:Init()
 								GameRules.TurnManager:SelectFirstActivePlayer()
-								GameRules.TurnManager:ShuffleAndDrawInitialCards()
+								GameRules.TurnManager:ShufflePlayerDeckAndDrawInitialCards()
 								
 								set = true
 							end
@@ -97,7 +92,7 @@ function DS:OnGameRulesStateChanged()
 			else
 				GameRules.TurnManager:Init()
 				GameRules.TurnManager:SelectFirstActivePlayer()
-				GameRules.TurnManager:ShuffleAndDrawInitialCards()
+				GameRules.TurnManager:ShufflePlayerDeckAndDrawInitialCards()
 			end
 		end)
 	end
@@ -106,4 +101,22 @@ function DS:OnGameRulesStateChanged()
 		print("now game in progress")
 		GameRules.TurnManager:Run()
 	end
+end
+
+function DS:GetOpponent(hero)
+	for _, h in pairs(GameRules.AllHeroes) do
+		if h ~= hero then
+			return h 
+		end
+	end
+end
+
+function DS:EndGameWithLoser(loser)
+	local winner = self:GetOpponent(loser)
+	GameRules:SetGameWinner(winner:GetTeamNumber())
+
+	CustomGameEventManager:Send_ServerToAllClients("game_end", {
+		winner = winner:GetPlayerID(),
+		loser = loser:GetPlayerID(),
+	})
 end
