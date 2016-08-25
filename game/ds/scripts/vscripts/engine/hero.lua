@@ -20,12 +20,19 @@ function CDOTA_BaseNPC_Hero:DrawCard(numCards)
 		if card then
 			print(string.format("Draw a card with id %s", card.ID ))
 			self.hand:AddCard(card)
+
+			GameRules.EventManager:Emit("OnPlayerDrawCard", {
+				Player = self,
+				CardID = card:GetID(),
+				Card = card,
+			})
+
 		else
 			print(" a player want to draw "..numCards.." cards when his deck is empty!")
-			-- todo end the game!
-
 			if not IsInToolsMode() then
 				GameRules.DS:EndGameWithLoser(self)
+			else
+				Say(nil, "Game has ended due to player want to draw card from an empty deck", false)
 			end
 		end
 	end
@@ -54,6 +61,32 @@ end
 
 function CDOTA_BaseNPC_Hero:RemoveCardByIndex(idx)
 	self.hand:RemoveCardByIndex(idx)
+end
+
+-- 使用牌后移除
+function CDOTA_BaseNPC_Hero:RemoveCardAfterUse(idx)
+	local card = self.hand:GetCardByIndex(idx)
+	GameRules.EventManager:Emit("OnPlayerUsedCard",{
+		Player = self,
+		CardID = card:GetID(),
+		Index = idx,
+		Card = card,
+	})
+	self:RemoveCardByIndex(idx)
+end
+
+-- 弃牌
+function CDOTA_BaseNPC_Hero:DiscardCard(idx)
+	
+	local card = self.hand:GetCardByIndex(idx)
+	GameRules.EventManager:Emit("OnPlayerDiscardCard",{
+		Player = self,
+		CardID = card:GetID(),
+		Index = idx,
+		Card = card,
+	})
+
+	self:RemoveCardByIndex(idx)
 end
 
 function CDOTA_BaseNPC_Hero:RefreshHand_HL()

@@ -8,6 +8,7 @@ require 'settings'
 require 'libraries.timers'
 require 'libraries.playertables'
 
+require 'engine.events'
 require 'engine.turn_manager'
 require 'engine.player_resource'
 require 'engine.hero'
@@ -37,6 +38,7 @@ function DS:Init()
     -- 初始化各种数据结构
     GameRules.TurnManager = TurnManager()
     GameRules.CardCore = CardCore()
+	GameRules.EventManager = Events()
 
 
     GameRules.CardCore:Start()

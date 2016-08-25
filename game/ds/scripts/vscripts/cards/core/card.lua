@@ -202,3 +202,7 @@ end
 function Card:GetType()
     return self.data.card_type
 end
+
+function Card:GetID()
+    return self.ID
+end

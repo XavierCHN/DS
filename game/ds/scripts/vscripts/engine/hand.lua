@@ -26,6 +26,12 @@ function Hand:AddCard(card)
     card:SetOwner(self.owner)
 
     self.hl_state = {}
+
+    GameRules.EventManager:Emit("OnAddCardToHand", {
+        Card = card,
+        CardID = card:GetID(),
+        Player = self.player
+    })
 end
 
 function Hand:ToIDArray()
@@ -50,6 +56,13 @@ function Hand:RemoveCardByIndex(idx)
     table.remove(self.cards, idx)
     PlayerTables:SetTableValues("hand_cards_" .. self.playerid, self:ToIDArray())
     self.hl_state = {}
+
+    GameRules.EventManager:Emit("OnPlayerLoseHandCard", {
+        Card = card,
+        CardID = card:GetID(),
+        Player = self.player
+    })
+
 end
 
 -- 刷新手牌的高亮状态到UI，UI负责更新卡牌的class即可

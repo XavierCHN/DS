@@ -42,6 +42,19 @@ function TurnManager:Run()
 		self.nfp:DrawCard(1) -- 抽一张牌
 		self.nfp:FillManaPool() -- 回满魔法池
 		self.nfp:SetHasUsedAttributeCardThisRound(false) -- 可以出属性牌
+
+		GameRules.EventManager:Emit("OnTurnStart", {
+			Player = self.nfp
+		})
+
+		GameRules.EventManager:Emit("OnTurnEnd", {
+			Player = self.fp
+		})
+
+		CustomGameEventManager:Send_ServerToAllClients("ds_turn_start", {
+			PlayerID = self.nfp:GetPlayerID(),
+		})
+
 		return DS_TURN_TIME * 2
 	end)
 
@@ -52,6 +65,19 @@ function TurnManager:Run()
 		self.fp:DrawCard(1) -- 抽一张牌
 		self.fp:FillManaPool() -- 回满魔法池
 		self.fp:SetHasUsedAttributeCardThisRound(false) -- 可以出属性牌
+
+		GameRules.EventManager:Emit("OnTurnStart", {
+			Player = self.fp
+		})
+
+		GameRules.EventManager:Emit("OnTurnEnd", {
+			Player = self.nfp
+		})
+
+		CustomGameEventManager:Send_ServerToAllClients("ds_turn_start", {
+			PlayerID = self.fp:GetPlayerID(),
+		})
+
 		return DS_TURN_TIME * 2
 	end)
 
