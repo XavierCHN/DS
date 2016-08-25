@@ -1,6 +1,6 @@
-ds_point = class({})
+ds_single_target = class({})
 
-function ds_point:GetCustomCastErrorTarget(hTarget)
+function ds_single_target:GetCustomCastErrorTarget(hTarget)
     local hero = self:GetCaster()
     local card = hero:GetCurrentActiveCard()
     local validated, reason = card:Validate(self, hTarget)
@@ -11,7 +11,7 @@ function ds_point:GetCustomCastErrorTarget(hTarget)
     return ""
 end
 
-function ds_point:CastFilterResultTarget(hTarget)
+function ds_single_target:CastFilterResultTarget(hTarget)
 	local hero = self:GetCaster()
     local card = hero:GetCurrentActiveCard()
     local validated, _ = card:Validate(self, hTarget)
@@ -20,11 +20,11 @@ function ds_point:CastFilterResultTarget(hTarget)
     end
 end
 
-function ds_point:GetCooldown( nLevel )
+function ds_single_target:GetCooldown( nLevel )
     return 0
 end
 
-function ds_point:OnSpellStart(args)
+function ds_single_target:OnSpellStart(args)
     local caster = self:GetCaster()
     local card = caster:GetCurrentActiveCard()
     -- 移除手牌

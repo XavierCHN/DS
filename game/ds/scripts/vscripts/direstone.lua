@@ -14,7 +14,6 @@ require 'engine.player_resource'
 require 'engine.hero'
 require 'engine.deck'
 require 'engine.hand'
-require 'engine.gamerules'
 
 require 'cards.core.core'
 

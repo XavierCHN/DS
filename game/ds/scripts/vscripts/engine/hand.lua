@@ -24,9 +24,9 @@ function Hand:AddCard(card)
         print("Attempt to add a nil card to hand" .. self.playerid)
     end
 
-    print(string.format("Adding card to hand! CardID[%s], CardUniqueID[]",card:GetID(), card:GetUniqueID()))
+    print(string.format("Adding card to hand! CardID[%s], CardUniqueID[%s]",card:GetID(), card:GetUniqueID()))
     
-    self.cards[uniqueId] = card
+    self.cards[card:GetUniqueID()] = card
 
     card:SetOwner(self.owner)
 
@@ -53,7 +53,7 @@ function Hand:UpdateToClient()
         serialized_data[idx] = JSON:encode(card_data)
     end
 
-    PlayerTables:SetTableValues("hand_cards_" .. self.playerid, serialized_data )
+    CustomGameEventManager:Send_ServerToPlayer(self.player, "ds_player_hand_changed", serialized_data)
 end
 
 function Hand:Clear()
@@ -87,6 +87,16 @@ function Hand:RemoveRandomCard(count)
         self.cards[uniqueIds[RandomInt(1,#uniqueIds)]] = nil
     end
 end
+
+function Hand:OnRequestHand(args)
+    local playerid = args.PlayerID
+    local hero = PlayerResource:GetPlayer(playerid):GetAssignedHero()
+    if not hero then return end
+    hero:GetHand():UpdateToClient()
+end
+
+-- 客户端请求发送手牌数据
+CustomGameEventManager:RegisterListener("ds_request_hand", Dynamic_Wrap(Hand, "OnRequestHand"))
 
 Convars:RegisterCommand("debug_add_card",function(_, id)
 

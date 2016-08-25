@@ -53,9 +53,10 @@ GameRules.AllCards = {}
 local function registerCard(data, id)
     -- 因为所有卡牌都在同一个文件夹，因此不可能出现有卡牌ID重复的问题
     -- 直接注册
-    GameRules.AllCards[id] = data
+    GameRules.AllCards[tonumber(id)] = data
 end
 
+print 'NOW RELOADING CARD DATA'
 local rcc = 0
 for id = 1, max_card_number do
     local f_name = path_prefix .. string.format("%05d", id)
@@ -71,7 +72,7 @@ if IsInToolsMode() then
     print("writting card data to js file")
     local all_lines = '$.Msg("Begin to load all card data to game pui;");\nGameUI.CustomUIConfig().AllCards = {\n'
     for id, data in pairs(GameRules.AllCards) do
-        local line = id .. ":"
+        local line = tonumber(id) .. ":"
         local d = {}
         for k, v in pairs(data) do
             if type(v) ~= "function" and k ~= "_NAME" and k ~= '_PACKAGE' and k ~= '_M' then
@@ -102,7 +103,7 @@ function Card:constructor(id)
     
     -- 初始化各种卡牌数据
     self.ID = id
-    self.UniqueID = DoUniqueString("c")
+    self.UniqueID = DoUniqueString("")
     self.HighLightState = ""
 
     data.card_type = data.card_type or CARD_TYPE_SPELL
@@ -153,24 +154,20 @@ end
 function Card:UpdateHighLightState()
     
     local state = ""
-
+    local hero = self:GetOwner()
     local special_high_light = self.data.high_light(self)
     if special_high_light then
         state = special_high_light
-    end
-    
-    if self:GetType() == CARD_TYPE_ATTRIBUTE and not hero:HasUsedAttributeCardThisRound() then
+    elseif self:GetType() == CARD_TYPE_ATTRIBUTE and not hero:HasUsedAttributeCardThisRound() then
         state = "HighLightAttributeCard"
-    end
-    
-    -- 费用足够的高亮效果
-    if self:MeetCostRequirement() then
+    elseif self:MeetCostRequirement() then
         state = "HighLightGreen"
     end
 
     if state ~= self.HighLightState then
         CustomGameEventManager:Send_ServerToPlayer(self:GetOwner():GetPlayerOwner(), "ds_highlight_state_changed", {
             CardID = self.UniqueID,
+            NewState = state, 
         })
     end
 end

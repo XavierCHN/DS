@@ -6,7 +6,7 @@
 
 if Events == nil then Events = class({}) end
 
-function Event:constructor()
+function Events:constructor()
     self.all_events = {}
 end
 

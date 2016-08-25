@@ -1,6 +1,7 @@
 <root>
 	<scripts>
-		<include src="file://{resources}/scripts/custom_game/hand.js" />
+		<include src="file://{resources}/scripts/custom_game/hand_card.js" />
+		<include src="file://{resources}/scripts/custom_game/hand_panel.js" />
 	</scripts>
 	
 	<styles>
@@ -8,17 +9,36 @@
 	</styles>
 
 	<snippets>
+		<snippet name="AttributeCard">
+			<Panel class="HandCard AttributeCardRoot">
+				
+			</Panel>
+		</snippet>
+		<snippet name="MinionCard">
+			<Panel class="HandCard MinionCardRoot">
+			</Panel>
+		</snippet>
+		<snippet name="SpellCard">
+			<Panel class="HandCard SpellCardRoot">
+				
+			</Panel>
+		</snippet>
+		<snippet name="EquipmentCard">
+			<Panel class="HandCard EquipmentCardRoot">
+				
+			</Panel>
+		</snippet>
+		<!--空手牌，在出错的时候使用-->
 		<snippet name="HandCard">
-			<Panel class="HandCardContainer">
-				<Image class="BackGroundImage" id="background_image" />
-				<Panel class="Cover">
-					<Label id="title_text" text="CardName_Unknown" />
-					<Label id="cost_text"  text="0" /> 
-				</Panel>
+			<Panel class="HandCard">
+				
 			</Panel>
 		</snippet>
 	</snippets>
-	
-	<Panel class="HandRoot">
+	<Panel class="HandRoot" hittest="false">
+		<Panel id="HandCardContainerBackground" hittest="false">
+			<Panel id="HandCardContainer" hittest="false">
+			</Panel>
+		</Panel>
 	</Panel>
 </root>
