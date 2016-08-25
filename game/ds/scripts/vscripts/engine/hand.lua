@@ -6,10 +6,17 @@ function Hand:constructor(hero)
     self.player = PlayerResource:GetPlayer(hero:GetPlayerID())
     self.playerid = self.player:GetPlayerID()
 
-    -- 刷新高亮状态
-    self.hl_state = {}
+    PlayerTables:CreateTable("hand_cards_" .. self.playerid, {}, {self.playerid})
 
-    PlayerTables:CreateTable("hand_cards_" .. self.playerid, self:ToIDArray(), {self.playerid})
+    -- 启动计时器刷新高亮状态
+    Timers:CreateTimer(function()
+        if TableCount(self.cards) > 0 then
+            for _, card in pairs(self.cards) do
+                card:UpdateHighLightState()
+            end
+        end
+        return 0.03
+    end)
 end
 
 function Hand:AddCard(card)
@@ -17,15 +24,13 @@ function Hand:AddCard(card)
         print("Attempt to add a nil card to hand" .. self.playerid)
     end
 
-    print("Adding card to hand!", card)
-
-    table.insert(self.cards, card)
-
-    PlayerTables:SetTableValues("hand_cards_" .. self.playerid, self:ToIDArray())
+    print(string.format("Adding card to hand! CardID[%s], CardUniqueID[]",card:GetID(), card:GetUniqueID()))
+    
+    self.cards[uniqueId] = card
 
     card:SetOwner(self.owner)
 
-    self.hl_state = {}
+    self:UpdateToClient()
 
     GameRules.EventManager:Emit("OnAddCardToHand", {
         Card = card,
@@ -34,50 +39,52 @@ function Hand:AddCard(card)
     })
 end
 
-function Hand:ToIDArray()
-    local t = {}
-    for i = 1, TableCount(self.cards) do
-        t[i] = self.cards[i].ID
+function Hand:UpdateToClient()
+
+    local serialized_data = {}
+
+    for idx, card in pairs(self.cards) do
+        local card_data = {}
+        -- 将所有需要发送到客户端的参数装入
+        card_data.id = card:GetID()
+        card_data.unique_id = card:GetUniqueID()
+
+        -- 使用json序列化之后发送
+        serialized_data[idx] = JSON:encode(card_data)
     end
-    return t
+
+    PlayerTables:SetTableValues("hand_cards_" .. self.playerid, serialized_data )
 end
 
 function Hand:Clear()
     self.cards = {}
-
-    PlayerTables:SetTableValues("hand_cards_" .. self.playerid, self:ToIDArray())
+    self:UpdateToClient()
 end
 
-function Hand:GetCardByIndex()
-    return self.cards[i]
+function Hand:GetCardByUniqueId(uniqueId)
+    return self.cards[uniqueId]
 end
 
-function Hand:RemoveCardByIndex(idx)
-    table.remove(self.cards, idx)
-    PlayerTables:SetTableValues("hand_cards_" .. self.playerid, self:ToIDArray())
-    self.hl_state = {}
-
+-- 根据手牌ID弃掉一张手牌
+function Hand:RemoveCardByUniqueId(uniqueId)
+    self.cards[uniqueId] = nil
+    self:UpdateToClient()
     GameRules.EventManager:Emit("OnPlayerLoseHandCard", {
         Card = card,
         CardID = card:GetID(),
         Player = self.player
     })
-
 end
 
--- 刷新手牌的高亮状态到UI，UI负责更新卡牌的class即可
--- 目前的写法是，只要有一张牌的高亮状态出现改变，全部手牌都刷新一次
-function Hand:RefreshHand_HL()
-    local c = false
-	for idx, card in pairs(self.cards) do
-		local hl = card:ShouldHighLight()
-        if self.hl_state[idx] ~= hl then
-            c = true
-            self.hl_state[idx] = hl
+-- 随机弃掉N张手牌
+function Hand:RemoveRandomCard(count)
+    count = count or 1
+    for i = 1, count do
+        local uniqueIds = {}
+        for uniqueId,_ in pairs(self.cards) do
+            table.insert(uniqueIds, uniqueId)
         end
-	end
-    if c then
-        CustomGameEventManager:Send_ServerToPlayer(self.player,"ds_hand_hl_state_changed",self.hl_state)
+        self.cards[uniqueIds[RandomInt(1,#uniqueIds)]] = nil
     end
 end
 

@@ -55,30 +55,31 @@ function CDOTA_BaseNPC_Hero:GetCurrentActiveCard()
 	return self:GetHandByIndex(self.cacidx)
 end
 
-function CDOTA_BaseNPC_Hero:GetHandByIndex(idx)
-	return self.hand:GetCardByIndex(idx)
+function CDOTA_BaseNPC_Hero:GetHandByUniqueId( uniqueId )
+	return self.hand:GetCardByUniqueId(uniqueId)
 end
 
-function CDOTA_BaseNPC_Hero:RemoveCardByIndex(idx)
-	self.hand:RemoveCardByIndex(idx)
+function CDOTA_BaseNPC_Hero:RemoveCardByUniqueId( uniqueId )
+	self.hand:RemoveCardByUniqueId(uniqueId)
 end
 
 -- 使用牌后移除
-function CDOTA_BaseNPC_Hero:RemoveCardAfterUse(idx)
-	local card = self.hand:GetCardByIndex(idx)
+function CDOTA_BaseNPC_Hero:RemoveCardAfterUse( uniqueId )
+	local card = self.hand:GetCardByUniqueId(uniqueId)
 	GameRules.EventManager:Emit("OnPlayerUsedCard",{
 		Player = self,
 		CardID = card:GetID(),
 		Index = idx,
 		Card = card,
 	})
-	self:RemoveCardByIndex(idx)
+	self:RemoveCardByUniqueId( uniqueId )
 end
 
 -- 弃牌
-function CDOTA_BaseNPC_Hero:DiscardCard(idx)
+function CDOTA_BaseNPC_Hero:DiscardCard(uniqueId)
 	
-	local card = self.hand:GetCardByIndex(idx)
+	local card = self.hand:GetCardByUniqueId(uniqueId)
+
 	GameRules.EventManager:Emit("OnPlayerDiscardCard",{
 		Player = self,
 		CardID = card:GetID(),
@@ -86,7 +87,7 @@ function CDOTA_BaseNPC_Hero:DiscardCard(idx)
 		Card = card,
 	})
 
-	self:RemoveCardByIndex(idx)
+	self:RemoveCardByUniqueId( uniqueId )
 end
 
 function CDOTA_BaseNPC_Hero:RefreshHand_HL()

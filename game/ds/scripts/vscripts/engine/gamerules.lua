@@ -1,2 +1,0 @@
-function GameRules:SaveGameResultToServer()
-end

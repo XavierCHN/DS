@@ -80,17 +80,6 @@ function TurnManager:Run()
 
 		return DS_TURN_TIME * 2
 	end)
-
-	-- 循环两个玩家的手牌，如果需要高亮则高亮之
-	Timers:CreateTimer(function()
-		if GameRules:State_Get() == DOTA_GAMERULES_STATE_GAME_IN_PROGRESS then
-			for _, hero in pairs(GameRules.AllHeroes) do
-				hero:RefreshHand_HL()
-			end
-		end
-		return 0.05
-	end)
-
 end
 
 function TurnManager:ToggleActivePlayer()

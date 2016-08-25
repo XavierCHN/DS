@@ -102,7 +102,9 @@ function Card:constructor(id)
     
     -- 初始化各种卡牌数据
     self.ID = id
-    
+    self.UniqueID = DoUniqueString("c")
+    self.HighLightState = ""
+
     data.card_type = data.card_type or CARD_TYPE_SPELL
     data.card_behavior = data.card_behavior or CARD_BEHAVIOR_NO_TARGET
     data.expansion = data.expansion or 1
@@ -147,20 +149,29 @@ function Card:Validate(ability)
     end
 end
 
-function Card:ShouldHighLight()
-    -- 特殊的高亮效果
+-- 刷新特殊的高亮效果
+function Card:UpdateHighLightState()
+    
+    local state = ""
+
     local special_high_light = self.data.high_light(self)
     if special_high_light then
-        return special_high_light
+        state = special_high_light
     end
     
     if self:GetType() == CARD_TYPE_ATTRIBUTE and not hero:HasUsedAttributeCardThisRound() then
-        return "HighLightAttributeCard"
+        state = "HighLightAttributeCard"
     end
     
     -- 费用足够的高亮效果
     if self:MeetCostRequirement() then
-        return "HighLightGreen"
+        state = "HighLightGreen"
+    end
+
+    if state ~= self.HighLightState then
+        CustomGameEventManager:Send_ServerToPlayer(self:GetOwner():GetPlayerOwner(), "ds_highlight_state_changed", {
+            CardID = self.UniqueID,
+        })
     end
 end
 
@@ -205,4 +216,8 @@ end
 
 function Card:GetID()
     return self.ID
+end
+
+function Card:GetUniqueID()
+    return self.UniqueID
 end
