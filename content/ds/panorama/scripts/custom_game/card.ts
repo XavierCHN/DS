@@ -52,10 +52,10 @@ class Card{
         
         // 设置卡片图片
         
-        this.panel.FindChildTraverse("#CardIllusion").SetImage(`file://{resources}/images/custom_game/cards/${dig_5_card_id}.png`)
+        this.panel.FindChildTraverse("CardIllusion").SetImage(`file://{resources}/images/custom_game/cards/${dig_5_card_id}.png`)
         
         // 设置卡片名称和类别
-        this.panel.FindChildTraverse("#CardName").text = $.Localize(`#CardName_${dig_5_card_id}`);
+        this.panel.FindChildTraverse("CardName").text = $.Localize(`#CardName_${dig_5_card_id}`);
         let prefix_type_str = "";
         let card_type_str = $.Localize(`#CardType_${this.cardType}`);
         let sub_type_str = "";
@@ -67,7 +67,7 @@ class Card{
         for(let id in st){
             sub_type_str += $.Localize(`#SubType_${st[id]}`);
         }
-        this.panel.FindChildTraverse("#CardType").text = `${prefix_type_str}${card_type_str} ~ ${sub_type_str}`
+        this.panel.FindChildTraverse("CardType").text = `${prefix_type_str}${card_type_str} ~ ${sub_type_str}`
 
         // 设置卡片描述
         let abilities = this.cardData.abilities;
@@ -80,7 +80,7 @@ class Card{
         }
         let card_description = $.Localize(`#CardDescription_${dig_5_card_id}`);
         if (card_description == `CardDescription_${dig_5_card_id}`) card_description = "";
-       this.panel.FindChildTraverse("#CardDescription").text = `${ability_descriptions}\n${card_description}`;
+       this.panel.FindChildTraverse("CardDescription").text = `${ability_descriptions}\n${card_description}`;
 
         let card_lore = $.Localize(`#CardLore_${dig_5_card_id}`);
         if (card_lore == "" || card_lore == `CardLore_${dig_5_card_id}`){
@@ -90,8 +90,8 @@ class Card{
             $("#CardLore").text = card_lore;
         }
 
-        this.panel.FindChildTraverse("#CardID").text = `${$.Localize("#CardID")}:${dig_5_card_id}`
-        this.panel.FindChildTraverse("#IllusionArtist").text = `${$.Localize("#CardArtist")}:${this.cardData.artist || $.Localize("#Unknown")}`
+        this.panel.FindChildTraverse("CardID").text = `${$.Localize("#CardID")}:${dig_5_card_id}`
+        this.panel.FindChildTraverse("IllusionArtist").text = `${$.Localize("#CardArtist")}:${this.cardData.artist || $.Localize("#Unknown")}`
     }
 }
 

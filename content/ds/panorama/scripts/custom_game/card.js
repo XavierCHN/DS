@@ -44,9 +44,9 @@ var Card = (function () {
         var str = ('00000' + this.card_id);
         var dig_5_card_id = str.substring(str.length - 5, str.length);
         // 设置卡片图片
-        this.panel.FindChildTraverse("#CardIllusion").SetImage("file://{resources}/images/custom_game/cards/" + dig_5_card_id + ".png");
+        this.panel.FindChildTraverse("CardIllusion").SetImage("file://{resources}/images/custom_game/cards/" + dig_5_card_id + ".png");
         // 设置卡片名称和类别
-        this.panel.FindChildTraverse("#CardName").text = $.Localize("#CardName_" + dig_5_card_id);
+        this.panel.FindChildTraverse("CardName").text = $.Localize("#CardName_" + dig_5_card_id);
         var prefix_type_str = "";
         var card_type_str = $.Localize("#CardType_" + this.cardType);
         var sub_type_str = "";
@@ -58,7 +58,7 @@ var Card = (function () {
         for (var id in st) {
             sub_type_str += $.Localize("#SubType_" + st[id]);
         }
-        this.panel.FindChildTraverse("#CardType").text = "" + prefix_type_str + card_type_str + " ~ " + sub_type_str;
+        this.panel.FindChildTraverse("CardType").text = "" + prefix_type_str + card_type_str + " ~ " + sub_type_str;
         // 设置卡片描述
         var abilities = this.cardData.abilities;
         var ability_descriptions = "";
@@ -71,7 +71,7 @@ var Card = (function () {
         var card_description = $.Localize("#CardDescription_" + dig_5_card_id);
         if (card_description == "CardDescription_" + dig_5_card_id)
             card_description = "";
-        this.panel.FindChildTraverse("#CardDescription").text = ability_descriptions + "\n" + card_description;
+        this.panel.FindChildTraverse("CardDescription").text = ability_descriptions + "\n" + card_description;
         var card_lore = $.Localize("#CardLore_" + dig_5_card_id);
         if (card_lore == "" || card_lore == "CardLore_" + dig_5_card_id) {
             $("#CardLore").AddClass("Empty");
@@ -80,8 +80,8 @@ var Card = (function () {
             $("#CardLore").RemoveClass("Empty");
             $("#CardLore").text = card_lore;
         }
-        this.panel.FindChildTraverse("#CardID").text = $.Localize("#CardID") + ":" + dig_5_card_id;
-        this.panel.FindChildTraverse("#IllusionArtist").text = $.Localize("#CardArtist") + ":" + (this.cardData.artist || $.Localize("#Unknown"));
+        this.panel.FindChildTraverse("CardID").text = $.Localize("#CardID") + ":" + dig_5_card_id;
+        this.panel.FindChildTraverse("IllusionArtist").text = $.Localize("#CardArtist") + ":" + (this.cardData.artist || $.Localize("#Unknown"));
     };
     return Card;
 }());
