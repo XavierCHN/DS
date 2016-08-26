@@ -88,7 +88,7 @@ function ExecuteCardProxy(args){
         return;
     }
 
-    $.Msg("begin to execute abilty")
+    $.Msg(`begin to execute abilty ${ability_name}, abilityIndex = ${ability}`)
     Abilities.ExecuteAbility(ability, hero, false);
 }
 
