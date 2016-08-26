@@ -29,7 +29,7 @@ function ds_no_target:OnSpellStart(args)
     local caster = self:GetCaster()
     local card = caster:GetCurrentActiveCard()
     -- 移除手牌
-    caster:RemoveCardAfterUse(card:GetUniqueId())
+    caster:RemoveCardAfterUse(card:GetUniqueID())
 
     -- 执行卡牌的效果代码
     local card_func = card.data.on_spell_start
