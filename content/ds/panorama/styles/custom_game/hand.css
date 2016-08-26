@@ -18,7 +18,7 @@
 }
 
 .CardRoot:hover {
-    tranform:translatey(30);
+    tranform:translateY(30);
     pre-transform-scale2d:1;
     z-index: 1;
 }
@@ -33,7 +33,7 @@
 	height: 280px;
 	border-radius: 18px;
 
-    transition-property: transform;
+    transition-property: transform opacity;
     transition-duration:0.3;
     transition-timing-function: ease-in-out;
     pre-transform-scale2d:0.7;
@@ -42,6 +42,10 @@
 
 .CardRoot .State_Greyout{
     wash-color: grey;
+}
+
+.CardRoot .FadeOut{
+    opacity:0;
 }
 
 #Background{

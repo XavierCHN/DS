@@ -39,11 +39,11 @@ function CDOTA_BaseNPC_Hero:DrawCard(numCards)
 end
 
 function CDOTA_BaseNPC_Hero:SetHasUsedAttributeCardThisRound(t)
-	self.huactr = t
+	self.has_used_attribute_card = t
 end
 
 function CDOTA_BaseNPC_Hero:HasUsedAttributeCardThisRound()
-	return self.huactr
+	return self.has_used_attribute_card
 end
 
 function CDOTA_BaseNPC_Hero:SetCurrentActivateCardByUniqueId(uniqueId)

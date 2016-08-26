@@ -1,6 +1,5 @@
 module(..., package.seeall)
 
--- 力量属性卡，使施法者获得一点力量和一点魔法
 card_type = CARD_TYPE_ATTRIBUTE
 card_behavior = CARD_BEHAVIOR_NO_TARGET
 expansion = 0
@@ -8,17 +7,11 @@ cost = {}
 prefix_type = {"basic"}
 sub_type = {"test"}
 artist = "Xavier"
-abilities = {
-	"ds_flying",
-	"ds_lifesteal",
-}
 can_cast_anytime = false
+
 on_spell_start = function(card, ability, args)
 	local caster = ability:GetCaster()
-
-	caster:SetAttributeStrength(caster:GetAttributeStrength() + 1)
-	caster:SetMaxManaPool(caster:GetMaxManaPool() + 1)
-	caster:SetManaPool(caster:GetManaPool() + 1)
-
-	caster:SetHasUsedAttributeCardThisRound(true)
+	caster:SetAttributeStrength(caster:GetAttributeStrength() + 1) -- 获得力量+1
+	caster:SetMaxManaPool(caster:GetMaxManaPool() + 1) -- 最大法力值+1
+	caster:SetManaPool(caster:GetManaPool() + 1) -- 法力值+1
 end

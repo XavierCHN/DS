@@ -17,7 +17,7 @@ function SetupCamera()
         GameUI.SetCameraPitchMax(90);
         GameUI.SetCameraTargetPosition([0,0,0], 0.1 )
     }
-    GameUI.SetCameraDistance(1800);
+    GameUI.SetCameraDistance(2000);
 
     $.Schedule(0.03, SetupCamera);
 }

@@ -226,6 +226,12 @@ function Card:OnUseCard(ability, args)
         print(string.format("processing card effect CARDID[%s] -> OnUseCard", self:GetID()))
         card_func(self, ability, args)
     end
+
+    -- 如果是属性卡，设置为已经使用过属性卡
+    if self:IsAttributeCard() then
+        print "an attribute card is used!"
+        self.owner:SetHasUsedAttributeCardThisRound(true)
+    end
 end
 
 function Card:GetCardBehavior()
@@ -263,4 +269,8 @@ end
 
 function Card:CanCastInEnemyRound()
     return self.data.can_cast_anytime
+end
+
+function Card:IsAttributeCard()
+    return self:GetType() == CARD_TYPE_ATTRIBUTE
 end
