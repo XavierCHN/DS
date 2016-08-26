@@ -51,7 +51,6 @@ class Card{
         let dig_5_card_id = str.substring(str.length-5,str.length);
         
         // 设置卡片图片
-        
         this.panel.FindChildTraverse("CardIllusion").SetImage(`file://{resources}/images/custom_game/cards/${dig_5_card_id}.png`)
         
         // 设置卡片名称和类别
@@ -112,8 +111,6 @@ class HandCard extends Card
         $.Msg(`New card instance is created, cardid=${this.card_id}, uniqueId = ${this.uniqueId}`)
     }
 
-    
-
     ShowHandCardTooltip(){
     }
 
@@ -121,6 +118,10 @@ class HandCard extends Card
     }
 
     OnClickCard(){
+        GameEvents.SendCustomGameEventToServer(`ds_player_click_card`, {
+            PlayerID:Players.GetLocalPlayer(),
+            UniqueId:this.uniqueId,
+        })
     }
 
     Remove(){

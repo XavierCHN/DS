@@ -104,6 +104,10 @@ var HandCard = (function (_super) {
     HandCard.prototype.HideHandCardTooltip = function () {
     };
     HandCard.prototype.OnClickCard = function () {
+        GameEvents.SendCustomGameEventToServer("ds_player_click_card", {
+            PlayerID: Players.GetLocalPlayer(),
+            UniqueId: this.uniqueId,
+        });
     };
     HandCard.prototype.Remove = function () {
         this.panel.DeleteAsync(0);

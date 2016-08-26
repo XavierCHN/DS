@@ -25,6 +25,7 @@ function ds_no_target:GetCooldown( nLevel )
 end
 
 function ds_no_target:OnSpellStart(args)
+    print("begin to execute ds_no_target OnSpellStart")
     local caster = self:GetCaster()
     local card = caster:GetCurrentActiveCard()
     -- 移除手牌

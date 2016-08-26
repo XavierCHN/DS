@@ -1,4 +1,11 @@
 /// <reference path="card.ts" />
+
+enum CardBehavior{
+    CARD_BEHAVIOR_NO_TARGET = 0,
+    CARD_BEHAVIOR_SINGLE_TARGET = 1,
+    CARD_BEHAVIOR_POINT = 2,
+}
+
 // 手牌列表
 let hand_cards = <{[uniqueId: string ]: HandCard}>{};
 let player_tables = GameUI.CustomUIConfig().PlayerTables;
@@ -59,9 +66,35 @@ function RequestHandCard(){
     GameEvents.SendCustomGameEventToServer("ds_request_hand",{})
 }
 
+function ExecuteCardProxy(args){
+    let cardBehavior = args.behavior;
+    let ability_name = "";
+    let hero = Players.GetPlayerSelectedHero(Players.GetLocalPlayer());
+    switch(cardBehavior){
+        case CardBehavior.CARD_BEHAVIOR_POINT:
+            ability_name = "ds_point";
+            break;
+        case CardBehavior.CARD_BEHAVIOR_NO_TARGET:
+            ability_name = "ds_no_target";
+            break;
+        case CardBehavior.CARD_BEHAVIOR_SINGLE_TARGET:
+            ability_name = "ds_single_target";
+            break;
+    }
+    let ability = Entities.GetAbilityByName(hero, ability_name);
+    if(ability_name == "" || ability == -1) {
+        $.Msg(`unable to find valid ability to execute for card behavior${cardBehavior}, ability_name=${ability_name}`);
+        return;
+    }
+
+    $.Msg("begin to execute abilty")
+    Abilities.ExecuteAbility(ability, hero, false);
+}
+
 (function(){
     $.Msg(`hand_panel.js is loaded`);
     RequestHandCard();
     GameEvents.Subscribe("ds_player_hand_changed", UpdateHandCards);
     GameEvents.Subscribe("ds_highlight_state_changed", UpdateHighLightState);
+    GameEvents.Subscribe("ds_execute_card_proxy", ExecuteCardProxy);
 })();

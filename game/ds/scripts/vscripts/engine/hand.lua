@@ -76,12 +76,12 @@ end
 
 -- 根据手牌ID弃掉一张手牌
 function Hand:RemoveCardByUniqueId(uniqueId)
-    self:UpdateToClient()
     GameRules.EventManager:Emit("OnPlayerLoseHandCard", {
         Card = self.cards[uniqueId],
         Player = self.player
     })
     self.cards[uniqueId] = nil
+    self:UpdateToClient()
 end
 
 -- 随机弃掉N张手牌
@@ -94,6 +94,7 @@ function Hand:RemoveRandomCard(count)
         end
         self.cards[uniqueIds[RandomInt(1,#uniqueIds)]] = nil
     end
+    self:UpdateToClient()
 end
 
 function Hand:OnRequestHand(args)
