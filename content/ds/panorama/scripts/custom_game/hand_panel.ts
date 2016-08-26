@@ -1,6 +1,4 @@
-/// <reference path="hand_card.ts" />
-
-
+/// <reference path="card.ts" />
 // 手牌列表
 let hand_cards = <{[uniqueId: string ]: HandCard}>{};
 let player_tables = GameUI.CustomUIConfig().PlayerTables;

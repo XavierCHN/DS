@@ -1,6 +1,6 @@
 <root>
 	<scripts>
-		<include src="file://{resources}/scripts/custom_game/hand_card.js" />
+		<include src="file://{resources}/scripts/custom_game/card.js" />
 		<include src="file://{resources}/scripts/custom_game/hand_panel.js" />
 	</scripts>
 	
@@ -9,8 +9,15 @@
 	</styles>
 
 	<snippets>
-		<snippet name="HandCard">
-			<Panel class="HandCardRoot">
+		<!--卡背-->
+		<snippet name="CardBack">
+			<Panel class="CardRoot">
+				
+			</Panel>
+		</snippet>
+		<!--卡牌-->
+		<snippet name="Card">
+			<Panel class="CardRoot">
 				<Panel id="Background">
 					<Panel id="TopCardSection">
 						<Image id="CardIllusion" />

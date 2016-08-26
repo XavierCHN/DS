@@ -1,4 +1,4 @@
-/// <reference path="hand_card.ts" />
+/// <reference path="card.ts" />
 // 手牌列表
 var hand_cards = {};
 var player_tables = GameUI.CustomUIConfig().PlayerTables;

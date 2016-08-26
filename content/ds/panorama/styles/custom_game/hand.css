@@ -17,13 +17,13 @@
     margin-bottom: 12px;
 }
 
-.HandCardRoot:hover {
+.CardRoot:hover {
     tranform:translatey(30);
     pre-transform-scale2d:1;
     z-index: 1;
 }
 
-.HandCardRoot {
+.CardRoot {
     background-color:gradient( linear, 0% 0%, 0% 100%, from( #FF4D4C ), color-stop( 0.3, #EA5E5E ), color-stop( 0.6, #7B3737 ), to( #5C3230 ) );
 
     vertical-align: bottom;
@@ -60,10 +60,6 @@
 
 #CardIllusionCompiler{
     background-image:url("file://{resources}/images/custom_game/cards/00001.png");
-}
-
-#CardOverlay{
-    background-color: gradient( linear, 0% 0%, 0% 100%, from( #00000000 ), color-stop( 1, #00000000) , color-stop( 1, #000000ff),  to( #000000ff) );
 }
 
 #CardTitle{
@@ -111,7 +107,7 @@
     font-size:12px;
 }
 
-##CardDescription .Empty{
+#CardDescription .Empty{
     visibility: collapse;
 }
 
