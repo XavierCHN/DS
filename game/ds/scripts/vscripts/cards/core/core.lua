@@ -8,11 +8,7 @@ if CardCore == nil then
 end
 
 function CardCore:Start()
-    CustomGameEventManager:RegisterListener("ds_player_click_card",Dynamic_Wrap(CardCore, "OnPlayerUsedCard"))
-    self.activeCardID = {}
-
-    GameRules.CardHighLight = {}
-    
+    CustomGameEventManager:RegisterListener("ds_player_click_card",Dynamic_Wrap(CardCore, "OnPlayerClickCard"))
 end
 
 function CardCore:OnPlayerClickCard(args)

@@ -69,7 +69,8 @@ function RequestHandCard(){
 function ExecuteCardProxy(args){
     let cardBehavior = args.behavior;
     let ability_name = "";
-    let hero = Players.GetPlayerSelectedHero(Players.GetLocalPlayer());
+    let hero = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
+
     switch(cardBehavior){
         case CardBehavior.CARD_BEHAVIOR_POINT:
             ability_name = "ds_point";
