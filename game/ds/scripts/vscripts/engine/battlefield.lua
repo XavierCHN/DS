@@ -7,8 +7,8 @@ function BattleField:constructor()
     self.width = 2560
     self.line_count = 5
     self.line_width = 256
-    self.origin = Vector(0,0,0)
-
+    self.origin = Vector(0, 0, 0)
+    
     self.lines = {}
     for i = 1, self.line_count do
         self.lines[i] = BattleLine(self, i)
@@ -39,9 +39,9 @@ end
 
 function BattleLine:constructor(battleField, lineNumber)
     -- 从上到下，1到5
-    self.origin = battleField.origin + Vector(0, (3-lineNumber) * 256, 0)
+    self.origin = battleField.origin + Vector(0, (3 - lineNumber) * 256, 0)
     self.center = self.origin
-
+    
     self.left_corner = self.origin - Vector(battleField.width / 2, 0, 0)
     self.right_corner = self.origin + Vector(battleField.width / 2, 0, 0)
 end

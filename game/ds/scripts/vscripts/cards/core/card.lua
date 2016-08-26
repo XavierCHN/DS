@@ -109,7 +109,7 @@ function Card:constructor(id)
     self.UniqueID = DoUniqueString("")
     self.HighLightState = ""
     self.draw_index = -1
-
+    
     data.card_type = data.card_type or CARD_TYPE_SPELL
     data.card_behavior = data.card_behavior or CARD_BEHAVIOR_NO_TARGET
     data.expansion = data.expansion or 1
@@ -122,7 +122,7 @@ function Card:constructor(id)
     data.validate = data.validate or function() return true end
     data.on_spell_start = data.on_spell_start or function() end
     data.can_cast_anytime = data.can_cast_anytime or false
-
+    
     if self.card_behavior == CARD_BEHAVIOR_POINT then
         if data.card_type == CARD_TYPE_MINION then
             data.can_cast_anywhere = data.can_cast_anywhere or CARD_CAST_POSITION_MY_FIELD
@@ -131,7 +131,7 @@ function Card:constructor(id)
             data.can_cast_anywhere = data.can_cast_anywhere or CARD_CAST_POSITION_BOTH
         end
     end
-
+    
     -- 给minion类卡牌的特殊数值
     if data.card_type == CARD_TYPE_MINION then
         data.atk = data.atk or 0
@@ -150,11 +150,11 @@ end
 -- 验证一张牌是否可以使用
 function Card:Validate(ability, args)
     local hero = ability:GetCaster()
-
+    
     if not GameRules.TurnManager:HasGameStarted() then
         return false, "game_havent_started_yet"
     end
-
+    
     -- 通用规则，一回合只能使用一张属性牌
     if self:GetType() == CARD_TYPE_ATTRIBUTE then
         if hero:HasUsedAttributeCardThisRound() then
@@ -167,16 +167,16 @@ function Card:Validate(ability, args)
     if not meet then
         return false, reason
     end
-
+    
     -- 通用规则，是否能在我方或者敌方回合使用
     if not self:CanCastAtEnemyRound() and GameRules.TurnManager:GetActivePlayer() ~= hero then
         return false, "cant_use_at_enemy_round"
     end
-
+    
     if not self:CanCastAtMyRound() and GameRules.TurnManager:GetActivePlayer() == hero then
         return false, "cant_use_at_my_round"
     end
-
+    
     -- 通用规则，释放位置需求
     if ability:GetAbilityName() == "ds_point" then
         if not self:CanCastAtEnemyField() and not GameRules.BattleField:IsMyField(hero, args.target_points[1]) then
@@ -186,11 +186,11 @@ function Card:Validate(ability, args)
             return false, "cant_cast_at_my_field"
         end
     end
-
+    
     if self.data.validate and type(self.data.validate) == "function" then
         self.data.validate(self, ability, args)
     end
-
+    
     return true, ""
 end
 
@@ -211,11 +211,11 @@ function Card:UpdateHighLightState()
     elseif self:MeetCostRequirement() then
         state = "HighLightGreen"
     end
-
+    
     if state ~= self.HighLightState then
         CustomGameEventManager:Send_ServerToPlayer(self:GetOwner():GetPlayerOwner(), "ds_highlight_state_changed", {
             CardID = self.UniqueID,
-            NewState = state, 
+            NewState = state,
         })
     end
 end
@@ -247,7 +247,7 @@ function Card:OnUseCard(ability, args)
     if card_func and type(card_func) == "function" then
         card_func(self, ability, args)
     end
-
+    
     -- 如果是属性卡，设置为已经使用过属性卡
     if self:IsAttributeCard() then
         self.owner:SetHasUsedAttributeCardThisRound(true)
