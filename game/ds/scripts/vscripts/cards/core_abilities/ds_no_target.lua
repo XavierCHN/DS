@@ -39,10 +39,6 @@ function ds_no_target:OnSpellStart(args)
         
         local caster = self:GetCaster()
 
-        for k,v in pairs(caster) do
-            print("caster",k,v)
-        end
-
         local card = caster:GetCurrentActiveCard()
         -- 移除手牌
         caster:RemoveCardAfterUse(card:GetUniqueID())
