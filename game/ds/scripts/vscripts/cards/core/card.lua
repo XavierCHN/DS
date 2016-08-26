@@ -13,6 +13,7 @@ cost = {str=0,agi=0,int=0,mana=0} -- 所需资源，mana为魔法，其余为需
 validate = function(card, ability, args ) end -- 特殊的使用需求，根据不同的类型，可能会传入不同的参数,返回 true 或者 false, "失败原因"
 on_spell_start = function(card, ability, args) end -- 卡牌使用的效果，和正常的 Lua Ability写法一样
 artist = "Xavier" -- 卡牌插画的作者
+can_cast_anytime = false -- 设置为true，可以在回合外使用
 
 -- 不重要的可选
 prefix_type = {"ultimate"} --前缀类别，如 无双，会显示在名字中，在交互中有用，默认为空
@@ -119,7 +120,8 @@ function Card:constructor(id)
     data.high_light = data.high_light or function() return false end
     data.validate = data.validate or function() return true end
     data.on_spell_start = data.on_spell_start or function() end
-    
+    data.can_cast_anytime = data.can_cast_anytime or false
+
     -- 给minion类卡牌的特殊数值
     if data.card_type == CARD_TYPE_MINION then
         data.atk = data.atk or 0
@@ -138,6 +140,11 @@ end
 -- 验证一张牌是否可以使用
 function Card:Validate(ability, args)
     local hero = ability:GetCaster()
+
+    if not GameRules.TurnManager:HasGameStarted() then
+        return false, "game_havent_started_yet"
+    end
+
     -- 通用规则，一回合只能使用一张属性牌
     if self:GetType() == CARD_TYPE_ATTRIBUTE then
         if hero:HasUsedAttributeCardThisRound() then
@@ -151,6 +158,13 @@ function Card:Validate(ability, args)
         return false, reason
     end
 
+    -- 通用规则，必须在自己的回合使用，除非具有can_cast_anytime
+    if not self.data.can_cast_anytime then
+        if GameRules.TurnManager:GetActivePlayer() ~= hero then
+            return false, "cant_use_at_enemy_round"
+        end
+    end
+
     if self.data.validate and type(self.data.validate) == "function" then
         self.data.validate(self, ability, args)
     end
@@ -158,13 +172,17 @@ function Card:Validate(ability, args)
     return true, ""
 end
 
--- 刷新特殊的高亮效果
+-- 刷新卡牌状态
 function Card:UpdateHighLightState()
     
     local state = ""
     local hero = self:GetOwner()
     local special_high_light = self.data.high_light(self)
-    if special_high_light then
+    if not self:CanCastInEnemyRound() then
+        if GameRules.TurnManager:GetActivePlayer() ~= self.owner then
+            state = "State_Greyout"
+        end
+    elseif special_high_light then
         state = special_high_light
     elseif self:GetType() == CARD_TYPE_ATTRIBUTE and not hero:HasUsedAttributeCardThisRound() then
         state = "HighLightAttributeCard"
@@ -241,4 +259,8 @@ end
 
 function Card:GetDrawIndex()
     return self.draw_index
+end
+
+function Card:CanCastInEnemyRound()
+    return self.data.can_cast_anytime
 end

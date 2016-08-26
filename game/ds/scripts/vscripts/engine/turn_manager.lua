@@ -35,6 +35,11 @@ function TurnManager:Run()
 	-- 第一次回合开始
 	self.fp:SetHasUsedAttributeCardThisRound(false)
 
+	self.game_started = true
+
+	Notifications:Top(self.fp:GetPlayerID(),{text="your_round_start", duration=2, style={color="white",["font-size"] = "150px"}})
+	Notifications:Top(self.nfp:GetPlayerID(),{text="enemy_round_start", duration=2, style={color="white",["font-size"] = "150px"}})
+
 	-- 后手玩家等待对方回合时间结束后可以出属性牌+抽牌
 	-- 第二次回合开始
 	Timers:CreateTimer(DS_TURN_TIME, function()
@@ -54,6 +59,9 @@ function TurnManager:Run()
 		CustomGameEventManager:Send_ServerToAllClients("ds_turn_start", {
 			PlayerID = self.nfp:GetPlayerID(),
 		})
+
+		Notifications:Top(self.nfp:GetPlayerID(),{text="your_round_start", duration=2, style={color="white",["font-size"] = "150px"}})
+		Notifications:Top(self.fp:GetPlayerID(),{text="enemy_round_start", duration=2, style={color="white",["font-size"] = "150px"}})
 
 		return DS_TURN_TIME * 2
 	end)
@@ -78,6 +86,9 @@ function TurnManager:Run()
 			PlayerID = self.fp:GetPlayerID(),
 		})
 
+		Notifications:Top(self.fp:GetPlayerID(),{text="your_round_start", duration=2, style={color="white",["font-size"] = "150px"}})
+		Notifications:Top(self.nfp:GetPlayerID(),{text="enemy_round_start", duration=2, style={color="white",["font-size"] = "150px"}})
+
 		return DS_TURN_TIME * 2
 	end)
 end
@@ -98,4 +109,8 @@ end
 
 function TurnManager:GetNoneActivePlayer()
 	return self.NoneActivePlayer
+end
+
+function TurnManager:HasGameStarted()
+	return self.game_started
 end

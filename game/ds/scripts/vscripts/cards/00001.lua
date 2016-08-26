@@ -12,6 +12,7 @@ abilities = {
 	"ds_flying",
 	"ds_lifesteal",
 }
+can_cast_anytime = false
 on_spell_start = function(card, ability, args)
 	local caster = ability:GetCaster()
 

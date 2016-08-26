@@ -10,6 +10,9 @@
 	
 	"addonname"										"刀塔传奇·遗迹英雄传"
 
+    "your_round_start"      "你的回合"
+    "enemy_round_start"     "敌方回合"
+
 	"test_card_title"		"测试标题"
 	"test_card_type"		"测试类别"
 	"test_card_description"	"描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试"
