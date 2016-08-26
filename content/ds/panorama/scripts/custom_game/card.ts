@@ -95,8 +95,7 @@ class Card{
 }
 
 // 手牌类
-class HandCard extends Card
-{
+class HandCard extends Card{
     // 手牌的唯一ID，用以标识这张手牌
     uniqueId:string = "";
 
@@ -138,3 +137,19 @@ class HandCard extends Card
     }
 }
 
+// 卡牌收藏中的牌
+class CollectionCard extends Card{
+    constructor(parent, id, cardType, cardData){
+        super(parent, id, cardType, cardData)
+    }
+}
+
+// 套牌中的牌（小牌）
+class SmallDeckCard{
+    cardId:number;
+    cardCount:number;
+    constructor(cardId, count){
+        this.cardId = cardId;
+        this.cardCount = count;
+    }
+}

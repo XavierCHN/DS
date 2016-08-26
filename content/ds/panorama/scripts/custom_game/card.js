@@ -123,3 +123,19 @@ var HandCard = (function (_super) {
     };
     return HandCard;
 }(Card));
+// 卡牌收藏中的牌
+var CollectionCard = (function (_super) {
+    __extends(CollectionCard, _super);
+    function CollectionCard(parent, id, cardType, cardData) {
+        _super.call(this, parent, id, cardType, cardData);
+    }
+    return CollectionCard;
+}(Card));
+// 套牌中的牌（小牌）
+var SmallDeckCard = (function () {
+    function SmallDeckCard(cardId, count) {
+        this.cardId = cardId;
+        this.cardCount = count;
+    }
+    return SmallDeckCard;
+}());
