@@ -1,6 +1,5 @@
 ds_no_target = class({})
 
-
 function ds_no_target:OnSpellStart(args)
     if IsServer() then
         print("begin to execute ds_no_target OnSpellStart")

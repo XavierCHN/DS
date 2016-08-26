@@ -37,8 +37,8 @@ function TurnManager:Run()
 
 	self.game_started = true
 
-	Notifications:Top(self.fp:GetPlayerID(),{text="your_round_start", duration=2, style={color="white",["font-size"] = "150px"}})
-	Notifications:Top(self.nfp:GetPlayerID(),{text="enemy_round_start", duration=2, style={color="white",["font-size"] = "150px"}})
+	Notifications:Top(self.fp:GetPlayerID(),{text="your_round_start", duration=2, style={color="white",["font-size"] = "100px"}})
+	Notifications:Top(self.nfp:GetPlayerID(),{text="enemy_round_start", duration=2, style={color="white",["font-size"] = "100px"}})
 
 	-- 后手玩家等待对方回合时间结束后可以出属性牌+抽牌
 	-- 第二次回合开始
@@ -60,8 +60,8 @@ function TurnManager:Run()
 			PlayerID = self.nfp:GetPlayerID(),
 		})
 
-		Notifications:Top(self.nfp:GetPlayerID(),{text="your_round_start", duration=2, style={color="white",["font-size"] = "150px"}})
-		Notifications:Top(self.fp:GetPlayerID(),{text="enemy_round_start", duration=2, style={color="white",["font-size"] = "150px"}})
+		Notifications:Top(self.nfp:GetPlayerID(),{text="your_round_start", duration=2, style={color="white",["font-size"] = "100px"}})
+		Notifications:Top(self.fp:GetPlayerID(),{text="enemy_round_start", duration=2, style={color="white",["font-size"] = "100px"}})
 
 		return DS_TURN_TIME * 2
 	end)
@@ -86,8 +86,8 @@ function TurnManager:Run()
 			PlayerID = self.fp:GetPlayerID(),
 		})
 
-		Notifications:Top(self.fp:GetPlayerID(),{text="your_round_start", duration=2, style={color="white",["font-size"] = "150px"}})
-		Notifications:Top(self.nfp:GetPlayerID(),{text="enemy_round_start", duration=2, style={color="white",["font-size"] = "150px"}})
+		Notifications:Top(self.fp:GetPlayerID(),{text="your_round_start", duration=2, style={color="white",["font-size"] = "100px"}})
+		Notifications:Top(self.nfp:GetPlayerID(),{text="enemy_round_start", duration=2, style={color="white",["font-size"] = "100px"}})
 
 		return DS_TURN_TIME * 2
 	end)
