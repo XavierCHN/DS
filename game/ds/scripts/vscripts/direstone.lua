@@ -15,6 +15,7 @@ require 'engine.player_resource'
 require 'engine.hero'
 require 'engine.deck'
 require 'engine.hand'
+require 'engine.battlefield'
 
 require 'cards.core.core'
 
@@ -39,7 +40,7 @@ function DS:Init()
     GameRules.TurnManager = TurnManager()
     GameRules.CardCore = CardCore()
 	GameRules.EventManager = Events()
-
+	GameRules.BattleField = BattleField()
 
     GameRules.CardCore:Start()
     ListenToGameEvent("game_rules_state_change",Dynamic_Wrap(DS, "OnGameRulesStateChanged"),self)

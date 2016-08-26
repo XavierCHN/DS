@@ -13,7 +13,8 @@ cost = {str=0,agi=0,int=0,mana=0} -- 所需资源，mana为魔法，其余为需
 validate = function(card, ability, args ) end -- 特殊的使用需求，根据不同的类型，可能会传入不同的参数,返回 true 或者 false, "失败原因"
 on_spell_start = function(card, ability, args) end -- 卡牌使用的效果，和正常的 Lua Ability写法一样
 artist = "Xavier" -- 卡牌插画的作者
-can_cast_anytime = false -- 设置为true，可以在回合外使用
+cast_time = CARD_CASTTIME_MY_ROUND -- 释放时机，只能在本方回合使用，还包括 CARD_CASTTIME_ENEMY_ROUND, CARD_CASTTIME_BOTH
+cast_position = CARD_CAST_POSITION_ENEMY_FIELD -- 释放地点 CARD_CAST_POSITION_MY_FIELD CARD_CAST_POSITION_ENEMY_FIELD CARD_CAST_POSITION_BOTH
 
 -- 不重要的可选
 prefix_type = {"ultimate"} --前缀类别，如 无双，会显示在名字中，在交互中有用，默认为空
@@ -122,6 +123,15 @@ function Card:constructor(id)
     data.on_spell_start = data.on_spell_start or function() end
     data.can_cast_anytime = data.can_cast_anytime or false
 
+    if self.card_behavior == CARD_BEHAVIOR_POINT then
+        if data.card_type == CARD_TYPE_MINION then
+            data.can_cast_anywhere = data.can_cast_anywhere or CARD_CAST_POSITION_MY_FIELD
+        end
+        if data.card_type == CARD_TYPE_SPELL then
+            data.can_cast_anywhere = data.can_cast_anywhere or CARD_CAST_POSITION_BOTH
+        end
+    end
+
     -- 给minion类卡牌的特殊数值
     if data.card_type == CARD_TYPE_MINION then
         data.atk = data.atk or 0
@@ -158,10 +168,22 @@ function Card:Validate(ability, args)
         return false, reason
     end
 
-    -- 通用规则，必须在自己的回合使用，除非具有can_cast_anytime
-    if not self.data.can_cast_anytime then
-        if GameRules.TurnManager:GetActivePlayer() ~= hero then
-            return false, "cant_use_at_enemy_round"
+    -- 通用规则，是否能在我方或者敌方回合使用
+    if not self:CanCastAtEnemyRound() and GameRules.TurnManager:GetActivePlayer() ~= hero then
+        return false, "cant_use_at_enemy_round"
+    end
+
+    if not self:CanCastAtMyRound() and GameRules.TurnManager:GetActivePlayer() == hero then
+        return false, "cant_use_at_my_round"
+    end
+
+    -- 通用规则，释放位置需求
+    if ability:GetAbilityName() == "ds_point" then
+        if not self:CanCastAtEnemyField() and not GameRules.BattleField:IsMyField(hero, args.target_points[1]) then
+            return false, "cant_cast_at_enemy_field"
+        end
+        if not self:CanCastAtMyField() and GameRules.BattleField:IsMyField(hero, args.target_points[1]) then
+            return false, "cant_cast_at_my_field"
         end
     end
 
@@ -223,13 +245,11 @@ end
 function Card:OnUseCard(ability, args)
     local card_func = self.data.on_spell_start
     if card_func and type(card_func) == "function" then
-        print(string.format("processing card effect CARDID[%s] -> OnUseCard", self:GetID()))
         card_func(self, ability, args)
     end
 
     -- 如果是属性卡，设置为已经使用过属性卡
     if self:IsAttributeCard() then
-        print "an attribute card is used!"
         self.owner:SetHasUsedAttributeCardThisRound(true)
     end
 end
@@ -267,10 +287,22 @@ function Card:GetDrawIndex()
     return self.draw_index
 end
 
-function Card:CanCastInEnemyRound()
-    return self.data.can_cast_anytime
-end
-
 function Card:IsAttributeCard()
     return self:GetType() == CARD_TYPE_ATTRIBUTE
+end
+
+function Card:CanCastAtEnemyRound()
+    return (self.data.cast_time == CARD_CASTTIME_ENEMY_ROUND or self.data.cast_time == CARD_CASTTIME_BOTH)
+end
+
+function Card:CanCastAtMyRound()
+    return (self.data.cast_time == CARD_CASTTIME_MY_ROUND or self.data.cast_time == CARD_CASTTIME_BOTH)
+end
+
+function Card:CanCastAtMyField()
+    return (self.data.cast_position == CARD_CAST_POSITION_MY_FIELD or self.data.cast_position == CARD_CAST_POSITION_BOTH)
+end
+
+function Card:CanCastAtEnemyField()
+    return (self.data.cast_position == CARD_CAST_POSITION_ENEMY_FIELD or self.data.cast_position == CARD_CAST_POSITION_BOTH)
 end
