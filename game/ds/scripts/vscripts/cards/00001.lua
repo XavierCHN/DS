@@ -12,8 +12,9 @@ abilities = {
 	"ds_flying",
 	"ds_lifesteal",
 }
-on_spell_start = function(self)
+on_spell_start = function(self, args)
 	local caster = self:GetCaster()
+	print("caster:GetAttributeStrength()0",caster:GetAttributeStrength())
 	caster:SetAttributeStrength(caster:GetAttributeStrength() + 1)
 	caster:SetMaxManaPool(caster:GetMaxManaPool() + 1)
 	caster:SetManaPool(caster:GetManaPool() + 1)

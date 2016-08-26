@@ -11,7 +11,7 @@ expansion = 0 -- 版本号，默认为0，初始包
 high_light = function(card) return "HighLightGolden" end -- 高亮，返回高亮的css类
 cost = {str=0,agi=0,int=0,mana=0} -- 所需资源，mana为魔法，其余为需要满足的属性需求
 validate = function(self, vPoint ) end -- 特殊的使用需求，根据不同的类型，可能会传入不同的参数
-on_spell_start = function(self) end -- 卡牌使用的效果，和正常的 Lua Ability写法一样
+on_spell_start = function(self, args) end -- 卡牌使用的效果，和正常的 Lua Ability写法一样
 artist = "Xavier" -- 卡牌插画的作者
 
 -- 不重要的可选

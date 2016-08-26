@@ -23,7 +23,7 @@
   "ds_no_target"
   {
     "BaseClass"         "ability_lua"
-    "AbilityBehavior"   "DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+    "AbilityBehavior"   "DOTA_ABILITY_BEHAVIOR_NO_TARGET"
     "ScriptFile"        "cards/core_abilities/ds_no_target"
   }
 
