@@ -12,10 +12,12 @@ abilities = {
 	"ds_flying",
 	"ds_lifesteal",
 }
-on_spell_start = function(self, args)
-	local caster = self:GetCaster()
-	print("caster:GetAttributeStrength()0",caster:GetAttributeStrength())
+on_spell_start = function(card, ability, args)
+	local caster = ability:GetCaster()
+
 	caster:SetAttributeStrength(caster:GetAttributeStrength() + 1)
 	caster:SetMaxManaPool(caster:GetMaxManaPool() + 1)
 	caster:SetManaPool(caster:GetManaPool() + 1)
+
+	caster:SetHasUsedAttributeCardThisRound(true)
 end

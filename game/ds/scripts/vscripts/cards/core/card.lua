@@ -10,8 +10,8 @@ card_behavior = CARD_BEHAVIOR_NO_TARGET -- 默认为 CARD_BEHAVIOR_NO_TARGET
 expansion = 0 -- 版本号，默认为0，初始包
 high_light = function(card) return "HighLightGolden" end -- 高亮，返回高亮的css类
 cost = {str=0,agi=0,int=0,mana=0} -- 所需资源，mana为魔法，其余为需要满足的属性需求
-validate = function(self, vPoint ) end -- 特殊的使用需求，根据不同的类型，可能会传入不同的参数
-on_spell_start = function(self, args) end -- 卡牌使用的效果，和正常的 Lua Ability写法一样
+validate = function(card, ability, args ) end -- 特殊的使用需求，根据不同的类型，可能会传入不同的参数,返回 true 或者 false, "失败原因"
+on_spell_start = function(card, ability, args) end -- 卡牌使用的效果，和正常的 Lua Ability写法一样
 artist = "Xavier" -- 卡牌插画的作者
 
 -- 不重要的可选
@@ -136,7 +136,7 @@ function Card:constructor(id)
 end
 
 -- 验证一张牌是否可以使用
-function Card:Validate(ability)
+function Card:Validate(ability, args)
     local hero = ability:GetCaster()
     -- 通用规则，一回合只能使用一张属性牌
     if self:GetType() == CARD_TYPE_ATTRIBUTE then
@@ -150,6 +150,12 @@ function Card:Validate(ability)
     if not meet then
         return false, reason
     end
+
+    if self.data.validate and type(self.data.validate) == "function" then
+        self.data.validate(self, ability, args)
+    end
+
+    return true, ""
 end
 
 -- 刷新特殊的高亮效果
@@ -196,6 +202,13 @@ function Card:MeetCostRequirement()
     return true
 end
 
+function Card:OnUseCard(ability, args)
+    local card_func = self.data.on_spell_start
+    if card_func and type(card_func) == "function" then
+        print(string.format("processing card effect CARDID[%s] -> OnUseCard", self:GetID()))
+        card_func(self, ability, args)
+    end
+end
 
 function Card:GetCardBehavior()
     return self.data.card_behavior

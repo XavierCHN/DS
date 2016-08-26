@@ -7,6 +7,7 @@ require 'settings'
 
 require 'libraries.timers'
 require 'libraries.playertables'
+require 'libraries.notifications'
 
 require 'engine.events'
 require 'engine.turn_manager'
