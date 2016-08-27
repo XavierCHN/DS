@@ -55,11 +55,3 @@ end
 function BattleLine:GetRight()
     return self.right_corner
 end
-
--- 对于在场上产生实体的卡牌，则不直接将牌加入到坟场
-function BattleField:AddCard(card, entity)
-    -- 双方共享一个战场
-    table.insert(self.cards, card)
-
-    card:SetAssiciatedEntity(entity)
-end

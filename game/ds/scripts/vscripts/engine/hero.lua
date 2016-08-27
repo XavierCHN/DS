@@ -9,17 +9,26 @@ function CDOTA_BaseNPC_Hero:InitDSHero()
 	self:FindAbilityByName('ds_point'):SetLevel(1)
 	self:FindAbilityByName('ds_single_target'):SetLevel(1)
 
-	self.hand = Hand(self)
 	self.deck = Deck(self)
+	self.hand = Hand(self)
 	self.graveyard = GraveYard(self)
 end
 
+function CDOTA_BaseNPC_Hero:GetCardList()
+	if IsInToolsMode() then
+		return DEBUG_CARD_LIST
+	else
+		return self.card_list
+	end
+end
+
+-- 抽指定数量的牌
 function CDOTA_BaseNPC_Hero:DrawCard(numCards)
 	for i = 1, numCards do
-		local card = self.deck:Pop()
+		local card = self.deck:GetFirstCard()
 		numCards = numCards - 1
 		if card then
-			self:MoveCardInto(card, self.hand)
+			self:DrawTheCard(card)
 			GameRules.EventManager:Emit("OnPlayerDrawCard", {
 				Player = self,
 				CardID = card:GetID(),
@@ -34,8 +43,30 @@ function CDOTA_BaseNPC_Hero:DrawCard(numCards)
 	end
 end
 
-function CDOTA_BaseNPC_Hero:MoveCardInto(card, destination)
+-- 弃牌：将牌置入坟场
+function CDOTA_BaseNPC_Hero:DiscardCard(uniqueId)
+	
+	local card = self.hand:GetCardByUniqueId(uniqueId)
+
+	GameRules.EventManager:Emit("OnPlayerDiscardCard",{
+		Player = self,
+		CardID = card:GetID(),
+		Index = idx,
+		Card = card,
+	})
+
+	self:RemoveCardByUniqueId( uniqueId )
+end
+
+-- 抽指定的某一张牌
+function CDOTA_BaseNPC_Hero:DrawTheCard(card)
+	self:MoveCardInto(self.deck, card, self.hand)
+end
+
+function CDOTA_BaseNPC_Hero:MoveCardInto(source, card, destination)
+	source:RemoveCard(card)
 	destination:AddCard(card)
+	card:SetPosition(destination)
 end
 
 function CDOTA_BaseNPC_Hero:SetHasUsedAttributeCardThisRound(t)
@@ -62,7 +93,6 @@ function CDOTA_BaseNPC_Hero:RemoveCardByUniqueId( uniqueId )
 	self.hand:RemoveCardByUniqueId(uniqueId)
 end
 
--- 使用牌后移除
 function CDOTA_BaseNPC_Hero:RemoveCardAfterUse( uniqueId )
 	
 	--====================================================
@@ -79,20 +109,7 @@ function CDOTA_BaseNPC_Hero:RemoveCardAfterUse( uniqueId )
 	self:RemoveCardByUniqueId( uniqueId )
 end
 
--- 弃牌
-function CDOTA_BaseNPC_Hero:DiscardCard(uniqueId)
-	
-	local card = self.hand:GetCardByUniqueId(uniqueId)
 
-	GameRules.EventManager:Emit("OnPlayerDiscardCard",{
-		Player = self,
-		CardID = card:GetID(),
-		Index = idx,
-		Card = card,
-	})
-
-	self:RemoveCardByUniqueId( uniqueId )
-end
 
 function CDOTA_BaseNPC_Hero:FillManaPool()
 	self.mp = self.mmp
@@ -148,4 +165,8 @@ end
 
 function CDOTA_BaseNPC_Hero:GetDeck()
 	return self.deck
+end
+
+function CDOTA_BaseNPC_Hero:SetCardList(card_list)
+	self.card_list = card_list or {}
 end

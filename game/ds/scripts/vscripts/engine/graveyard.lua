@@ -13,7 +13,6 @@ function GraveYard:AddCard(card)
     self.card_index = self.card_index + 1
 
     self.cards[card:GetUniqueId()] = card
-    -- card:SetGraveYardIndex(self.card_index)
 
     self:UpdateToClient()
 end

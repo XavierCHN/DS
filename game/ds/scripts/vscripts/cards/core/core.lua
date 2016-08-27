@@ -1,6 +1,5 @@
 require 'cards.core.settings'
 require 'cards.core.enums'
-require 'cards.core.card'
 
 -- 卡牌交互类
 if CardCore == nil then

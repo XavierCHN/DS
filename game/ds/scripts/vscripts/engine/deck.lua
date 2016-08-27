@@ -16,11 +16,13 @@ if Deck == nil then Deck = class({}) end
 function Deck:constructor(player)
     self.cards = {}
     self.player = player
+    local card_list = self.player:GetCardList()
     for _, card in pairs(card_list) do
         for i =1, card.cc do
             -- 卡牌的创建入口 
             local card = Card(card.id)
-            card:SetOwner(player)
+            card:SetOwner(player) -- 初始化设置卡牌的所有者
+            card:SetPosition(self) -- 初始化设置卡牌的位置为玩家的套牌
             self:AddCard(card)
         end
     end
@@ -40,8 +42,8 @@ function Deck:Shuffle()
 end
 
 -- 抽出最上一张卡并返回他，把他从套牌中移除
-function Deck:Pop()
-    return table.remove(self.cards, 1)
+function Deck:GetFirstCard()
+    return self.cards[1]
 end
 
 function Deck:AddCard(card)

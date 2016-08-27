@@ -1,7 +1,10 @@
 TurnManager = class({})
 
-function TurnManager:Init()
+function TurnManager:Start()
 	self.turnCount = 0
+
+	self:SelectFirstActivePlayer()
+	self:ShufflePlayerDeckAndDrawInitialCards()
 end
 
 function TurnManager:SelectFirstActivePlayer()

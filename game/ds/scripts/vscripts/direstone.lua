@@ -2,6 +2,7 @@ if DS == nil then DS = class({}) end
 
 require 'utility_functions'
 require 'utils.json'
+require 'utils.debug_card_list'
 
 require 'settings'
 
@@ -12,10 +13,13 @@ require 'libraries.notifications'
 require 'engine.events'
 require 'engine.turn_manager'
 require 'engine.player_resource'
+
+require 'engine.card'
 require 'engine.hero'
 require 'engine.deck'
 require 'engine.hand'
 require 'engine.battlefield'
+require 'engine.graveyard'
 
 require 'cards.core.core'
 
@@ -59,7 +63,6 @@ function DS:OnGameRulesStateChanged()
                     local hero = player:GetAssignedHero()
                     if hero then
                         table.insert(GameRules.AllHeroes, hero)
-                        hero:InitDSHero()
                     end
                 end
             end
@@ -67,7 +70,6 @@ function DS:OnGameRulesStateChanged()
             -- 如果是我自己一个人加入了游戏
             -- 那么随便创建一个电脑
             if TableCount(GameRules.AllHeroes) == 1 then
-                Say(nil, "Why I'm always lonely?" .. GameRules.AllHeroes[1]:GetPlayerID(), false)
                 SendToServerConsole('dota_create_fake_clients')
                 Timers:CreateTimer(2, function()
                     local set = false
@@ -81,11 +83,7 @@ function DS:OnGameRulesStateChanged()
                                 p:SetTeam(DOTA_TEAM_BADGUYS)
                                 h:SetTeam(DOTA_TEAM_BADGUYS)
                                 h:InitDSHero()
-                                
-                                GameRules.TurnManager:Init()
-                                GameRules.TurnManager:SelectFirstActivePlayer()
-                                GameRules.TurnManager:ShufflePlayerDeckAndDrawInitialCards()
-                                
+                                GameRules.TurnManager:Start()
                                 set = true
                             end
                         end
@@ -93,15 +91,15 @@ function DS:OnGameRulesStateChanged()
                 
                 end)
             else
-                GameRules.TurnManager:Init()
-                GameRules.TurnManager:SelectFirstActivePlayer()
-                GameRules.TurnManager:ShufflePlayerDeckAndDrawInitialCards()
+                for _, hero in pairs(GameRules.AllHeroes) do
+                    hero:InitDSHero()
+                end
+                GameRules.TurnManager:Start()
             end
         end)
     end
     
     if newState == DOTA_GAMERULES_STATE_GAME_IN_PROGRESS then
-        print("now game in progress")
         GameRules.TurnManager:Run()
     end
 end

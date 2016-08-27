@@ -100,10 +100,6 @@ if Card == nil then Card = class({}) end
 function Card:constructor(id)
     local data = GameRules.AllCards[id]
     
-    if data == nil then
-        error(string.format("Invalid card id detected %s", id))
-    end
-    
     -- 初始化各种卡牌数据
     self.ID = id
     self.UniqueID = DoUniqueString("")
@@ -307,6 +303,6 @@ function Card:CanCastAtEnemyField()
     return (self.data.cast_position == CARD_CAST_POSITION_ENEMY_FIELD or self.data.cast_position == CARD_CAST_POSITION_BOTH)
 end
 
-function Card:SetAssociatedEntity(ent)
-    self.bound_entity = ent
+function Card:SetPosition(pos)
+    self.position = pos
 end
