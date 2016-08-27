@@ -1,18 +1,5 @@
 if Deck == nil then Deck = class({}) end
 
--- 使用卡表和拥有卡组的英雄来初始化一个牌组
--- 卡表使用如下结构
---[[
-    {
-        id="00001",
-        cc=3, -- 数量
-    },
-    {
-        id="00002",
-        cc=1,
-    },
-    -- ...
-]]
 function Deck:constructor(player)
     self.cards = {}
     self.player = player
@@ -59,4 +46,10 @@ function Deck:UpdateToClient()
         Player = self.player:GetPlayerID(),
         DeckCount = TableCount(self.cards),
     })
+end
+
+function Deck:RemoveCard(card)
+    for k, _card in pairs(self.cards) do
+        if _card == card then self.cards[k] = nil break end
+    end
 end

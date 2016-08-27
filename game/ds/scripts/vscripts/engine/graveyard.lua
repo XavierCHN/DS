@@ -30,3 +30,9 @@ function GraveYard:UpdateToClient()
 
     CustomGameEventManager:Send_ServerToAllClients(self.player, "ds_update_grave_yard", {})
 end
+
+function GraveYard:RemoveCard(card)
+    for k, _card in pairs(self.cards) do
+        if _card == card then self.cards[k] = nil break end
+    end
+end

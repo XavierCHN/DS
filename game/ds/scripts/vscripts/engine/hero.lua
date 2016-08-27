@@ -109,8 +109,6 @@ function CDOTA_BaseNPC_Hero:RemoveCardAfterUse( uniqueId )
 	self:RemoveCardByUniqueId( uniqueId )
 end
 
-
-
 function CDOTA_BaseNPC_Hero:FillManaPool()
 	self.mp = self.mmp
 end

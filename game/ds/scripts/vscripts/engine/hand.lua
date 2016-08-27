@@ -56,7 +56,8 @@ end
 function Hand:RemoveCard(card)
     for k, _card in pairs(self.cards) do
         if _card == card then
-            self.cards[k] = nil
+            self.cards[k] = nil 
+            break 
         end
     end
 end
