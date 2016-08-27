@@ -21,11 +21,8 @@ end
 -- 初始化玩家的卡组，并抽取初始手牌
 function TurnManager:ShufflePlayerDeckAndDrawInitialCards()
 	for _, hero in pairs(GameRules.AllHeroes) do
-		local player_id = hero:GetPlayerID()
-		local card_list = PlayerResource:GetPlayerCardList(player_id)
-		local deck = Deck(card_list, hero)
-		deck:Shuffle()
-		hero:SetDeck(deck)
+		print(hero:GetPlayerID())
+		hero:GetDeck():Shuffle()
 		hero:DrawCard(NUM_INIT_CARD_COUNT)
 	end
 end
@@ -51,14 +48,6 @@ function TurnManager:Run()
 		self.nfp:FillManaPool() -- 回满魔法池
 		self.nfp:SetHasUsedAttributeCardThisRound(false) -- 可以出属性牌
 
-		GameRules.EventManager:Emit("OnTurnStart", {
-			Player = self.nfp
-		})
-
-		GameRules.EventManager:Emit("OnTurnEnd", {
-			Player = self.fp
-		})
-
 		CustomGameEventManager:Send_ServerToAllClients("ds_turn_start", {
 			PlayerID = self.nfp:GetPlayerID(),
 		})
@@ -76,14 +65,6 @@ function TurnManager:Run()
 		self.fp:DrawCard(1) -- 抽一张牌
 		self.fp:FillManaPool() -- 回满魔法池
 		self.fp:SetHasUsedAttributeCardThisRound(false) -- 可以出属性牌
-
-		GameRules.EventManager:Emit("OnTurnStart", {
-			Player = self.fp
-		})
-
-		GameRules.EventManager:Emit("OnTurnEnd", {
-			Player = self.nfp
-		})
 
 		CustomGameEventManager:Send_ServerToAllClients("ds_turn_start", {
 			PlayerID = self.fp:GetPlayerID(),

@@ -33,6 +33,9 @@ end
 
 function GraveYard:RemoveCard(card)
     for k, _card in pairs(self.cards) do
-        if _card == card then self.cards[k] = nil break end
+        if _card == card then 
+            table.remove(self.cards, k)
+            break 
+        end
     end
 end

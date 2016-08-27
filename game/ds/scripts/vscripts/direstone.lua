@@ -1,19 +1,18 @@
 if DS == nil then DS = class({}) end
 
+require 'enums'
+require 'const'
+
 require 'utility_functions'
 require 'utils.json'
 require 'utils.debug_card_list'
-
-require 'settings'
 
 require 'libraries.timers'
 require 'libraries.playertables'
 require 'libraries.notifications'
 
-require 'engine.events'
 require 'engine.turn_manager'
 require 'engine.player_resource'
-
 require 'engine.card'
 require 'engine.hero'
 require 'engine.deck'
@@ -21,9 +20,10 @@ require 'engine.hand'
 require 'engine.battlefield'
 require 'engine.graveyard'
 
-require 'cards.core.core'
-
 function DS:Init()
+
+    GameRules.AllCreatedCards = {}
+
     local mode = GameRules:GetGameModeEntity()
     
     mode:SetFogOfWarDisabled(true)
@@ -40,14 +40,26 @@ function DS:Init()
     GameRules.mode = mode
     GameRules.GameMode = self
     
-    -- 初始化各种数据结构
     GameRules.TurnManager = TurnManager()
-    GameRules.CardCore = CardCore()
-    GameRules.EventManager = Events()
-    GameRules.BattleField = BattleField()
+    GameRules.BattleField = BattleField() -- todo 重新考虑战场的逻辑
     
-    GameRules.CardCore:Start()
     ListenToGameEvent("game_rules_state_change", Dynamic_Wrap(DS, "OnGameRulesStateChanged"), self)
+    CustomGameEventManager:RegisterListener("ds_player_click_card",Dynamic_Wrap(DS, "OnPlayerClickCard"))
+end
+
+function DS:OnPlayerClickCard(args)
+    local playerID = args.PlayerID
+    local player = PlayerResource:GetPlayer(playerID)
+    local hero = player:GetAssignedHero()
+    local uid = args.UniqueId
+    local card = GetCardByUniqueID(uid)
+    local ccb = card:GetCardBehavior()
+
+    hero:SetCurrentActivateCard(card)
+
+    CustomGameEventManager:Send_ServerToPlayer(player,"ds_execute_card_proxy",{
+        behavior = ccb,
+    })
 end
 
 function DS:OnGameRulesStateChanged()
@@ -82,13 +94,15 @@ function DS:OnGameRulesStateChanged()
                                 table.insert(GameRules.AllHeroes, h)
                                 p:SetTeam(DOTA_TEAM_BADGUYS)
                                 h:SetTeam(DOTA_TEAM_BADGUYS)
-                                h:InitDSHero()
-                                GameRules.TurnManager:Start()
                                 set = true
                             end
                         end
                     end
-                
+                    
+                    for _, hero in pairs(GameRules.AllHeroes) do
+                        hero:InitDSHero()
+                    end
+                    GameRules.TurnManager:Start()
                 end)
             else
                 for _, hero in pairs(GameRules.AllHeroes) do

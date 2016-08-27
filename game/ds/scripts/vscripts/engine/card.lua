@@ -105,6 +105,9 @@ function Card:constructor(id)
     self.UniqueID = DoUniqueString("")
     self.HighLightState = ""
     self.draw_index = -1
+
+    -- 所有创建的卡牌都储存在GameRules.AllCreatedCards中
+    GameRules.AllCreatedCards[self.UniqueID] = self
     
     data.card_type = data.card_type or CARD_TYPE_SPELL
     data.card_behavior = data.card_behavior or CARD_BEHAVIOR_NO_TARGET
@@ -165,11 +168,12 @@ function Card:Validate(ability, args)
     end
     
     -- 通用规则，是否能在我方或者敌方回合使用
-    if not self:CanCastAtEnemyRound() and GameRules.TurnManager:GetActivePlayer() ~= hero then
+    if not self:CanCastInEnemyRound() and GameRules.TurnManager:GetActivePlayer() ~= hero then
+        print(self:CanCastInEnemyRound() , GameRules.TurnManager:GetActivePlayer() ~= hero)
         return false, "cant_use_at_enemy_round"
     end
     
-    if not self:CanCastAtMyRound() and GameRules.TurnManager:GetActivePlayer() == hero then
+    if not self:CanCastInMyRound() and GameRules.TurnManager:GetActivePlayer() == hero then
         return false, "cant_use_at_my_round"
     end
     
@@ -287,11 +291,11 @@ function Card:IsAttributeCard()
     return self:GetType() == CARD_TYPE_ATTRIBUTE
 end
 
-function Card:CanCastAtEnemyRound()
+function Card:CanCastInEnemyRound()
     return (self.data.cast_time == CARD_CASTTIME_ENEMY_ROUND or self.data.cast_time == CARD_CASTTIME_BOTH)
 end
 
-function Card:CanCastAtMyRound()
+function Card:CanCastInMyRound()
     return (self.data.cast_time == CARD_CASTTIME_MY_ROUND or self.data.cast_time == CARD_CASTTIME_BOTH)
 end
 

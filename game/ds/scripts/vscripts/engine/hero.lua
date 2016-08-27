@@ -25,15 +25,10 @@ end
 -- 抽指定数量的牌
 function CDOTA_BaseNPC_Hero:DrawCard(numCards)
 	for i = 1, numCards do
-		local card = self.deck:GetFirstCard()
-		numCards = numCards - 1
+		
+		local card = self.deck:Pop()
 		if card then
-			self:DrawTheCard(card)
-			GameRules.EventManager:Emit("OnPlayerDrawCard", {
-				Player = self,
-				CardID = card:GetID(),
-				Card = card,
-			})
+			self.hand:AddCard(card)
 		else
 			-- 在测试阶段，不因为想要抽牌的时候抽不到牌的规则而输掉比赛
 			if not IsInToolsMode() then
@@ -45,22 +40,8 @@ end
 
 -- 弃牌：将牌置入坟场
 function CDOTA_BaseNPC_Hero:DiscardCard(uniqueId)
-	
 	local card = self.hand:GetCardByUniqueId(uniqueId)
-
-	GameRules.EventManager:Emit("OnPlayerDiscardCard",{
-		Player = self,
-		CardID = card:GetID(),
-		Index = idx,
-		Card = card,
-	})
-
 	self:RemoveCardByUniqueId( uniqueId )
-end
-
--- 抽指定的某一张牌
-function CDOTA_BaseNPC_Hero:DrawTheCard(card)
-	self:MoveCardInto(self.deck, card, self.hand)
 end
 
 function CDOTA_BaseNPC_Hero:MoveCardInto(source, card, destination)
@@ -69,44 +50,20 @@ function CDOTA_BaseNPC_Hero:MoveCardInto(source, card, destination)
 	card:SetPosition(destination)
 end
 
+function CDOTA_BaseNPC_Hero:SetCurrentActivateCard(card)
+	self.current_active_card = card
+end
+
+function CDOTA_BaseNPC_Hero:GetCurrentActiveCard()
+	return self.current_active_card
+end
+
 function CDOTA_BaseNPC_Hero:SetHasUsedAttributeCardThisRound(t)
 	self.has_used_attribute_card = t
 end
 
 function CDOTA_BaseNPC_Hero:HasUsedAttributeCardThisRound()
 	return self.has_used_attribute_card
-end
-
-function CDOTA_BaseNPC_Hero:SetCurrentActivateCardByUniqueId(uniqueId)
-	self.hdi = uniqueId
-end
-
-function CDOTA_BaseNPC_Hero:GetCurrentActiveCard()
-	return self:GetHandByUniqueId(self.hdi)
-end
-
-function CDOTA_BaseNPC_Hero:GetHandByUniqueId( uniqueId )
-	return self.hand:GetCardByUniqueId(uniqueId)
-end
-
-function CDOTA_BaseNPC_Hero:RemoveCardByUniqueId( uniqueId )
-	self.hand:RemoveCardByUniqueId(uniqueId)
-end
-
-function CDOTA_BaseNPC_Hero:RemoveCardAfterUse( uniqueId )
-	
-	--====================================================
-	-- todo 更新卡牌进入战场的逻辑
-	--====================================================
-	
-	local card = self.hand:GetCardByUniqueId(uniqueId)
-	GameRules.EventManager:Emit("OnPlayerUsedCard",{
-		Player = self,
-		CardID = card:GetID(),
-		Index = idx,
-		Card = card,
-	})
-	self:RemoveCardByUniqueId( uniqueId )
 end
 
 function CDOTA_BaseNPC_Hero:FillManaPool()

@@ -5,3 +5,7 @@ function TableCount(t)
     end
     return c
 end
+
+function GetCardByUniqueID(uid)
+    return GameRules.AllCreatedCards[uid]
+end

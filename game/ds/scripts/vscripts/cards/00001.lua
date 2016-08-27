@@ -7,7 +7,7 @@ cost = {}
 prefix_type = {"basic"}
 sub_type = {"test"}
 artist = "Xavier"
-can_cast_anytime = false
+cast_time = CARD_CASTTIME_MY_ROUND
 
 on_spell_start = function(card, ability, args)
 	local caster = ability:GetCaster()
