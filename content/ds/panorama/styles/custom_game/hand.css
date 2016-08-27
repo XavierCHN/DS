@@ -1,146 +1,143 @@
-.HandRoot{
-    width:100%;
-    height:100%;
+.HandRoot {
+    width: 100%;
+    height: 100%;
 }
 
-#HandCardContainerBackground{
+#HandCardContainerBackground {
     vertical-align: bottom;
-    width:100%;
-    min-height:210px;
-    padding-top:15px;
+    width: 100%;
+    min-height: 210px;
+    padding-top: 15px;
 }
 
-#HandCardContainer{
+#HandCardContainer {
     vertical-align: bottom;
-    horizontal-align:center;
-    flow-children:right;
+    horizontal-align: center;
+    flow-children: right;
     margin-bottom: 12px;
 }
 
 .CardRoot:hover {
-    tranform:translateY(30);
-    pre-transform-scale2d:1;
+    tranform: translateY(30);
+    pre-transform-scale2d: 1;
     z-index: 1;
 }
 
 .CardRoot {
-    background-color:gradient( linear, 0% 0%, 0% 100%, from( #FF4D4C ), color-stop( 0.3, #EA5E5E ), color-stop( 0.6, #7B3737 ), to( #5C3230 ) );
-
+    background-color: gradient( linear, 0% 0%, 0% 100%, from( #FF4D4C), color-stop( 0.3, #EA5E5E), color-stop( 0.6, #7B3737), to( #5C3230));
     vertical-align: bottom;
-    margin-left:-50px;
-
+    margin-left: -50px;
     width: 200px;
-	height: 280px;
-	border-radius: 18px;
-
+    height: 280px;
+    border-radius: 18px;
     transition-property: transform opacity;
-    transition-duration:0.3;
+    transition-duration: 0.3;
     transition-timing-function: ease-in-out;
-    pre-transform-scale2d:0.7;
+    pre-transform-scale2d: 0.7;
     z-index: 0;
 }
 
-.CardRoot .State_Greyout{
+.CardRoot .State_Greyout {
     wash-color: grey;
 }
 
-.CardRoot .FadeOut{
-    opacity:0;
+.CardRoot .FadeOut {
+    opacity: 0;
 }
 
-#Background{
-    margin:8px;
-    border-radius:10px;
-    flow-children:down;
+#Background {
+    margin: 8px;
+    border-radius: 10px;
+    flow-children: down;
 }
 
-#TopCardSection{
-    width:184px;
-    height:184px;
+#TopCardSection {
+    width: 184px;
+    height: 184px;
 }
 
-#CardIllusion{
-    width:184px;
-    height:184px;
+#CardIllusion {
+    width: 184px;
+    height: 184px;
     vertical-align: bottom;
-    horizontal-align:center;
+    horizontal-align: center;
 }
 
-#CardIllusionCompiler{
+#CardIllusionCompiler {
     background-image:url("file://{resources}/images/custom_game/cards/00001.png");
 }
 
-#CardTitle{
-    width:100%;
-    height:50px;
+#CardTitle {
+    width: 100%;
+    height: 50px;
     vertical-align: bottom;
 }
 
-#CardTitleLabels{
-    flow-children:down;
-    padding-left:10px;
-    padding:4px;
+#CardTitleLabels {
+    flow-children: down;
+    padding-left: 10px;
+    padding: 4px;
 }
 
-#CardTitleLabels Label{
-    color:black;
+#CardTitleLabels Label {
+    color: black;
 }
 
-#CardName{
-    font-size:18px;
+#CardName {
+    font-size: 18px;
     font-weight: bold;
 }
 
-#CardType{
-    font-size:13px;
+#CardType {
+    font-size: 13px;
 }
 
-
-#CardTitleBackground{
-    width:100%;
-    height:100%;
-    background-color:#FFFFFF;
-    opacity:0.4;
+#CardTitleBackground {
+    width: 100%;
+    height: 100%;
+    background-color: #FFFFFF;
+    opacity: 0.4;
 }
 
-#BottomCardSection{
-    width:100%;
-    height:80px;
-    background-color:grey;
-    padding:5px;
+#BottomCardSection {
+    width: 100%;
+    height: 80px;
+    background-color: grey;
+    padding: 5px;
 }
 
-#CardDescription{
-    color:black;
-    font-size:12px;
+#CardDescription {
+    color: black;
+    font-size: 12px;
 }
 
-#CardDescription .Empty{
+#CardDescription .Empty {
     visibility: collapse;
 }
 
-#CardLore{
-    color:black;
-    font-size:10px;
-    vertical-align:bottom;
-    margin-bottom:10px;
+#CardLore {
+    color: black;
+    font-size: 10px;
+    vertical-align: bottom;
+    margin-bottom: 10px;
 }
 
-#CardLore .Empty{
+#CardLore .Empty {
     visibility: collapse;
 }
 
-#CardMessage{
-    background-color:lawngreen;
-    vertical-align:bottom;
-    margin-bottom:2px;
-    width:100%;
+#CardMessage {
+    background-color: lawngreen;
+    vertical-align: bottom;
+    margin-bottom: 2px;
+    width: 100%;
 }
 
-#CardMessage Label{
-    color:black;
-    font-size:8px;
+#CardMessage Label {
+    color: black;
+    font-size: 8px;
 }
-#IllusionArtist{
-    horizontal-align:right;
+
+#IllusionArtist {
+    horizontal-align: right;
 }
