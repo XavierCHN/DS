@@ -13,14 +13,15 @@ if Deck == nil then Deck = class({}) end
     },
     -- ...
 ]]
-function Deck:constructor(card_list, owner)
+function Deck:constructor(player)
     self.cards = {}
-    self.owner = owner
+    self.player = player
     for _, card in pairs(card_list) do
         for i =1, card.cc do
+            -- 卡牌的创建入口 
             local card = Card(card.id)
-            card:SetOwner(owner)
-            table.insert(self.cards, card)
+            card:SetOwner(player)
+            self:AddCard(card)
         end
     end
 end
@@ -38,7 +39,22 @@ function Deck:Shuffle()
     end
 end
 
--- 抽出并返回最上一张卡
+-- 抽出最上一张卡并返回他，把他从套牌中移除
 function Deck:Pop()
     return table.remove(self.cards, 1)
+end
+
+function Deck:AddCard(card)
+    table.insert(self.cards, card)
+
+    self:UpdateToClient()
+end
+
+-- 更新套牌数据到客户端
+function Deck:UpdateToClient()
+    -- 对于套牌，只更新数量到所有客户端
+    CustomGameEventManager:Send_ServerToAllClients("ds_card_changed", {
+        Player = self.player:GetPlayerID(),
+        DeckCount = TableCount(self.cards),
+    })
 end

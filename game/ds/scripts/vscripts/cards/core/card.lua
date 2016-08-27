@@ -306,3 +306,7 @@ end
 function Card:CanCastAtEnemyField()
     return (self.data.cast_position == CARD_CAST_POSITION_ENEMY_FIELD or self.data.cast_position == CARD_CAST_POSITION_BOTH)
 end
+
+function Card:SetAssociatedEntity(ent)
+    self.bound_entity = ent
+end

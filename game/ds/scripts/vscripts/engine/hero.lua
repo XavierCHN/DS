@@ -1,41 +1,41 @@
-function CDOTA_BaseNPC_Hero:GetHand()
-	return self.hand
-end
+function CDOTA_BaseNPC_Hero:InitDSHero()
+	self.attribute_int = 0
+	self.attribute_agi = 0
+	self.attribute_str = 0
+	self.mp = 0
+	self.mmp = 0
 
-function CDOTA_BaseNPC_Hero:GetDeck()
-	return self.deck
-end
+	self:FindAbilityByName('ds_no_target'):SetLevel(1)
+	self:FindAbilityByName('ds_point'):SetLevel(1)
+	self:FindAbilityByName('ds_single_target'):SetLevel(1)
 
-function CDOTA_BaseNPC_Hero:SetDeck(deck)
-	self.deck = deck
+	self.hand = Hand(self)
+	self.deck = Deck(self)
+	self.graveyard = GraveYard(self)
 end
 
 function CDOTA_BaseNPC_Hero:DrawCard(numCards)
-	print(string.format("hero %s is about to draw %d cards", self:GetUnitName(), numCards))
-
-	self.hand = self.hand or Hand(self)
 	for i = 1, numCards do
 		local card = self.deck:Pop()
 		numCards = numCards - 1
 		if card then
-			print(string.format("Draw a card with id %s", card.ID ))
-			self.hand:AddCard(card)
-
+			self:MoveCardInto(card, self.hand)
 			GameRules.EventManager:Emit("OnPlayerDrawCard", {
 				Player = self,
 				CardID = card:GetID(),
 				Card = card,
 			})
-
 		else
-			print(" a player want to draw "..numCards.." cards when his deck is empty!")
+			-- 在测试阶段，不因为想要抽牌的时候抽不到牌的规则而输掉比赛
 			if not IsInToolsMode() then
 				GameRules.DS:EndGameWithLoser(self)
-			else
-				Say(nil, "Game has ended due to player want to draw card from an empty deck", false)
 			end
 		end
 	end
+end
+
+function CDOTA_BaseNPC_Hero:MoveCardInto(card, destination)
+	destination:AddCard(card)
 end
 
 function CDOTA_BaseNPC_Hero:SetHasUsedAttributeCardThisRound(t)
@@ -64,6 +64,11 @@ end
 
 -- 使用牌后移除
 function CDOTA_BaseNPC_Hero:RemoveCardAfterUse( uniqueId )
+	
+	--====================================================
+	-- todo 更新卡牌进入战场的逻辑
+	--====================================================
+	
 	local card = self.hand:GetCardByUniqueId(uniqueId)
 	GameRules.EventManager:Emit("OnPlayerUsedCard",{
 		Player = self,
@@ -137,14 +142,10 @@ function CDOTA_BaseNPC_Hero:GetAttributeIntellect()
 	return self.attribute_int or 0
 end
 
-function CDOTA_BaseNPC_Hero:InitDSHero()
-	self.attribute_int = 0
-	self.attribute_agi = 0
-	self.attribute_str = 0
-	self.mp = 0
-	self.mmp = 0
+function CDOTA_BaseNPC_Hero:GetHand()
+	return self.hand
+end
 
-	self:FindAbilityByName('ds_no_target'):SetLevel(1)
-	self:FindAbilityByName('ds_point'):SetLevel(1)
-	self:FindAbilityByName('ds_single_target'):SetLevel(1)
+function CDOTA_BaseNPC_Hero:GetDeck()
+	return self.deck
 end
