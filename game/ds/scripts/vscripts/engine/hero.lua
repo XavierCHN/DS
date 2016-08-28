@@ -59,6 +59,7 @@ end
 
 function CDOTA_BaseNPC_Hero:FillManaPool()
 	self.mp = self.mmp
+	self:SendDataToAllClients()
 end
 
 function CDOTA_BaseNPC_Hero:GetManaPool()
@@ -71,6 +72,8 @@ function CDOTA_BaseNPC_Hero:SetManaPool(val)
 	else
 		self.mp = val
 	end
+	self:SendDataToAllClients()
+	return self.mp
 end
 
 function CDOTA_BaseNPC_Hero:GetMaxManaPool()
@@ -78,10 +81,12 @@ function CDOTA_BaseNPC_Hero:GetMaxManaPool()
 end
 
 function CDOTA_BaseNPC_Hero:SetMaxManaPool(val)
+	self:SendDataToAllClients()
 	self.mmp = val
 end
 
 function CDOTA_BaseNPC_Hero:SetAttributeStrength(val)
+	self:SendDataToAllClients()
 	self.attribute_str = val
 end
 
@@ -91,6 +96,7 @@ end
 
 function CDOTA_BaseNPC_Hero:SetAttributeAgility(val)
 	self.attribute_agi = val
+	self:SendDataToAllClients()
 end
 
 function CDOTA_BaseNPC_Hero:GetAttributeAgility()
@@ -99,6 +105,7 @@ end
 
 function CDOTA_BaseNPC_Hero:SetAttributeIntellect(val)
 	self.attribute_int = val
+	self:SendDataToAllClients()
 end
 
 function CDOTA_BaseNPC_Hero:GetAttributeIntellect()
@@ -116,3 +123,21 @@ end
 function CDOTA_BaseNPC_Hero:SetCardList(card_list)
 	self.card_list = card_list or {}
 end
+
+function CDOTA_BaseNPC_Hero:SendDataToAllClients()
+	CustomGameEventManager:Send_ServerToAllClients("ds_hero_data_changed", {
+		PlayerID = hero:GetPlayerID(),
+		Str = self.attribute_str,
+		Agi = self.attribute_agi,
+		Int = self.attribute_int,
+		Mana = self.mp,
+		MaxMana = self.mmp
+	})
+end
+
+CustomGameEventManager:RegisterListener("ds_client_request_hero_data", function(args)
+	local heroes = GameRules.AllHeroes
+	for _, hero in pairs(heroes) do
+		hero:SendDataToAllClients()
+	end
+end)
