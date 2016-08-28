@@ -11,7 +11,6 @@ function CDOTA_BaseNPC_Hero:InitDSHero()
 
 	self.deck = Deck(self)
 	self.hand = Hand(self)
-	self.graveyard = GraveYard(self)
 end
 
 function CDOTA_BaseNPC_Hero:GetCardList()
@@ -31,23 +30,15 @@ function CDOTA_BaseNPC_Hero:DrawCard(numCards)
 			self.hand:AddCard(card)
 		else
 			-- 在测试阶段，不因为想要抽牌的时候抽不到牌的规则而输掉比赛
-			if not IsInToolsMode() then
-				GameRules.DS:EndGameWithLoser(self)
-			end
+			-- 
+			print("todo, no card damage")
 		end
 	end
 end
 
--- 弃牌：将牌置入坟场
-function CDOTA_BaseNPC_Hero:DiscardCard(uniqueId)
-	local card = self.hand:GetCardByUniqueId(uniqueId)
-	self:RemoveCardByUniqueId( uniqueId )
-end
-
-function CDOTA_BaseNPC_Hero:MoveCardInto(source, card, destination)
-	source:RemoveCard(card)
-	destination:AddCard(card)
-	card:SetPosition(destination)
+-- 弃牌
+function CDOTA_BaseNPC_Hero:DiscardCard(card)
+	self.hand:RemoveCard(card)
 end
 
 function CDOTA_BaseNPC_Hero:SetCurrentActivateCard(card)

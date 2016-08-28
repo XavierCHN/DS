@@ -33,6 +33,11 @@ function Hand:UpdateToClient()
     end
 
     CustomGameEventManager:Send_ServerToPlayer(PlayerResource:GetPlayer(self.playerid), "ds_player_hand_changed", serialized_data)
+
+    CustomGameEventManager:Send_ServerToAllClients("ds_player_hand_count_changed", {
+        PlayerID = self.player:GetPlayerID(),
+        Count = TableCount(self.cards),
+    })
 end
 
 function Hand:Clear()
@@ -51,6 +56,7 @@ function Hand:RemoveCard(card)
             break 
         end
     end
+    self:UpdateToClient()
 end
 
 -- 根据手牌ID弃掉一张手牌
@@ -62,7 +68,6 @@ function Hand:RemoveCardByUniqueId(uniqueId)
     -- self.cards[uniqueId] = nil
     local card_to_drop = self.cards[uniqueId]
     self:RemoveCard(card_to_drop)
-    self.player:MoveCardInto(card_to_drop, self.player:GetGraveYard())
     self:UpdateToClient()
 end
 
@@ -77,7 +82,6 @@ function Hand:RemoveRandomCard(count)
         end
         local card_to_drop = self.cards[uniqueIds[RandomInt(1,#uniqueIds)]]
         self:RemoveCard(card_to_drop)
-        self.player:MoveCardInto(card_to_drop, self.player:GetGraveYard())
     end
     self:UpdateToClient()
 end

@@ -12,26 +12,34 @@
 
     "your_round_start"      "你的回合"
     "enemy_round_start"     "敌方回合"
-
-	"test_card_title"		"测试标题"
-	"test_card_type"		"测试类别"
-	"test_card_description"	"描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试"
-
-    "CardName_00001"       "拳头"
-    "CardDescription_00001"  "使用这张卡牌，增加一点力量和一点魔法"
-    "CardLore_00001"		"Giff DIRETIDE or RIOT!"
-
+    "PrefixType_basic"      "基本"
+    "PrefixType_ultimate"      "极限"
+    "PrefixType_hero"      "英雄"
+    
+    "SubType_test"          "测试副类别"
     "CardType_0"            "属性"
     "CardType_1"            "法术"
     "CardType_2"            "生物"
     "CardType_3"            "装备"
 
-    "PrefixType_basic"      "基本"
-    "PrefixType_ultimate"      "极限"
-    "PrefixType_hero"      "英雄"
-	
-    "SubType_test"          "测试副类别"
+	"test_card_title"		"测试标题"
+	"test_card_type"		"测试类别"
+	"test_card_description"	"描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试"
+
+    "CardName_00001"       "力量"
+    "CardDescription_00001"  "使用这张卡牌，增加一点力量和一点魔法"
+    "CardLore_00001"		"Giff DIRETIDE or RIOT!"
+
+    "CardName_00002"       "敏捷"
+    "CardDescription_00002"  "使用这张卡牌，增加一点敏捷和一点魔法"
+    "CardLore_00002"        "Giff DIRETIDE or RIOT!"
+
+    "CardName_00003"       "智力"
+    "CardDescription_00003"  "使用这张卡牌，增加一点智力和一点魔法"
+    "CardLore_00003"        "Giff DIRETIDE or RIOT!"
 
     "Ability_ds_flying"     "飞行"
     "Ability_ds_lifesteal"  "吸血"
+
+    "one_attribute_card_one_round"  "一回合只能使用一张属性牌"
 }

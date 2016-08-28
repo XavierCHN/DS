@@ -6,6 +6,7 @@ require 'const'
 require 'utility_functions'
 require 'utils.json'
 require 'utils.debug_card_list'
+require 'utils.list'
 
 require 'libraries.timers'
 require 'libraries.playertables'
@@ -18,7 +19,6 @@ require 'engine.hero'
 require 'engine.deck'
 require 'engine.hand'
 require 'engine.battlefield'
-require 'engine.graveyard'
 
 function DS:Init()
 

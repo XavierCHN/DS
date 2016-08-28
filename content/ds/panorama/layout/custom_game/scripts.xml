@@ -5,6 +5,9 @@
     </scripts>
     <script>
     </script>
+    <styles>
+        <include src="file://{resources}/styles/resource_compiler.css" />
+    </styles>
     <Panel hittest="false">
 
     </Panel>

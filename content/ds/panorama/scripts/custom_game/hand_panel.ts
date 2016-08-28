@@ -82,14 +82,18 @@ function ExecuteCardProxy(args){
             ability_name = "ds_single_target";
             break;
     }
+
     let ability = Entities.GetAbilityByName(hero, ability_name);
     if(ability_name == "" || ability == -1) {
-        $.Msg(`unable to find valid ability to execute for card behavior${cardBehavior}, ability_name=${ability_name}`);
+        $.Msg(`unable to find valid ability to execute for behavior${cardBehavior}, ability_name=${ability_name}`);
         return;
     }
-
-    $.Msg(`begin to execute abilty ${ability_name}, abilityIndex = ${ability} ${hero}`)
+    // $.Msg(`begin to execute abilty ${ability_name}, abilityIndex = ${ability}`)
     Abilities.ExecuteAbility(ability, hero, false);
+}
+
+function UpdateHandCardCount(args){
+
 }
 
 (function(){
@@ -98,4 +102,5 @@ function ExecuteCardProxy(args){
     GameEvents.Subscribe("ds_player_hand_changed", UpdateHandCards);
     GameEvents.Subscribe("ds_highlight_state_changed", UpdateHighLightState);
     GameEvents.Subscribe("ds_execute_card_proxy", ExecuteCardProxy);
+    GameEvents.Subscribe("ds_player_hand_count_changed", UpdateHandCardCount)
 })();

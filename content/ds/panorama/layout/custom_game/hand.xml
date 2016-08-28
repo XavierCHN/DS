@@ -47,12 +47,17 @@
 				<Panel id="CardOverlay" hittest="false" />
 			</Panel>
 		</snippet>
+		<snippet name="CardBack">
+			<Panel class="CardBackRoot">
+				<Image id="CardBackImage" />
+			</Panel>
+		</snippet>
 	</snippets>
 	
 	<Panel class="HandRoot" hittest="false">
 		<Panel id="HandCardContainerBackground" hittest="false">
-			<Panel id="HandCardContainer" hittest="false">
-			</Panel>
+			<Panel id="EnemyHandCardContainer" hittest="false" />
+			<Panel id="HandCardContainer" hittest="false" />
 		</Panel>
 	</Panel>
 </root>
