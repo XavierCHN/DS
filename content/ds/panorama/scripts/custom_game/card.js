@@ -10,6 +10,13 @@ var CardType;
     CardType[CardType["CARD_TYPE_MINION"] = 3] = "CARD_TYPE_MINION";
     CardType[CardType["CARD_TYPE_EQUIPMENT"] = 4] = "CARD_TYPE_EQUIPMENT";
 })(CardType || (CardType = {}));
+var CardAttribute;
+(function (CardAttribute) {
+    CardAttribute[CardAttribute["ATTRIBUTE_NONE"] = 0] = "ATTRIBUTE_NONE";
+    CardAttribute[CardAttribute["ATTRIBUTE_STRENGTH"] = 1] = "ATTRIBUTE_STRENGTH";
+    CardAttribute[CardAttribute["ATTRIBUTE_AGILITY"] = 2] = "ATTRIBUTE_AGILITY";
+    CardAttribute[CardAttribute["ATTRIBUTE_INTELLECT"] = 3] = "ATTRIBUTE_INTELLECT";
+})(CardAttribute || (CardAttribute = {}));
 // 卡牌基类
 var Card = (function () {
     function Card(parent, id, cardType, cardData) {
@@ -23,6 +30,24 @@ var Card = (function () {
         this.cardType = cardType;
         this.cardData = cardData;
         this.panel = $.CreatePanel("Panel", parent, "");
+        switch (this.cardData.main_attr) {
+            case CardAttribute.ATTRIBUTE_STRENGTH:
+                $.Msg("str");
+                this.panel.AddClass("MainAttributeStrength");
+                break;
+            case CardAttribute.ATTRIBUTE_AGILITY:
+                $.Msg("agi");
+                this.panel.AddClass("MainAttributeAgility");
+                break;
+            case CardAttribute.ATTRIBUTE_INTELLECT:
+                $.Msg("int");
+                this.panel.AddClass("MainAttributeIntellect");
+                break;
+            case CardAttribute.ATTRIBUTE_NONE:
+                $.Msg("none");
+                this.panel.AddClass("MainAttributeNone");
+                break;
+        }
         switch (cardType) {
             case CardType.CARD_TYPE_ATTRIBUTE:
                 this.panel.AddClass("AttributeCard");
@@ -99,7 +124,6 @@ var HandCard = (function (_super) {
         this.panel.SetPanelEvent("onmouseout", this.HideHandCardTooltip.bind(this));
         this.panel.SetPanelEvent("onactivate", this.OnClickCard.bind(this));
         this.panel.SetHasClass("HandCard", true);
-        $.Msg("New card instance is created, cardid=" + this.card_id + ", uniqueId = " + this.uniqueId);
     }
     HandCard.prototype.ShowHandCardTooltip = function () {
     };

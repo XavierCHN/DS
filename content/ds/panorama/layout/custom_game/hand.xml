@@ -12,9 +12,9 @@
 		<!--卡背-->
 		<snippet name="CardBack">
 			<Panel class="CardRoot">
-				
 			</Panel>
 		</snippet>
+		
 		<!--卡牌-->
 		<snippet name="Card">
 			<Panel class="CardRoot">
@@ -40,14 +40,15 @@
 							<Label class="text-h3" id="CardLore" text="#test_card_lore" />
 						</Panel>
 						<Panel class="CardDescription_ExtraMessage">
-							<Label id="CardID" />
-							<Label id="IllusionArtist" />
+							<Label class="text-h4" id="CardID" />
+							<Label class="text-h4" id="IllusionArtist" />
 						</Panel>
 					</Panel>
 				</Panel>
 			</Panel>
 		</snippet>
 	</snippets>
+	
 	<Panel class="HandRoot" hittest="false">
 		<Panel id="HandCardContainerBackground" hittest="false">
 			<Panel id="EnemyHandCardContainer" hittest="false" />

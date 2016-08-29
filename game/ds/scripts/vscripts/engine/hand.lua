@@ -19,7 +19,16 @@ function Hand:constructor(player)
 end
 
 function Hand:AddCard(card)
-    table.insert(self.cards, card)
+    if self:GetCardCount() >= 10 then
+        print("an hero trying to add card to hand when hand is full")
+        CustomGameEventManager:Send_ServerToAllClients("ds_player_hand_full", {
+            PlayerID = self.player:GetPlayerID(),
+            CardID = card:GetID(),
+            CardUniqueID = card:GetUniqueID(),
+        })
+    else
+        table.insert(self.cards, card)
+    end
     self:UpdateToClient()
 end
 
@@ -57,6 +66,10 @@ function Hand:RemoveCard(card)
         end
     end
     self:UpdateToClient()
+end
+
+function Hand:GetCardCount()
+    return TableCount(self.cards)
 end
 
 -- 根据手牌ID弃掉一张手牌
