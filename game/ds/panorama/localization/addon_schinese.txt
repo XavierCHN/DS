@@ -42,4 +42,9 @@
     "Ability_ds_lifesteal"  "吸血"
 
     "one_attribute_card_one_round"  "一回合只能使用一张属性牌"
+    "cannot_use_at_enemy_round" "无法在敌方回合使用"
+    "cant_use_at_my_round"      "无法在我方回合使用"
+    "cant_cast_at_enemy_field"  "无法在敌方阵地使用"
+    "cant_cast_at_my_field"     "无法在我方阵地使用"
+    "game_havent_started_yet"  "游戏尚未开始"
 }
