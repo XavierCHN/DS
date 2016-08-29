@@ -79,14 +79,13 @@ class Card{
         }
         let card_description = $.Localize(`#CardDescription_${dig_5_card_id}`);
         if (card_description == `CardDescription_${dig_5_card_id}`) card_description = "";
-       this.panel.FindChildTraverse("CardDescription").text = `${ability_descriptions}\n${card_description}`;
-
+       this.panel.FindChildTraverse("CardDescription").text = `${ability_descriptions}${ability_descriptions == ""?"":"\n"}${card_description}`;
         let card_lore = $.Localize(`#CardLore_${dig_5_card_id}`);
         if (card_lore == "" || card_lore == `CardLore_${dig_5_card_id}`){
-            $("#CardLore").AddClass("Empty");
+            this.panel.FindChildTraverse("CardLore").AddClass("Empty");
         }else{
-            $("#CardLore").RemoveClass("Empty");
-            $("#CardLore").text = card_lore;
+            this.panel.FindChildTraverse("CardLore").RemoveClass("Empty");
+            this.panel.FindChildTraverse("CardLore").text = card_lore;
         }
 
         this.panel.FindChildTraverse("CardID").text = `${$.Localize("#CardID")}:${dig_5_card_id}`
@@ -98,6 +97,9 @@ class Card{
 class HandCard extends Card{
     // 手牌的唯一ID，用以标识这张手牌
     uniqueId:string = "";
+
+    // 用以记录当前手牌数量
+    handCount: number = 1;
 
     constructor(parent:Panel, id: number, uniqueId: string, cardType: number, cardData:any){
 
@@ -134,6 +136,12 @@ class HandCard extends Card{
             this.panel.SetHasClass(this.highLightState, false);
         }
         this.highLightState = newState;
+    }
+
+    SetHandCount(count: number){
+        this.panel.SetHasClass(`CardCount_${this.handCount}`, false);
+        this.handCount = count;
+        this.panel.SetHasClass(`CardCount_${this.handCount}`, true);
     }
 }
 

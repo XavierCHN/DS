@@ -20,6 +20,9 @@ function UpdateHandCards(handCardData){
     for( let uniqueId in hand_cards){
         hand_cards[uniqueId].shouldRemove = true;
     }
+    let _cc:number = 0;
+    for (let __x in handCardData)
+        _cc++;
 
     for(let idx in handCardData){
         let hand_card_data = JSON.parse(handCardData[idx]);
@@ -35,6 +38,7 @@ function UpdateHandCards(handCardData){
         }
         // 如果这个id还存在于服务器的hand中，那么标记为不需要移除
         hand_cards[unique_id].shouldRemove = false;
+        hand_cards[unique_id].SetHandCount(_cc);
     }
 
     for( let uniqueId in hand_cards){
