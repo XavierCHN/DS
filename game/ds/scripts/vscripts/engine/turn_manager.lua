@@ -20,61 +20,85 @@ end
 
 -- 初始化玩家的卡组，并抽取初始手牌
 function TurnManager:ShufflePlayerDeckAndDrawInitialCards()
-	for _, hero in pairs(GameRules.AllHeroes) do
-		print(hero:GetPlayerID())
-		hero:GetDeck():Shuffle()
-		hero:DrawCard(NUM_INIT_CARD_COUNT)
+	self.fp:GetDeck():Shuffle()
+	self.fp:DrawCard(NUM_INIT_CARD_COUNT)
+	self.nfp:GetDeck():Shuffle()
+	self.nfp:DrawCard(NUM_INIT_CARD_COUNT + 1)
+end
+
+function TurnManager:SetPhase(newPhase)
+	self.phase = newPhase
+
+	if newPhase == TURN_PHASE_STRATEGY then
+		self.phase_duration = DS_ROUND_TIME_STRATEGY
+		self.phase_start_time = GameRules:GetGameTime()
+	elseif newPhase == TURN_PHASE_BATTLE then
+		self.phase_duration = DS_ROUND_TIME_BATTLE
+		self.phase_start_time = GameRules:GetGameTime()
+	elseif newPhase == TURN_PHASE_POST_BATTLE then
+		self.phase_duration = DS_ROUND_TIME_POST_BATTLE
+		self.phase_start_time = GameRules:GetGameTime()
 	end
+end
+
+function TurnManager:GetPhase()
+	return self.phase
 end
 
 function TurnManager:Run()
 
-	-- 回合结构不会因为任何原因而更改，必定使用这样的循环，能更改的也就只有回合的持续时间了
-
-	-- 先手玩家，跳过第一次抽牌，可以出属性牌
-	-- 第一次回合开始
-	self.fp:SetHasUsedAttributeCardThisRound(false)
-
 	self.game_started = true
 
-	Notifications:Top(self.fp:GetPlayerID(),{text="your_round_start", duration=2, style={color="white",["font-size"] = "100px"}})
-	Notifications:Top(self.nfp:GetPlayerID(),{text="enemy_round_start", duration=2, style={color="white",["font-size"] = "100px"}})
+	-- 启动第一个回合
+	self:StartNewRound()
 
-	-- 后手玩家等待对方回合时间结束后可以出属性牌+抽牌
-	-- 第二次回合开始
-	Timers:CreateTimer(DS_TURN_TIME, function()
-		self:ToggleActivePlayer()
-		self.nfp:DrawCard(1) -- 抽一张牌
-		self.nfp:FillManaPool() -- 回满魔法池
-		self.nfp:SetHasUsedAttributeCardThisRound(false) -- 可以出属性牌
+	-- 启动主循环计时器
+	Timers:CreateTimer(function()
 
-		CustomGameEventManager:Send_ServerToAllClients("ds_turn_start", {
-			PlayerID = self.nfp:GetPlayerID(),
-		})
-
-		Notifications:Top(self.nfp:GetPlayerID(),{text="your_round_start", duration=2, style={color="white",["font-size"] = "100px"}})
-		Notifications:Top(self.fp:GetPlayerID(),{text="enemy_round_start", duration=2, style={color="white",["font-size"] = "100px"}})
-
-		return DS_TURN_TIME * 2
+		local t = GameRules:GetGameTime()
+		if t - self.phase_start_time > self.phase_duration then
+			if self.phase == TURN_PHASE_POST_BATTLE then
+				-- 切换主动玩家并开始新回合
+				self:ToggleActivePlayer()
+				self:StartNewRound()
+			end
+			if self.phase == TURN_PHASE_BATTLE then
+				self:SetPhase(TURN_PHASE_POST_BATTLE)
+			end
+			if self.phase == TURN_PHASE_STRATEGY then
+				self:SetPhase(TURN_PHASE_BATTLE)
+			end
+		end
+		return 0.03
 	end)
 
-
-	-- 在第三个回合开始的时候，开始进入正常的回合循环
-	Timers:CreateTimer(DS_TURN_TIME * 2, function()
-		self:ToggleActivePlayer()
-		self.fp:DrawCard(1) -- 抽一张牌
-		self.fp:FillManaPool() -- 回满魔法池
-		self.fp:SetHasUsedAttributeCardThisRound(false) -- 可以出属性牌
-
-		CustomGameEventManager:Send_ServerToAllClients("ds_turn_start", {
-			PlayerID = self.fp:GetPlayerID(),
+	-- 启动倒计时计时器（加大间隔避免发送太多指令到客户端）
+	Timers:CreateTimer(function()
+		local t = GameRules:GetGameTime()
+		local time_remaining = self.phase_duration - (t - self.phase_start_time)
+		CustomGameEventManager:Send_ServerToAllClients("drt", { -- round time remaining timer!
+			p = self.phase,
+			t = time_remaining
 		})
-
-		Notifications:Top(self.fp:GetPlayerID(),{text="your_round_start", duration=2, style={color="white",["font-size"] = "100px"}})
-		Notifications:Top(self.nfp:GetPlayerID(),{text="enemy_round_start", duration=2, style={color="white",["font-size"] = "100px"}})
-
-		return DS_TURN_TIME * 2
+		return 0.3
 	end)
+end
+
+function TurnManager:StartNewRound()
+	local ap = self:GetActivePlayer()
+	local nap = self:GetNoneActivePlayer()
+	ap:DrawCard(1)
+	ap:FillManaPool()
+	ap:SetHasUsedAttributeCardThisRound(false)
+
+	self:SetPhase(TURN_PHASE_STRATEGY)
+
+	CustomGameEventManager:Send_ServerToAllClients("ds_turn_start", {
+		PlayerID = ap:GetPlayerID(),
+	})
+	Notifications:Top(ap:GetPlayerID(),{text="your_round_start", duration=2, style={color="white",["font-size"] = "100px"}})
+	Notifications:Top(nap:GetPlayerID(),{text="enemy_round_start", duration=2, style={color="white",["font-size"] = "100px"}})
+
 end
 
 function TurnManager:ToggleActivePlayer()
