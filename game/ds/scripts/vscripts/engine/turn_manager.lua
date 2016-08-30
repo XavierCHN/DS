@@ -5,6 +5,8 @@ function TurnManager:Start()
 
 	self:SelectFirstActivePlayer()
 	self:ShufflePlayerDeckAndDrawInitialCards()
+
+	GameRules.AllMinions = GameRules.AllMinions or {}
 end
 
 function TurnManager:SelectFirstActivePlayer()

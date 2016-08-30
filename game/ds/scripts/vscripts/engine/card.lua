@@ -227,6 +227,7 @@ function Card:MeetCostRequirement()
     local int = self.data.cost.int
     local mana = self.data.cost.mana
     
+    print("trying to get strength",self.owner:GetAttributeStrength(), str)
     if self.owner:GetAttributeStrength() < str then
         return false, "str_not_enough"
     end

@@ -100,7 +100,7 @@ function CDOTA_BaseNPC:GetCurrentGoalTargetPos()
     end
 
     -- 如果在外面，往敌方英雄处移动
-    if GameRules.BattleField:IsMinionInEnemyBaseArea(self)
+    if GameRules.BattleField:IsMinionInEnemyBaseArea(self) then
         for _, hero in pairs(GameRules.AllHeroes) do
             if hero:GetTeamNumber() ~= self:GetTeamNumber() then
                 return hero:GetAbsOrigin()
