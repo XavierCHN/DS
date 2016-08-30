@@ -105,11 +105,10 @@ function Card:constructor(id)
     data.card_type = data.card_type or CARD_TYPE_SPELL
     data.card_behavior = data.card_behavior or CARD_BEHAVIOR_NO_TARGET
     data.expansion = data.expansion or 1
-    data.cost = data.cost or {}
-    data.cost.str = data.cost.str or 0
-    data.cost.agi = data.cost.agi or 0
-    data.cost.int = data.cost.int or 0
-    data.cost.mana = data.cost.mana or 0
+    data.str_cost = data.str_cost or 0
+    data.agi_cost = data.agi_cost or 0
+    data.int_cost = data.int_cost or 0
+    data.mana_cost = data.mana_cost or 0
     data.high_light = data.high_light or function() return false end
     data.validate = data.validate or function() return true end
     data.on_spell_start = data.on_spell_start or function() end
@@ -180,7 +179,7 @@ function Card:Validate(ability, args)
     end
     
     -- 通用规则，在同一行同时只能释放一个单位，除非确认
-    if card:GetType() == CARD_TYPE_MINION then
+    if self:GetType() == CARD_TYPE_MINION then
         local line = GameRules.BattleField:GetPositionBattleLine(args.target_points[1])
         if line:IsLineEmptyForPlayer(caster) then
             return false, "confirm_remove_line_minion"
@@ -222,11 +221,11 @@ end
 
 -- 是否满足费用的使用需求
 function Card:MeetCostRequirement()
-    local str = self.data.cost.str
-    local agi = self.data.cost.agi
-    local int = self.data.cost.int
-    local mana = self.data.cost.mana
-    
+    local str = self.data.str_cost
+    local agi = self.data.agi_cost
+    local int = self.data.int_cost
+    local mana = self.data.mana_cost
+
     print("trying to get strength",self.owner:GetAttributeStrength(), str)
     if self.owner:GetAttributeStrength() < str then
         return false, "str_not_enough"

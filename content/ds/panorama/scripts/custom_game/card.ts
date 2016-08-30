@@ -35,19 +35,15 @@ class Card{
         this.panel = $.CreatePanel("Panel", parent, "");
         switch(this.cardData.main_attr){
             case CardAttribute.ATTRIBUTE_STRENGTH:
-                $.Msg("str");
                 this.panel.AddClass("MainAttributeStrength");
                 break;
             case CardAttribute.ATTRIBUTE_AGILITY:
-                $.Msg("agi");
                 this.panel.AddClass("MainAttributeAgility");
                 break;
             case CardAttribute.ATTRIBUTE_INTELLECT:
-                $.Msg("int");
                 this.panel.AddClass("MainAttributeIntellect");
                 break;
             case CardAttribute.ATTRIBUTE_NONE:
-                $.Msg("none");
                 this.panel.AddClass("MainAttributeNone");
                 break;
         }
