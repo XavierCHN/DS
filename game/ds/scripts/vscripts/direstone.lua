@@ -13,6 +13,7 @@ require 'utils.units'
 require 'libraries.timers'
 require 'libraries.playertables'
 require 'libraries.notifications'
+require 'libraries.worldpanels'
 
 require 'engine.turn_manager'
 require 'engine.player_resource'

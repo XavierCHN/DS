@@ -16,7 +16,6 @@ function ds_point:OnSpellStart(args)
         return
     end
 
-
     if card:GetType() == CARD_TYPE_MINION then
         caster:CreateCardMinion(card, point, function(minion)
             local atk = card.data.atk
@@ -34,6 +33,12 @@ function ds_point:OnSpellStart(args)
                     minion:AddAbility(ability):SetLevel(1)
                 end
             end
+
+            -- 创建单位的状态面板
+            WorldPanels:CreateWorldPanelForAll({
+                layout = "file://{resources}/layout/custom_game/worldpanels/minion_state.xml",
+                entity = minion,
+            })
         end)
     end
 

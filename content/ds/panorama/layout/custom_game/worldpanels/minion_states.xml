@@ -1,0 +1,11 @@
+<root>
+    <styles>
+        <include src="file://{resources}/styles/worldpanels/minion_states.css" />
+    </styles>
+    <scripts>
+        <include src="file://{resources}/scripts/worldpanels/minion_states.js" />
+    </scripts>
+    <Panel class="minion_states_Root">
+        
+    </Panel>
+</root>
