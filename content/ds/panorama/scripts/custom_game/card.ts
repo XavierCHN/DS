@@ -103,7 +103,9 @@ class Card{
        this.panel.FindChildTraverse("CardDescription").text = `${ability_descriptions}${ability_descriptions == ""?"":"\n"}${card_description}`;
         let card_lore = $.Localize(`#CardLore_${dig_5_card_id}`);
         if (card_lore == "" || card_lore == `CardLore_${dig_5_card_id}`){
+            $.Msg("empty");
             this.panel.FindChildTraverse("CardLore").AddClass("Empty");
+            this.panel.FindChildTraverse("CardLore").text = card_lore;
         }else{
             this.panel.FindChildTraverse("CardLore").RemoveClass("Empty");
             this.panel.FindChildTraverse("CardLore").text = card_lore;

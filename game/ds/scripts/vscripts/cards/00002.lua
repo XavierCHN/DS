@@ -6,7 +6,6 @@ card_behavior = CARD_BEHAVIOR_NO_TARGET
 expansion = 0
 cost = {}
 prefix_type = {"basic"}
-sub_type = {"test"}
 artist = "Xavier"
 cast_time = CARD_CASTTIME_MY_ROUND
 

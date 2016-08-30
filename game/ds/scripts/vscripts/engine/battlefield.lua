@@ -39,6 +39,19 @@ function BattleField:IsMinionInMyBaseArea(unit)
     return false
 end
 
+function BattleField:IsMinionInEnemyBaseArea(unit)
+    local o = unit:GetAbsOrigin()
+    local t = unit:GetTeamNumber()
+    if t == DOTA_TEAM_GOODGUYS and o.x > self:GetBattleLine(1):GetRight().x then
+        return true
+    end
+    if t == DOTA_TEAM_BADGUYS and o.x < self:GetBattleLine(1):GetLeft().x then
+        return true
+    end
+
+    return false
+end
+
 function BattleField:IsMinionInLine(unit)
     local o = unit:GetAbsOrigin()
     local t = unit:GetTeamNumber()

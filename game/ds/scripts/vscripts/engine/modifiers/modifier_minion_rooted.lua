@@ -7,7 +7,7 @@ function modifier_minion_rooted:CheckState()
 end
 
 function modifier_minion_rooted:IsHidden()
-    return true
+    return false
 end
 
 function modifier_minion_rooted:IsPurgable()

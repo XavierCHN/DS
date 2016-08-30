@@ -4,10 +4,11 @@ function ds_point:GetCooldown( nLevel )
     return 0
 end
 
-function ds_point:OnSpellStart(args)
+function ds_point:OnSpellStart()
     local caster = self:GetCaster()
     local card = caster:GetCurrentActiveCard()
-    local point = args.target_points[1]
+    local point = self:GetCursorPosition()
+    local playerid = caster:GetPlayerID()
 
     local validated, reason = card:Validate(self, point)
     if not validated then
@@ -27,10 +28,18 @@ function ds_point:OnSpellStart(args)
             minion.ms = card.data.move_speed
             minion.ar = card.data.attack_range
 
+            minion:StartMinionAIThink()
+
             local abilities = card.data.abilities
             if abilities and TableCount(abilities) > 0 then
                 for _, ability in pairs(abilities) do
-                    minion:AddAbility(ability):SetLevel(1)
+                    minion:AddAbility(ability)
+                    local ab = minion:FindAbilityByName(ability)
+                    if not ab then
+                        Warning("FATAL: minion ability is not found, ability name =>" .. ability)
+                    else
+                        ab:SetLevel(1)
+                    end
                 end
             end
 
@@ -42,13 +51,13 @@ function ds_point:OnSpellStart(args)
         end)
     end
 
-    -- 执行卡牌的效果代码
-    local card_func = card.data.on_spell_start
-    if card_func and type(card_func) == "function" then
-        print(string.format("processing card effect CARDID[%s] -> on_spell_start", card:GetID()))
-        card_func(args)
-    end
-
     -- 移除手牌
-    caster:RemoveCardAfterUse(card:GetUniqueId())
+    caster:GetHand():RemoveCard(card)
+
+    -- 清空状态
+    caster:SetCurrentActiveCard(nil)
+
+    -- 执行卡牌的效果代码
+    card:OnUseCard()
+
 end

@@ -11,7 +11,7 @@ expansion = 0 -- 版本号，默认为0，初始包
 high_light = function(card) return "HighLightGolden" end -- 高亮，返回高亮的css类
 cost = {str=0,agi=0,int=0,mana=0} -- 所需资源，mana为魔法，其余为需要满足的属性需求
 validate = function(card, ability, args ) end -- 特殊的使用需求，根据不同的类型，可能会传入不同的参数,返回 true 或者 false, "失败原因"
-on_spell_start = function(card, ability, args) end -- 卡牌使用的效果，和正常的 Lua Ability写法一样
+on_spell_start = function(card, ability, point/target/nil) end -- 卡牌使用的效果，和正常的 Lua Ability写法一样
 artist = "Xavier" -- 卡牌插画的作者
 cast_time = CARD_CASTTIME_MY_ROUND -- 释放时机，只能在本方回合使用，还包括 CARD_CASTTIME_ENEMY_ROUND, CARD_CASTTIME_BOTH
 cast_position = CARD_CAST_POSITION_ENEMY_FIELD -- 释放地点 CARD_CAST_POSITION_MY_FIELD CARD_CAST_POSITION_ENEMY_FIELD CARD_CAST_POSITION_BOTH
@@ -105,10 +105,10 @@ function Card:constructor(id)
     data.card_type = data.card_type or CARD_TYPE_SPELL
     data.card_behavior = data.card_behavior or CARD_BEHAVIOR_NO_TARGET
     data.expansion = data.expansion or 1
-    data.str_cost = data.str_cost or 0
-    data.agi_cost = data.agi_cost or 0
-    data.int_cost = data.int_cost or 0
-    data.mana_cost = data.mana_cost or 0
+    data.str_cost = data.cost.str or 0
+    data.agi_cost = data.cost.agi or 0
+    data.int_cost = data.cost.int or 0
+    data.mana_cost = data.cost.mana or 0
     data.high_light = data.high_light or function() return false end
     data.validate = data.validate or function() return true end
     data.on_spell_start = data.on_spell_start or function() end
@@ -137,10 +137,15 @@ function Card:constructor(id)
     self.data = data
 end
 
--- 验证一张牌是否可以使用
-function Card:Validate(ability, args)
-    local hero = ability:GetCaster()
-    
+-- 验证一张牌是否能使用（执行技能之前）
+function Card:Validate_BeforeExecute()
+
+    if GameRules.FORCE_VALIDATE then
+        return true
+    end
+
+    local hero = self.owner
+
     if not GameRules.TurnManager:HasGameStarted() then
         return false, "game_havent_started_yet"
     end
@@ -157,31 +162,41 @@ function Card:Validate(ability, args)
     if not meet then
         return false, reason
     end
-    
+
     -- 通用规则，是否能在我方或者敌方回合使用
     if not self:CanCastInEnemyRound() and GameRules.TurnManager:GetActivePlayer() ~= hero then
-        print(self:CanCastInEnemyRound() , GameRules.TurnManager:GetActivePlayer() ~= hero)
         return false, "cant_use_at_enemy_round"
     end
     
     if not self:CanCastInMyRound() and GameRules.TurnManager:GetActivePlayer() == hero then
         return false, "cant_use_at_my_round"
     end
+    return true
+end
+
+-- 验证一张牌是否可以使用（执行技能之后）
+function Card:Validate(ability, args)
+
+    if GameRules.FORCE_VALIDATE then
+        return true
+    end
+
+    local hero = ability:GetCaster()
     
     -- 通用规则，释放位置需求
     if ability:GetAbilityName() == "ds_point" then
-        if not self:CanCastAtEnemyField() and not GameRules.BattleField:IsMyField(hero, args.target_points[1]) then
+        if not self:CanCastAtEnemyField() and not GameRules.BattleField:IsMyField(hero, args) then
             return false, "cant_cast_at_enemy_field"
         end
-        if not self:CanCastAtMyField() and GameRules.BattleField:IsMyField(hero, args.target_points[1]) then
+        if not self:CanCastAtMyField() and GameRules.BattleField:IsMyField(hero, args) then
             return false, "cant_cast_at_my_field"
         end
     end
     
     -- 通用规则，在同一行同时只能释放一个单位，除非确认
     if self:GetType() == CARD_TYPE_MINION then
-        local line = GameRules.BattleField:GetPositionBattleLine(args.target_points[1])
-        if line:IsLineEmptyForPlayer(caster) then
+        local line = GameRules.BattleField:GetPositionBattleLine(args)
+        if not line:IsLineEmptyForPlayer(caster) then
             return false, "confirm_remove_line_minion"
         end
     end
@@ -196,6 +211,8 @@ end
 -- 刷新卡牌状态
 function Card:UpdateHighLightState()
     
+    if not GameRules.TurnManager:HasGameStarted() then return nil end
+
     local state = ""
     local hero = self:GetOwner()
     local special_high_light = self.data.high_light(self)
@@ -226,7 +243,6 @@ function Card:MeetCostRequirement()
     local int = self.data.int_cost
     local mana = self.data.mana_cost
 
-    print("trying to get strength",self.owner:GetAttributeStrength(), str)
     if self.owner:GetAttributeStrength() < str then
         return false, "str_not_enough"
     end
@@ -252,6 +268,10 @@ function Card:OnUseCard(ability, args)
     if self:IsAttributeCard() then
         self.owner:SetHasUsedAttributeCardThisRound(true)
     end
+
+    -- 支付费用
+    local hero = self.owner
+    hero:SpendManaCost(self.data.mana_cost)
 end
 
 function Card:GetCardBehavior()
@@ -314,3 +334,11 @@ end
 function Card:GetMinionName()
     return self.data.minion_name
 end
+
+Convars:RegisterCommand("debug_force_card_validate", function()
+    GameRules.FORCE_VALIDATE = true
+end, "  ", FCVAR_CHEAT)
+
+Convars:RegisterCommand("debug_disable_card_validate", function()
+    GameRules.FORCE_VALIDATE = false
+end, "  ", FCVAR_CHEAT)

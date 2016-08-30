@@ -82,7 +82,7 @@ function ExecuteCardProxy(args) {
         $.Msg("unable to find valid ability to execute for behavior" + cardBehavior + ", ability_name=" + ability_name);
         return;
     }
-    // $.Msg(`begin to execute abilty ${ability_name}, abilityIndex = ${ability}`)
+    $.Msg("begin to execute abilty " + ability_name + ", abilityIndex = " + ability);
     Abilities.ExecuteAbility(ability, hero, false);
 }
 function UpdateHandCardCount(args) {

@@ -52,10 +52,10 @@ function List:Display()
     i = 0
     while n do
         i = i + 1
-        print("List",i,n.data)
+        -- print("List",i,n.data)
         n = n.next
     end
-    print("---- list display finished ---")
+    -- print("---- list display finished ---")
 end
 
 function List:GetNodeAt(i)
@@ -64,7 +64,7 @@ function List:GetNodeAt(i)
         if n then
             n = n.next
         else
-            print("Get node overflow @",i)
+            -- print("Get node overflow @",i)
             return nil
         end
     end
@@ -74,7 +74,7 @@ end
 function List:Remove(i)
     local node = self:GetNodeAt(i-1)
     if not node or node.next == nil then
-        print("Remove node overflow @",i)
+        -- print("Remove node overflow @",i)
         return nil
     end
     local t = node.next
@@ -86,7 +86,7 @@ end
 function List:Insert(i, data)
     local node = self:GetNodeAt(i-1)
     if not node then
-        print("Insert node overflow@",i)
+        -- print("Insert node overflow@",i)
         return
     end
     local nn = {}
@@ -117,7 +117,7 @@ function List:Swap(i,j)
     local n1 = self:GetNodeAt(i)
     local n2 = self:GetNodeAt(j)
     if not ( n1 and n2 ) then
-        print("Swap overflow @",i,j)
+        -- print("Swap overflow @",i,j)
         return
     end
     n1.data, n2.data = n2.data, n1.data
@@ -128,24 +128,6 @@ function List:GetData(i)
     if n then
         return n.data
     else
-        print("GetData overflow @",i)
+        -- print("GetData overflow @",i)
     end
 end
-
--- local list = List()
--- list:AddRear(2)
--- list:AddHead(4)
--- list:AddRear(5)
--- list:AddHead(3)
--- list:AddRear(9)
--- list:Display()
--- for i = 1, 3 do
---     print(list:Remove(1))
--- end
--- list:Display()
--- list:Swap(2,3)
--- list:Display()
--- for i = 1, 3 do
---     list:Insert(1, "Good" .. i)
--- end
--- list:Display()

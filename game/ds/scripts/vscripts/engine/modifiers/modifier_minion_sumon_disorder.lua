@@ -1,1 +1,0 @@
-modifier_minion_summon_disorder = class({})

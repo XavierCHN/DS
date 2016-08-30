@@ -5,6 +5,8 @@ function CDOTA_BaseNPC_Hero:InitDSHero()
 	self.mp = 0
 	self.mmp = 0
 
+	self:SetAbilityPoints(0)
+
 	self:FindAbilityByName('ds_no_target'):SetLevel(1)
 	self:FindAbilityByName('ds_point'):SetLevel(1)
 	self:FindAbilityByName('ds_single_target'):SetLevel(1)
@@ -41,7 +43,7 @@ function CDOTA_BaseNPC_Hero:DiscardCard(card)
 	self.hand:RemoveCard(card)
 end
 
-function CDOTA_BaseNPC_Hero:SetCurrentActivateCard(card)
+function CDOTA_BaseNPC_Hero:SetCurrentActiveCard(card)
 	self.current_active_card = card
 end
 
@@ -74,6 +76,14 @@ function CDOTA_BaseNPC_Hero:SetManaPool(val)
 	end
 	self:SendDataToAllClients()
 	return self.mp
+end
+
+function CDOTA_BaseNPC_Hero:SpendManaCost(val)
+	self.mp = self.mp - val
+	if self.mp < 0 then
+		print(debug.traceback("something must be wrong, negative value is not okay"))
+	end
+	self:SendDataToAllClients()
 end
 
 function CDOTA_BaseNPC_Hero:GetMaxManaPool()
@@ -144,7 +154,7 @@ end)
 
 function CDOTA_BaseNPC_Hero:CreateCardMinion(card, pos, callback)
     local mn = card:GetMinionName()
-    local ent = CreateUnitByNameAsync(mn, pos, true, self, self:GetPlayerOwner(), team, function(ent)
+    local ent = CreateUnitByNameAsync(mn, pos, false, self, self, self:GetTeamNumber(), function(ent)
         ent:InitDSMinion()
         ent:SetPlayer(self)
         ent:StartMinionAIThink()
@@ -156,3 +166,14 @@ function CDOTA_BaseNPC_Hero:CreateCardMinion(card, pos, callback)
         callback(ent)
     end)
 end
+
+Convars:RegisterCommand("debug_set_hero_attribute", function(_, str, agi, int, mana)
+	local client = Convars:GetCommandClient()
+	local hero = PlayerResource:GetPlayer(client:GetPlayerID()):GetAssignedHero()
+
+	hero:SetAttributeStrength(tonumber(str))
+	hero:SetAttributeAgility(tonumber(agi))
+	hero:SetAttributeIntellect(tonumber(int))
+	hero:SetMaxManaPool(tonumber(mana))
+	hero:FillManaPool()
+end, "debug set hero attribute", FCVAR_CHEAT);

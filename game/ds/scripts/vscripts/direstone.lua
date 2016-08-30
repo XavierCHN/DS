@@ -15,6 +15,7 @@ require 'libraries.playertables'
 require 'libraries.notifications'
 require 'libraries.worldpanels'
 
+require 'engine.turn'
 require 'engine.turn_manager'
 require 'engine.player_resource'
 require 'engine.card'
@@ -59,18 +60,27 @@ function DS:Init()
     LinkLuaModifier("modifier_minion_rooted", "engine/modifiers/modifier_minion_rooted", LUA_MODIFIER_MOTION_NONE)
     LinkLuaModifier("modifier_minion_disable_attack", "engine/modifiers/modifier_minion_disable_attack", LUA_MODIFIER_MOTION_NONE)
     LinkLuaModifier("modifier_minion_data", "engine/modifiers/modifier_minion_data", LUA_MODIFIER_MOTION_NONE)
-    LinkLuaModifier("modifier_summon_disorder", "engine/modifiers/modifier_minion_summon_disorder", LUA_MODIFIER_MOTION_NONE)
+    LinkLuaModifier("modifier_minion_summon_disorder", "engine/modifiers/modifier_minion_summon_disorder", LUA_MODIFIER_MOTION_NONE)
+    LinkLuaModifier("modifier_minion_autoattack", "engine/modifiers/modifier_minion_autoattack", LUA_MODIFIER_MOTION_NONE)
 end
 
 function DS:OnPlayerClickCard(args)
-    local playerID = args.PlayerID
-    local player = PlayerResource:GetPlayer(playerID)
+    local playerid = args.PlayerID
+    local player = PlayerResource:GetPlayer(playerid)
     local hero = player:GetAssignedHero()
     local uid = args.UniqueId
     local card = GetCardByUniqueID(uid)
     local ccb = card:GetCardBehavior()
 
-    hero:SetCurrentActivateCard(card)
+    -- 验证是否满足使用需求
+    local success, reason = card:Validate_BeforeExecute()
+    if not success then
+        EmitSoundOnClient("General.CastFail_AbilityNotLearned", PlayerResource:GetPlayer(playerid))
+        Notifications:Bottom(playerid,{text = reason, duration=1, style={color="red";["font-size"] = "30px"}})
+        return
+    end
+
+    hero:SetCurrentActiveCard(card)
 
     CustomGameEventManager:Send_ServerToPlayer(player,"ds_execute_card_proxy",{
         behavior = ccb,

@@ -1,4 +1,17 @@
+function CDOTA_BaseNPC:CanAttack(target)
+    if self:IsRangedAttacker() and self:IsTargetOnNeighborLine(target) then
+        return true
+    end
+    if not self:IsRangedAttacker() and (not target:HasFlyMovementCapability()) and self:IsTargetOnSameLine(target) then
+        return true
+    end
 
+    if not GameRules.BattleField:IsMinionInEnemyBaseArea(self) and target:IsRealHero() then
+        return false
+    end
+
+    return true
+end
 
 function CDOTA_BaseNPC:InitDSMinion()
     self.hero = nil
@@ -14,7 +27,10 @@ function CDOTA_BaseNPC:GetPlayer()
 end
 
 function CDOTA_BaseNPC:StartMinionAIThink()
-    self.ent:SetContextThink(DoUniqueString("mb"), function()
+
+    self:AddNewModifier(self, nil, "modifier_minion_autoattack", {})
+
+    self:SetContextThink(DoUniqueString("mb"), function()
         if not (IsValidEntity(self) and self:IsAlive()) then
             return nil
         end
@@ -22,22 +38,45 @@ function CDOTA_BaseNPC:StartMinionAIThink()
         -- 根据当前的位置刷新单位所属的战场行
         local o = self:GetAbsOrigin()
         local battle_line = GameRules.BattleField:GetPositionBattleLine(o)
-        if self.battle_line and self.battle_line ~= battle_line then
+        if not self.battle_line then
+            self.battle_line = battle_line
+        elseif self.battle_line ~= battle_line then
             self.battle_line:RemoveMinion(self)
             self.battle_line = battle_line
         end
         self.battle_line:AddMinion(self)
 
         if GameRules.TurnManager:GetPhase() == TURN_PHASE_BATTLE then
-            local target_pos = self:GetCurrentGoalTargetPos()
-            if not AggroFilter(self) and target_pos ~= self.target_pos then
-                self.target_pos = target_pos
-                self:MoveToPositionAggressive(target_pos)
-            else
-                self.target_pos = nil
+            if self.attack_target and IsValidAlive(self.attack_target) then
+                self.disable_autoattack = 0
+                return 0.03
             end
+
+            local target = self:GetAggroTarget() or self:GetAttackTarget()
+            if target and IsValidAlive(target) and self:CanAttack(target) then
+                self.disable_autoattack = 0
+                self.attack_target = target
+                return 0.03
+            end
+            
+            local enemies = FindEnemiesInRadius(self, self:GetAcquisitionRange())
+            if #enemies > 0 then
+                for _, e in pairs(enemies) do
+                    if self:CanAttack(e) then
+                        self:MoveToTargetToAttack(e)
+                        self.attack_target = e
+                        self.disable_autoattack = 0
+                        return 0.03
+                    end
+                end
+            end
+
+            self.disable_autoattack = 1
+            local target_pos = self:GetCurrentGoalTargetPos()
+            self:MoveToPositionAggressive(target_pos)
+            return 0.03
         else
-            self:Stop()
+            -- self:Stop()
         end
 
         return 0.03
@@ -93,9 +132,9 @@ function CDOTA_BaseNPC:GetCurrentGoalTargetPos()
     -- 如果在线上，往另一侧移动
     if GameRules.BattleField:IsMinionInLine(self) then
         if self:GetTeamNumber() == DOTA_TEAM_GOODGUYS then
-            return self:GetBattleLine():GetRight()
+            return self:GetBattleLine():GetRight() + Vector(50,0,0)
         elseif self:GetTeamNumber() == DOTA_TEAM_BADGUYS then
-            return self:GetBattleLine():GetLeft()
+            return self:GetBattleLine():GetLeft() - Vector(50,0,0)
         end
     end
 

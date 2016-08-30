@@ -20,7 +20,7 @@ end
 function Deck:DisplayData()
     for i = 1, self.cards:Count() do
         local card = self.cards:GetData(i)
-        print(string.format("DeckCardList No-[%d] = CardID[%s] - UID[%s]",i, card:GetID(), card:GetUniqueID()))
+        -- print(string.format("DeckCardList No-[%d] = CardID[%s] - UID[%s]",i, card:GetID(), card:GetUniqueID()))
     end
     print("-------------DECK DISPLAY FINISHED---------------")
 end
@@ -36,7 +36,6 @@ function Deck:Shuffle()
 
     while( i-1 > 0) do
         local j = RandomInt(1, i)
-        print("attempt to swap",i,j)
         self.cards:Swap(i, j)
         i = i - 1
     end

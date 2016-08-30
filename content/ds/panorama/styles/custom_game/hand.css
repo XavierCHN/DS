@@ -94,8 +94,8 @@
     border: 2px solid black;
 }
 
-#CardName{
-    vertical-align:center;
+#CardName {
+    vertical-align: center;
 }
 
 .MainAttributeStrength .CardTitlePanel {
@@ -122,9 +122,11 @@
     padding-right: 5px;
     border: 2px solid black;
 }
-#CardType{
+
+#CardType {
     vertical-align: center;
 }
+
 .MainAttributeStrength .CardTypePanel {
     background-color: foreColorStr;
 }
@@ -161,6 +163,7 @@
 .CardDescription_Ability_Lore {
     background-color: foreColorNone;
     height: 90px;
+    width: 100%;
     border: 2px solid black;
     padding: 5px;
     flow-children: down;
@@ -187,6 +190,10 @@
 
 #IllusionArtist {
     margin-left: 5px;
+}
+
+#CardLore .Empty{
+    visibility: collapse;
 }
 
 .text-h1 {

@@ -7,7 +7,7 @@ function modifier_minion_disable_attack:CheckState()
 end
 
 function modifier_minion_disable_attack:IsHidden()
-    return true
+    return false
 end
 
 function modifier_minion_disable_attack:IsPurgable()

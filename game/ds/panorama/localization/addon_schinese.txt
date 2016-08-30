@@ -17,14 +17,12 @@
     "PrefixType_hero"      "英雄"
     
     "SubType_test"          "测试副类别"
+    "SubType_creep"         "小兵"
+    
     "CardType_0"            "属性"
     "CardType_1"            "法术"
     "CardType_2"            "生物"
     "CardType_3"            "装备"
-
-	"test_card_title"		"测试标题"
-	"test_card_type"		"测试类别"
-	"test_card_description"	"描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试描述测试"
 
     "CardName_00001"       "力量"
     "CardDescription_00001"  "使用这张卡牌，增加一点力量和一点魔法"
@@ -47,4 +45,5 @@
     "cant_cast_at_enemy_field"  "无法在敌方阵地使用"
     "cant_cast_at_my_field"     "无法在我方阵地使用"
     "game_havent_started_yet"  "游戏尚未开始"
+
 }

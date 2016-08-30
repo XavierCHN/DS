@@ -1,12 +1,21 @@
-TurnManager = class({})
+if TurnManager == nil then TurnManager = class({}) end
 
 function TurnManager:Start()
 	self.turnCount = 0
-
 	self:SelectFirstActivePlayer()
 	self:ShufflePlayerDeckAndDrawInitialCards()
-
 	GameRules.AllMinions = GameRules.AllMinions or {}
+	CustomGameEventManager:RegisterListener("ds_player_end_phase", Dynamic_Wrap(TurnManager, "OnPlayerSkipPhase"))
+end
+
+function TurnManager:OnPlayerSkipPhase(args)
+	local playerid = args.PlayerID
+	if playerid ~= self.ActivePlayer:GetPlayerID() then return end
+	
+	local turn = self.current_turn
+	if not turn then return end
+	if turn:GetCurrentPhase() == TURN_PHASE_BATTLE then return end
+	turn:EndPhase()
 end
 
 function TurnManager:SelectFirstActivePlayer()
@@ -28,131 +37,47 @@ function TurnManager:ShufflePlayerDeckAndDrawInitialCards()
 	self.nfp:DrawCard(NUM_INIT_CARD_COUNT + 1)
 end
 
-function TurnManager:SetPhase(newPhase)
-	self.phase = newPhase
-
-	if newPhase == TURN_PHASE_STRATEGY then
-		self.phase_duration = DS_ROUND_TIME_STRATEGY
-		self.phase_start_time = GameRules:GetGameTime()
-
-		for k, minion in pairs(GameRules.AllMinions) do
-			if IsValidEntity(minion) and minion:IsAlive() then
-				minion:RemoveModifierByName("modifier_summon_disorder") -- 在回合开始阶段去掉所有的召唤失调状态
-			else
-				GameRules.AllMinions[k] = nil
-			end
-		end
-
-	elseif newPhase == TURN_PHASE_BATTLE then
-		self.phase_duration = DS_ROUND_TIME_BATTLE
-		self.phase_start_time = GameRules:GetGameTime()
-
-		for k, minion in pairs(GameRules.AllMinions) do
-			if IsValidEntity(minion) and minion:IsAlive() then
-				if not minion:HasModifier("modifier_summon_disorder") or minion:HasModifier("ds_charge") then
-					minion:RemoveModifierByName("modifier_minion_rooted")
-					minion:RemoveModifierByName("modifier_minion_disable_attack")
-				else
-					minion:RemoveModifierByName("modifier_minion_disable_attack")
-				end
-			else
-				GameRules.AllMinions[k] = nil
-			end
-		end
-
-	elseif newPhase == TURN_PHASE_POST_BATTLE then
-		self.phase_duration = DS_ROUND_TIME_POST_BATTLE
-		self.phase_start_time = GameRules:GetGameTime()
-
-		for k, minion in pairs(GameRules.AllMinions) do
-			if IsValidEntity(minion) and minion:IsAlive() then
-				minion:AddNewModifier(minion, nil, "modifier_minion_disable_attack", {})
-				minion:AddNewModifier(minion, nil, "modifier_minion_rooted", {})
-			else
-				GameRules.AllMinions[k] = nil
-			end
-		end
-	end
-end
-
 function TurnManager:GetPhase()
-	return self.phase
+	return self.current_turn:GetPhase()
 end
 
 function TurnManager:Run()
 
-	self.game_started = true
-
 	-- 启动第一个回合
-	self:StartNewRound()
+	self.ap = self.fp
+	self.current_turn = Turn(self.ap)
+	self.current_turn:Start()
+
+	self.game_started = true
 
 	-- 启动主循环计时器
 	Timers:CreateTimer(function()
-
-		local t = GameRules:GetGameTime()
-		if t - self.phase_start_time > self.phase_duration then
-			if self.phase == TURN_PHASE_POST_BATTLE then
-				-- 切换主动玩家并开始新回合
-				self:ToggleActivePlayer()
-				self:StartNewRound()
+		if self.current_turn:IsTurnEnd() then
+			if self.ap == self.fp then
+				self.ap = self.nfp
+			else
+				self.ap = self.fp
 			end
-			if self.phase == TURN_PHASE_BATTLE then
-				self:SetPhase(TURN_PHASE_POST_BATTLE)
-			end
-			if self.phase == TURN_PHASE_STRATEGY then
-				self:SetPhase(TURN_PHASE_BATTLE)
-			end
+			self.current_turn = Turn(self.ap)
+			self.current_turn:Start()
 		end
 		return 0.03
 	end)
-
-	-- 启动倒计时计时器（加大间隔避免发送太多指令到客户端）
-	Timers:CreateTimer(function()
-		local t = GameRules:GetGameTime()
-		local time_remaining = self.phase_duration - (t - self.phase_start_time)
-		CustomGameEventManager:Send_ServerToAllClients("drt", { -- round time remaining timer!
-			p = self.phase,
-			t = time_remaining
-		})
-		return 0.3
-	end)
-end
-
-function TurnManager:StartNewRound()
-	local ap = self:GetActivePlayer()
-	local nap = self:GetNoneActivePlayer()
-	ap:DrawCard(1)
-	ap:FillManaPool()
-	ap:SetHasUsedAttributeCardThisRound(false)
-
-	self:SetPhase(TURN_PHASE_STRATEGY)
-
-	CustomGameEventManager:Send_ServerToAllClients("ds_turn_start", {
-		PlayerID = ap:GetPlayerID(),
-	})
-	Notifications:Top(ap:GetPlayerID(),{text="your_round_start", duration=2, style={color="white",["font-size"] = "100px"}})
-	Notifications:Top(nap:GetPlayerID(),{text="enemy_round_start", duration=2, style={color="white",["font-size"] = "100px"}})
-
-end
-
-function TurnManager:ToggleActivePlayer()
-	-- 交换主动玩家和被动玩家
-	self.ActivePlayer, self.NoneActivePlayer = self.NoneActivePlayer, self.ActivePlayer
-
-	CustomGameEventManager:Send_ServerToAllClients("ds_active_player_changed",{
-		ap = self.ActivePlayer:GetPlayerID(),
-		nap = self.NoneActivePlayer:GetPlayerID(),
-	})
 end
 
 function TurnManager:GetActivePlayer()
-	return self.ActivePlayer
+	return self.current_turn:GetPlayer()
 end
 
 function TurnManager:GetNoneActivePlayer()
-	return self.NoneActivePlayer
+	return self.ap
 end
 
 function TurnManager:HasGameStarted()
 	return self.game_started
 end
+
+
+Convars:RegisterCommand("debug_force_phase_end", function()
+	GameRules.TurnManager.current_turn:EndPhase()
+end, "" , FCVAR_CHEAT)
