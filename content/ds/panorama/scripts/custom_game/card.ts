@@ -1,8 +1,8 @@
 enum CardType {
     CARD_TYPE_ATTRIBUTE = 0,
-    CARD_TYPE_SPELL = 2,
-    CARD_TYPE_MINION = 3,
-    CARD_TYPE_EQUIPMENT = 4
+    CARD_TYPE_SPELL = 1,
+    CARD_TYPE_MINION = 2,
+    CARD_TYPE_EQUIPMENT = 3
 }
 
 enum CardAttribute {
@@ -23,8 +23,7 @@ class Card{
     cardType: CardType;
     // 是否即将删除
     shouldRemove: boolean = false;
-    // 高亮状态
-    highLightState :string = "";
+    
     // 卡片数据
     cardData:any;
 
@@ -74,6 +73,48 @@ class Card{
         // 设置卡片图片
         this.panel.FindChildTraverse("CardIllusion").SetImage(`file://{resources}/images/custom_game/cards/${dig_5_card_id}.png`)
         
+        // 设置费用
+        let cost_panel = this.panel.FindChildTraverse("CardCost");
+        let mana_label = this.panel.FindChildTraverse("CardCost_Mana");
+        let attr_panel = this.panel.FindChildTraverse("CardCost_Attributes");
+        let str_cost = this.cardData.cost.str;
+        let agi_cost = this.cardData.cost.agi;
+        let int_cost = this.cardData.cost.int;
+        let mana_cost = this.cardData.cost.mana;
+        if (
+            ( str_cost == undefined || str_cost <= 0) &&
+            ( agi_cost == undefined || agi_cost <= 0) &&
+            ( int_cost == undefined || int_cost <= 0) &&
+            ( mana_cost == undefined || mana_cost <= 0)
+        ){
+            cost_panel.AddClass("NoCost");
+        }else{
+            cost_panel.RemoveClass("NoCost");
+            attr_panel.RemoveAndDeleteChildren();
+            if(str_cost !== undefined && str_cost > 0){
+                for( let i:number = 0;i < str_cost; i++){
+                    let s = $.CreatePanel("Image", attr_panel, "");
+                    s.SetImage("file://{resources}/images/custom_game/card/card_cost_str.png");
+                }
+            }
+            if(agi_cost !== undefined && agi_cost > 0){
+                for( let i:number = 0;i < agi_cost; i++){
+                    let s = $.CreatePanel("Image", attr_panel, "");
+                    s.SetImage("file://{resources}/images/custom_game/card/card_cost_agi.png");
+                }
+            }
+            if(int_cost !== undefined && int_cost > 0){
+                for( let i:number = 0;i < int_cost; i++){
+                    let s = $.CreatePanel("Image", attr_panel, "");
+                    s.SetImage("file://{resources}/images/custom_game/card/card_cost_int.png");
+                }
+            }
+
+            mana_cost = mana_cost || 0;
+            mana_label.text = mana_cost;
+        }
+        
+
         // 设置卡片名称和类别
         this.panel.FindChildTraverse("CardName").text = $.Localize(`#CardName_${dig_5_card_id}`);
         let prefix_type_str = "";
@@ -87,7 +128,7 @@ class Card{
         for(let id in st){
             sub_type_str += $.Localize(`#SubType_${st[id]}`);
         }
-        this.panel.FindChildTraverse("CardType").text = `${prefix_type_str}${card_type_str} ~ ${sub_type_str}`
+        this.panel.FindChildTraverse("CardType").text = `${prefix_type_str}${card_type_str} ${sub_type_str==""?"":"~"} ${sub_type_str}`
 
         // 设置卡片描述
         let abilities = this.cardData.abilities;
@@ -113,6 +154,12 @@ class Card{
 
         this.panel.FindChildTraverse("CardID").text = `${$.Localize("#CardID")}:${dig_5_card_id}`
         this.panel.FindChildTraverse("IllusionArtist").text = `${$.Localize("#CardArtist")}:${this.cardData.artist || $.Localize("#Unknown")}`
+
+        // 设置生物的攻击力和防御力
+        if(this.cardType == CardType.CARD_TYPE_MINION){
+            let ad_panel = this.panel.FindChildTraverse("AttackDefLabel");
+            ad_panel.text = `${this.cardData.atk}/${this.cardData.hp}`;
+        }
     }
 }
 
@@ -123,6 +170,9 @@ class HandCard extends Card{
 
     // 用以记录当前手牌数量
     handCount: number = 1;
+
+    // 高亮状态
+    highLightState :string = "";
 
     constructor(parent:Panel, id: number, uniqueId: string, cardType: number, cardData:any){
 
@@ -152,11 +202,8 @@ class HandCard extends Card{
     }
 
     UpdateHighlightState(newState:string):void{
-        if(newState !== ""){
-            this.panel.SetHasClass(newState, true)
-        }else{
-            this.panel.SetHasClass(this.highLightState, false);
-        }
+        this.panel.SetHasClass(this.highLightState, false);
+        this.panel.SetHasClass(newState, true);
         this.highLightState = newState;
     }
 

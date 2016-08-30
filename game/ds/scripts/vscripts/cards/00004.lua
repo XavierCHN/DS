@@ -2,11 +2,12 @@ module(..., package.seeall)
 
 card_type = CARD_TYPE_MINION
 cast_position = CARD_CAST_POSITION_MY_FIELD
-main_attr = ATTRIBUTE_NONE
+main_attr = ATTRIBUTE_STRENGTH
 card_behavior = CARD_BEHAVIOR_POINT
-cast_time = CARD_CASTTIME_MY_ROUND
+cast_time = CARD_CASTTIME_ENEMY_ROUND
+
 expansion = 0
-cost = {mana = 2, str = 1}
+cost = {mana = 1, str = 1, agi = 0, int = 0}
 sub_type = {"creep"}
 artist = "Xavier"
 

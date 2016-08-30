@@ -6,9 +6,9 @@ var __extends = (this && this.__extends) || function (d, b) {
 var CardType;
 (function (CardType) {
     CardType[CardType["CARD_TYPE_ATTRIBUTE"] = 0] = "CARD_TYPE_ATTRIBUTE";
-    CardType[CardType["CARD_TYPE_SPELL"] = 2] = "CARD_TYPE_SPELL";
-    CardType[CardType["CARD_TYPE_MINION"] = 3] = "CARD_TYPE_MINION";
-    CardType[CardType["CARD_TYPE_EQUIPMENT"] = 4] = "CARD_TYPE_EQUIPMENT";
+    CardType[CardType["CARD_TYPE_SPELL"] = 1] = "CARD_TYPE_SPELL";
+    CardType[CardType["CARD_TYPE_MINION"] = 2] = "CARD_TYPE_MINION";
+    CardType[CardType["CARD_TYPE_EQUIPMENT"] = 3] = "CARD_TYPE_EQUIPMENT";
 })(CardType || (CardType = {}));
 var CardAttribute;
 (function (CardAttribute) {
@@ -24,8 +24,6 @@ var Card = (function () {
         this.card_id = -1;
         // 是否即将删除
         this.shouldRemove = false;
-        // 高亮状态
-        this.highLightState = "";
         this.card_id = id;
         this.cardType = cardType;
         this.cardData = cardData;
@@ -66,6 +64,44 @@ var Card = (function () {
         var dig_5_card_id = str.substring(str.length - 5, str.length);
         // 设置卡片图片
         this.panel.FindChildTraverse("CardIllusion").SetImage("file://{resources}/images/custom_game/cards/" + dig_5_card_id + ".png");
+        // 设置费用
+        var cost_panel = this.panel.FindChildTraverse("CardCost");
+        var mana_label = this.panel.FindChildTraverse("CardCost_Mana");
+        var attr_panel = this.panel.FindChildTraverse("CardCost_Attributes");
+        var str_cost = this.cardData.cost.str;
+        var agi_cost = this.cardData.cost.agi;
+        var int_cost = this.cardData.cost.int;
+        var mana_cost = this.cardData.cost.mana;
+        if ((str_cost == undefined || str_cost <= 0) &&
+            (agi_cost == undefined || agi_cost <= 0) &&
+            (int_cost == undefined || int_cost <= 0) &&
+            (mana_cost == undefined || mana_cost <= 0)) {
+            cost_panel.AddClass("NoCost");
+        }
+        else {
+            cost_panel.RemoveClass("NoCost");
+            attr_panel.RemoveAndDeleteChildren();
+            if (str_cost !== undefined && str_cost > 0) {
+                for (var i = 0; i < str_cost; i++) {
+                    var s = $.CreatePanel("Image", attr_panel, "");
+                    s.SetImage("file://{resources}/images/custom_game/card/card_cost_str.png");
+                }
+            }
+            if (agi_cost !== undefined && agi_cost > 0) {
+                for (var i = 0; i < agi_cost; i++) {
+                    var s = $.CreatePanel("Image", attr_panel, "");
+                    s.SetImage("file://{resources}/images/custom_game/card/card_cost_agi.png");
+                }
+            }
+            if (int_cost !== undefined && int_cost > 0) {
+                for (var i = 0; i < int_cost; i++) {
+                    var s = $.CreatePanel("Image", attr_panel, "");
+                    s.SetImage("file://{resources}/images/custom_game/card/card_cost_int.png");
+                }
+            }
+            mana_cost = mana_cost || 0;
+            mana_label.text = mana_cost;
+        }
         // 设置卡片名称和类别
         this.panel.FindChildTraverse("CardName").text = $.Localize("#CardName_" + dig_5_card_id);
         var prefix_type_str = "";
@@ -79,7 +115,7 @@ var Card = (function () {
         for (var id in st) {
             sub_type_str += $.Localize("#SubType_" + st[id]);
         }
-        this.panel.FindChildTraverse("CardType").text = "" + prefix_type_str + card_type_str + " ~ " + sub_type_str;
+        this.panel.FindChildTraverse("CardType").text = "" + prefix_type_str + card_type_str + " " + (sub_type_str == "" ? "" : "~") + " " + sub_type_str;
         // 设置卡片描述
         var abilities = this.cardData.abilities;
         var ability_descriptions = "";
@@ -105,6 +141,11 @@ var Card = (function () {
         }
         this.panel.FindChildTraverse("CardID").text = $.Localize("#CardID") + ":" + dig_5_card_id;
         this.panel.FindChildTraverse("IllusionArtist").text = $.Localize("#CardArtist") + ":" + (this.cardData.artist || $.Localize("#Unknown"));
+        // 设置生物的攻击力和防御力
+        if (this.cardType == CardType.CARD_TYPE_MINION) {
+            var ad_panel = this.panel.FindChildTraverse("AttackDefLabel");
+            ad_panel.text = this.cardData.atk + "/" + this.cardData.hp;
+        }
     };
     return Card;
 }());
@@ -117,6 +158,8 @@ var HandCard = (function (_super) {
         this.uniqueId = "";
         // 用以记录当前手牌数量
         this.handCount = 1;
+        // 高亮状态
+        this.highLightState = "";
         this.uniqueId = uniqueId;
         this.panel.SetPanelEvent("onmouseover", this.ShowHandCardTooltip.bind(this));
         this.panel.SetPanelEvent("onmouseout", this.HideHandCardTooltip.bind(this));
@@ -137,12 +180,8 @@ var HandCard = (function (_super) {
         this.panel.DeleteAsync(0);
     };
     HandCard.prototype.UpdateHighlightState = function (newState) {
-        if (newState !== "") {
-            this.panel.SetHasClass(newState, true);
-        }
-        else {
-            this.panel.SetHasClass(this.highLightState, false);
-        }
+        this.panel.SetHasClass(this.highLightState, false);
+        this.panel.SetHasClass(newState, true);
         this.highLightState = newState;
     };
     HandCard.prototype.SetHandCount = function (count) {

@@ -37,7 +37,7 @@ function Turn:Start()
 
         local t = GameRules:GetGameTime()
         if t - self.phase_start_time > self.phase_duration then
-
+            self:EndPhase()
         end
 
         return 0.03

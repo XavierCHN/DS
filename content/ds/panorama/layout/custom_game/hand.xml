@@ -14,7 +14,6 @@
 			<Panel class="CardRoot">
 			</Panel>
 		</snippet>
-		
 		<!--卡牌-->
 		<snippet name="Card">
 			<Panel class="CardRoot">
@@ -22,15 +21,16 @@
 					<Panel class="CardTitlePanel">
 						<Label class="text-h1" id="CardName" />
 						<Panel id="CardCost">
-							<Panel id="CardCost_Mana">
-							</Panel>
-							<Panel id="CardCost_Attributes">
+							<Panel id="CardCost_Attributes" />
+							<Panel class="CardCost_ManaHolder">
+								<Label id="CardCost_Mana" />
 							</Panel>
 						</Panel>
 					</Panel>
 					<Panel class="CardIllusionPanel">
 						<Image id="CardIllusion" class="CardIllusion"/>
 					</Panel>
+
 					<Panel class="CardTypePanel">
 						<Label id="CardType" class="text-h1" text="#test_card_type" />
 					</Panel>
@@ -43,12 +43,15 @@
 							<Label class="text-h4" id="CardID" />
 							<Label class="text-h4" id="IllusionArtist" />
 						</Panel>
+						<Panel class="MinionAttackPanel">
+							<Label id="AttackDefLabel" class="AttackDefLabel" text="0/0" />
+						</Panel>
 					</Panel>
 				</Panel>
 			</Panel>
 		</snippet>
 	</snippets>
-	
+
 	<Panel class="HandRoot" hittest="false">
 		<Panel id="HandCardContainerBackground" hittest="false">
 			<Panel id="EnemyHandCardContainer" hittest="false" />

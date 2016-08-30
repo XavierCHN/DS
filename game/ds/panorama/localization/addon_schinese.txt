@@ -26,18 +26,23 @@
 
     "CardName_00001"       "力量"
     "CardDescription_00001"  "使用这张卡牌，增加一点力量和一点魔法"
-    "CardLore_00001"		"Giff DIRETIDE or RIOT!"
+    "CardLore_00001"		"想要无以匹敌的力量吗？来，拿去吧！"
 
     "CardName_00002"       "敏捷"
     "CardDescription_00002"  "使用这张卡牌，增加一点敏捷和一点魔法"
-    "CardLore_00002"        "Giff DIRETIDE or RIOT!"
+    "CardLore_00002"        "我能给予你无以伦比的速度！"
 
     "CardName_00003"       "智力"
     "CardDescription_00003"  "使用这张卡牌，增加一点智力和一点魔法"
-    "CardLore_00003"        "Giff DIRETIDE or RIOT!"
+    "CardLore_00003"        "靠近一些，让我来激发你的内在活力！"
+
+    "CardName_00004"       "天辉近战小兵"
+    "CardDescription_00004"  ""
+    "CardLore_00004"        "这些英勇无畏的战士们，不知死亡为何物。必死则生，幸生则死。"
 
     "Ability_ds_flying"     "飞行"
     "Ability_ds_lifesteal"  "吸血"
+    "Ability_ds_charge"     "冲锋"
 
     "one_attribute_card_one_round"  "一回合只能使用一张属性牌"
     "cannot_use_at_enemy_round" "无法在敌方回合使用"

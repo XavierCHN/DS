@@ -2,6 +2,16 @@
   <styles>
     <include src="file://{resources}/styles/custom_loading_screen.css" />
   </styles>
+  <script>
+    function checkShouldPaddingLeft(){
+      if (Game.GetState() == 2){
+        $("#loading").SetHasClass("padding_left", true);
+      }else{
+        $.Schedule(0.5, checkShouldPaddingLeft);
+      }
+    }
+    checkShouldPaddingLeft();
+  </script>
   <Panel class="AddonLoadingRoot">
       <Image id="loading" src="file://{images}/custom_game/loading_screen/loading_background.png" />
   </Panel>

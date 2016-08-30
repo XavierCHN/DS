@@ -37,6 +37,10 @@
     box-shadow: foreColorNone 1px 1px 10px 0px;
 }
 
+.State_Greyout {
+    wash-color: grey;
+}
+
 .MainAttributeStrength .CardRoot {
     box-shadow: foreColorStr 1px 1px 10px 0px;
 }
@@ -92,6 +96,42 @@
     padding-left: 10px;
     padding-right: 5px;
     border: 2px solid black;
+}
+
+#CardCost {
+    flow-children: right;
+    vertical-align: center;
+    horizontal-align: right;
+    margin-right: 5px;
+}
+
+#CardCost .NoCost {
+    visibility: collapse;
+}
+
+#CardCost_Attributes {
+    vertical-align: center;
+    margin-right: 3px;
+    flow-children: right;
+}
+
+#CardCost_Attributes Image {
+    width: 13px;
+    height: 13px;
+}
+
+.CardCost_ManaHolder {
+    vertical-align: center;
+    border-radius: 4px;
+}
+
+#CardCost_Mana {
+    font-size: 20px;
+    font-weight: bold;
+    color: black;
+    vertical-align: center;
+    text-align: center;
+    min-width: 16px;
 }
 
 #CardName {
@@ -192,8 +232,44 @@
     margin-left: 5px;
 }
 
-#CardLore .Empty{
+#CardLore .Empty {
     visibility: collapse;
+}
+
+.MinionAttackPanel {
+    background-color: foreColorNone;
+    height: 23px;
+    width: 50px;
+    border-radius: 3px;
+    border: 2px solid black;
+    vertical-align: bottom;
+    horizontal-align: right;
+    margin-bottom: 10px;
+    margin-right: 5px;
+    visibility: collapse;
+}
+
+.MinionCard .MinionAttackPanel {
+    visibility: visible;
+}
+
+.MainAttributeStrength .MinionAttackPanel {
+    background-color: foreColorStr;
+}
+
+.MainAttributeAgility .MinionAttackPanel {
+    background-color: foreColorAgi;
+}
+
+.MainAttributeIntellect .MinionAttackPanel {
+    background-color: foreColorInt;
+}
+
+.AttackDefLabel {
+    vertical-align: center;
+    horizontal-align: center;
+    color: black;
+    font-size: 16px;
 }
 
 .text-h1 {
