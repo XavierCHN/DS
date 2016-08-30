@@ -47,11 +47,11 @@ function TurnManager:SetPhase(newPhase)
 
 		for k, minion in pairs(GameRules.AllMinions) do
 			if IsValidEntity(minion) and minion:IsAlive() then
-				if minion:HasModifier("modifier_summon_disorder") then
+				if not minion:HasModifier("modifier_summon_disorder") or minion:HasModifier("ds_charge") then
+					minion:RemoveModifierByName("modifier_minion_rooted")
 					minion:RemoveModifierByName("modifier_minion_disable_attack")
 				else
 					minion:RemoveModifierByName("modifier_minion_disable_attack")
-					minion:RemoveModifierByName("modifier_minion_rooted")
 				end
 			else
 				GameRules.AllMinions[k] = nil

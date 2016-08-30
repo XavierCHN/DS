@@ -81,6 +81,8 @@ function BattleLine:constructor(battleField, lineNumber)
     
     self.left_corner = self.origin - Vector(battleField.width / 2, 0, 0)
     self.right_corner = self.origin + Vector(battleField.width / 2, 0, 0)
+
+    self.minions = {}
 end
 
 function BattleLine:GetLeft()
@@ -105,4 +107,26 @@ function BattleLine:GetNearestCornerForMyTeam(team)
     elseif team == DOTA_TEAM_BADGUYS then
         return self:GetRight()
     end
+end
+
+function BattleLine:AddMinion(minion)
+    self.minions[minion] = true
+end
+
+function BattleLine:RemoveMinion(minion)
+    self.minions[minion] = nil
+end
+
+function BattleLine:IsLineEmptyForPlayer(hero)
+    for minion, _ in pairs(self.minions) do
+        if IsValidEntity(minion) and minion:IsAlive() then
+            if minion:GetPlayer() == hero then
+                return false
+            end
+        else
+            self.minions[minion] = nil
+        end
+    end
+
+    return true
 end

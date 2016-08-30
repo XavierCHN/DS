@@ -179,6 +179,14 @@ function Card:Validate(ability, args)
         end
     end
     
+    -- 通用规则，在同一行同时只能释放一个单位，除非确认
+    if card:GetType() == CARD_TYPE_MINION then
+        local line = GameRules.BattleField:GetPositionBattleLine(args.target_points[1])
+        if line:IsLineEmptyForPlayer(caster) then
+            return false, "confirm_remove_line_minion"
+        end
+    end
+
     if self.data.validate and type(self.data.validate) == "function" then
         self.data.validate(self, ability, args)
     end

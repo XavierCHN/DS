@@ -1,25 +1,5 @@
 ds_point = class({})
 
-function ds_point:GetCustomCastErrorLocation(vLocation)
-    local hero = self:GetCaster()
-    local card = hero:GetCurrentActiveCard()
-    local validated, reason = card:Validate(self, vLocation)
-    if not validated then
-        return reason
-    end
-
-    return ""
-end
-
-function ds_point:CastFilterResultLocation(vLocation)
-	local hero = self:GetCaster()
-    local card = hero:GetCurrentActiveCard()
-    local validated, _ = card:Validate(self, vLocation)
-    if not validated then
-        return UF_FAIL_CUSTOM
-    end
-end
-
 function ds_point:GetCooldown( nLevel )
     return 0
 end
@@ -27,10 +7,18 @@ end
 function ds_point:OnSpellStart(args)
     local caster = self:GetCaster()
     local card = caster:GetCurrentActiveCard()
-    
+    local point = args.target_points[1]
+
+    local validated, reason = card:Validate(self, point)
+    if not validated then
+        EmitSoundOnClient("General.CastFail_AbilityNotLearned", PlayerResource:GetPlayer(playerid))
+        Notifications:Bottom(playerid,{text= reason, duration=1, style={color="red";["font-size"] = "30px"}})
+        return
+    end
+
 
     if card:GetType() == CARD_TYPE_MINION then
-        CreateCardMinion(card, args.target_points[1], caster, caster:GetPlayerOwner(), caster:GetTeamNumber(), function(minion)
+        caster:CreateCardMinion(card, point, function(minion)
             local atk = card.data.atk
             local hp  = card.data.hp
             minion:SetBaseDamageMax(atk)
@@ -39,6 +27,13 @@ function ds_point:OnSpellStart(args)
             minion:SetHealth(hp)
             minion.ms = card.data.move_speed
             minion.ar = card.data.attack_range
+
+            local abilities = card.data.abilities
+            if abilities and TableCount(abilities) > 0 then
+                for _, ability in pairs(abilities) do
+                    minion:AddAbility(ability):SetLevel(1)
+                end
+            end
         end)
     end
 

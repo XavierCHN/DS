@@ -141,3 +141,18 @@ CustomGameEventManager:RegisterListener("ds_client_request_hero_data", function(
 		hero:SendDataToAllClients()
 	end
 end)
+
+function CDOTA_BaseNPC_Hero:CreateCardMinion(card, pos, callback)
+    local mn = card:GetMinionName()
+    local ent = CreateUnitByNameAsync(mn, pos, true, self, self:GetPlayerOwner(), team, function(ent)
+        ent:InitDSMinion()
+        ent:SetPlayer(self)
+        ent:StartMinionAIThink()
+        ent:AddNewModifier(ent, nil, "modifier_minion_rooted", {})
+        ent:AddNewModifier(ent, nil, "modifier_minion_disable_attack", {})
+        ent:AddNewModifier(ent, nil, "modifier_minion_data", {})
+        ent:AddNewModifier(ent, nil, "modifier_minion_summon_disorder", {})
+        table.insert(GameRules.AllMinions, ent)
+        callback(ent)
+    end)
+end

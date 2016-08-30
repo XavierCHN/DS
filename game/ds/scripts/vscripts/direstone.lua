@@ -3,10 +3,12 @@ if DS == nil then DS = class({}) end
 require 'enums'
 require 'const'
 
-require 'util.functions'
+require 'utils.functions'
 require 'utils.json'
 require 'utils.debug_card_list'
 require 'utils.list'
+require 'utils.attack'
+require 'utils.units'
 
 require 'libraries.timers'
 require 'libraries.playertables'

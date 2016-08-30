@@ -1,65 +1,4 @@
--- card: 卡牌class实例
--- 任何魔法、技能、效应要创造单位
--- 必须使用Card类实例作为参数，以方便完成回手之类的机制
-function CreateCardMinion(card, pos, hero, player_owner, team, callback)
-    local mn = card:GetMinionName()
-    local ent = CreateUnitByNameAsync(mn, pos, true, npc_owner, player_owner, team, function(ent)
-        ent:InitDSMinion()
-        ent:SetPlayer(hero)
-        ent:StartMinionAIThink()
-        ent:AddNewModifier(ent, nil, "modifier_minion_rooted", {})
-        ent:AddNewModifier(ent, nil, "modifier_minion_disable_attack", {})
-        ent:AddNewModifier(ent, nil, "modifier_minion_data", {})
-        ent:AddNewModifier(ent, nil, "modifier_minion_summon_disorder", {})
-        table.insert(GameRules.AllMinions, ent)
-        callback(ent)
-    end)
-end
 
-function UnitCanAttackTarget(unit, target)
-    if unit:IsRangedAttacker() and unit:IsTargetOnNeighborLine(target) then
-        return true
-    end
-    if not unit:IsRangedAttacker() and (not target:HasFlyMovementCapability()) and unit:IsTargetOnSameLine(target) then
-        return true
-    end
-end
-
-function AggroFilter( unit )
-    local target = unit:GetAttackTarget() or unit:GetAggroTarget()
-    if target then
-        local bCanAttackTarget = UnitCanAttackTarget(unit, target)
-        if target ~= unit.attack_target then
-            if bCanAttackTarget then
-                unit.attack_target = target
-                return true
-            else
-                local enemies = FindEnemiesInRadius(unit, unit:GetAcquisitionRange())
-                if #enemies > 0 then
-                    for _,enemy in pairs(enemies) do
-                        if UnitCanAttackTarget(unit, enemy) then
-                            Attack(unit, enemy)
-                            return true
-                        end
-                    end
-                end
-
-                if #enemies <= 0 then
-                    unit:DisableAutoAttack()
-                    return false
-                end
-            end
-            return true
-        end
-    end
-    return false
-end
-
-function Attack( unit, target )
-    unit:MoveToTargetToAttack(target)
-    unit.attack_target = target
-    unit:EnableAutoAttack()
-end
 
 function CDOTA_BaseNPC:InitDSMinion()
     self.hero = nil
@@ -70,7 +9,7 @@ function CDOTA_BaseNPC:SetPlayer(hero)
     self.hero = hero
 end
 
-function CDOTA_BaseNPC:GetPlayer(hero)
+function CDOTA_BaseNPC:GetPlayer()
     return self.hero
 end
 
@@ -82,7 +21,12 @@ function CDOTA_BaseNPC:StartMinionAIThink()
 
         -- 根据当前的位置刷新单位所属的战场行
         local o = self:GetAbsOrigin()
-        self.battle_line = GameRules.BattleField:GetPositionBattleLine(o)
+        local battle_line = GameRules.BattleField:GetPositionBattleLine(o)
+        if self.battle_line and self.battle_line ~= battle_line then
+            self.battle_line:RemoveMinion(self)
+            self.battle_line = battle_line
+        end
+        self.battle_line:AddMinion(self)
 
         if GameRules.TurnManager:GetPhase() == TURN_PHASE_BATTLE then
             local target_pos = self:GetCurrentGoalTargetPos()
