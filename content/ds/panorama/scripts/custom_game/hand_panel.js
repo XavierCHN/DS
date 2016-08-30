@@ -18,6 +18,9 @@ function UpdateHandCards(handCardData) {
     for (var uniqueId in hand_cards) {
         hand_cards[uniqueId].shouldRemove = true;
     }
+    var _cc = 0;
+    for (var __x in handCardData)
+        _cc++;
     for (var idx in handCardData) {
         var hand_card_data = JSON.parse(handCardData[idx]);
         var unique_id = hand_card_data.unique_id;
@@ -31,6 +34,7 @@ function UpdateHandCards(handCardData) {
         }
         // 如果这个id还存在于服务器的hand中，那么标记为不需要移除
         hand_cards[unique_id].shouldRemove = false;
+        hand_cards[unique_id].SetHandCount(_cc);
     }
     for (var uniqueId in hand_cards) {
         if (hand_cards[uniqueId].shouldRemove) {

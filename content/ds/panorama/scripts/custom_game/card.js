@@ -10,6 +10,13 @@ var CardType;
     CardType[CardType["CARD_TYPE_MINION"] = 3] = "CARD_TYPE_MINION";
     CardType[CardType["CARD_TYPE_EQUIPMENT"] = 4] = "CARD_TYPE_EQUIPMENT";
 })(CardType || (CardType = {}));
+var CardAttribute;
+(function (CardAttribute) {
+    CardAttribute[CardAttribute["ATTRIBUTE_NONE"] = 0] = "ATTRIBUTE_NONE";
+    CardAttribute[CardAttribute["ATTRIBUTE_STRENGTH"] = 1] = "ATTRIBUTE_STRENGTH";
+    CardAttribute[CardAttribute["ATTRIBUTE_AGILITY"] = 2] = "ATTRIBUTE_AGILITY";
+    CardAttribute[CardAttribute["ATTRIBUTE_INTELLECT"] = 3] = "ATTRIBUTE_INTELLECT";
+})(CardAttribute || (CardAttribute = {}));
 // 卡牌基类
 var Card = (function () {
     function Card(parent, id, cardType, cardData) {
@@ -23,6 +30,24 @@ var Card = (function () {
         this.cardType = cardType;
         this.cardData = cardData;
         this.panel = $.CreatePanel("Panel", parent, "");
+        switch (this.cardData.main_attr) {
+            case CardAttribute.ATTRIBUTE_STRENGTH:
+                $.Msg("str");
+                this.panel.AddClass("MainAttributeStrength");
+                break;
+            case CardAttribute.ATTRIBUTE_AGILITY:
+                $.Msg("agi");
+                this.panel.AddClass("MainAttributeAgility");
+                break;
+            case CardAttribute.ATTRIBUTE_INTELLECT:
+                $.Msg("int");
+                this.panel.AddClass("MainAttributeIntellect");
+                break;
+            case CardAttribute.ATTRIBUTE_NONE:
+                $.Msg("none");
+                this.panel.AddClass("MainAttributeNone");
+                break;
+        }
         switch (cardType) {
             case CardType.CARD_TYPE_ATTRIBUTE:
                 this.panel.AddClass("AttributeCard");
@@ -71,14 +96,14 @@ var Card = (function () {
         var card_description = $.Localize("#CardDescription_" + dig_5_card_id);
         if (card_description == "CardDescription_" + dig_5_card_id)
             card_description = "";
-        this.panel.FindChildTraverse("CardDescription").text = ability_descriptions + "\n" + card_description;
+        this.panel.FindChildTraverse("CardDescription").text = "" + ability_descriptions + (ability_descriptions == "" ? "" : "\n") + card_description;
         var card_lore = $.Localize("#CardLore_" + dig_5_card_id);
         if (card_lore == "" || card_lore == "CardLore_" + dig_5_card_id) {
-            $("#CardLore").AddClass("Empty");
+            this.panel.FindChildTraverse("CardLore").AddClass("Empty");
         }
         else {
-            $("#CardLore").RemoveClass("Empty");
-            $("#CardLore").text = card_lore;
+            this.panel.FindChildTraverse("CardLore").RemoveClass("Empty");
+            this.panel.FindChildTraverse("CardLore").text = card_lore;
         }
         this.panel.FindChildTraverse("CardID").text = $.Localize("#CardID") + ":" + dig_5_card_id;
         this.panel.FindChildTraverse("IllusionArtist").text = $.Localize("#CardArtist") + ":" + (this.cardData.artist || $.Localize("#Unknown"));
@@ -92,12 +117,13 @@ var HandCard = (function (_super) {
         _super.call(this, parent, id, cardType, cardData);
         // 手牌的唯一ID，用以标识这张手牌
         this.uniqueId = "";
+        // 用以记录当前手牌数量
+        this.handCount = 1;
         this.uniqueId = uniqueId;
         this.panel.SetPanelEvent("onmouseover", this.ShowHandCardTooltip.bind(this));
         this.panel.SetPanelEvent("onmouseout", this.HideHandCardTooltip.bind(this));
         this.panel.SetPanelEvent("onactivate", this.OnClickCard.bind(this));
         this.panel.SetHasClass("HandCard", true);
-        $.Msg("New card instance is created, cardid=" + this.card_id + ", uniqueId = " + this.uniqueId);
     }
     HandCard.prototype.ShowHandCardTooltip = function () {
     };
@@ -120,6 +146,11 @@ var HandCard = (function (_super) {
             this.panel.SetHasClass(this.highLightState, false);
         }
         this.highLightState = newState;
+    };
+    HandCard.prototype.SetHandCount = function (count) {
+        this.panel.SetHasClass("CardCount_" + this.handCount, false);
+        this.handCount = count;
+        this.panel.SetHasClass("CardCount_" + this.handCount, true);
     };
     return HandCard;
 }(Card));

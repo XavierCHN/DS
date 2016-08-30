@@ -19,3 +19,9 @@ CARD_CASTTIME_BOTH = 2 -- 双方回合（任意时间都可以使用）
 CARD_CAST_POSITION_MY_FIELD = 0 -- 只能在本方半场使用
 CARD_CAST_POSITION_ENEMY_FIELD = 1 -- 只能在敌方半场使用
 CARD_CAST_POSITION_BOTH = 2 -- 可以在场地的任意位置使用
+
+-- 卡牌的主属性
+ATTRIBUTE_NONE = 0 -- 无属性
+ATTRIBUTE_STRENGTH = 1 -- 力量
+ATTRIBUTE_AGILITY = 2 -- 敏捷
+ATTRIBUTE_INTELLECT = 3 -- 智力

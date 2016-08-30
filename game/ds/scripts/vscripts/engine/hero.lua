@@ -126,7 +126,7 @@ end
 
 function CDOTA_BaseNPC_Hero:SendDataToAllClients()
 	CustomGameEventManager:Send_ServerToAllClients("ds_hero_data_changed", {
-		PlayerID = hero:GetPlayerID(),
+		PlayerID = self:GetPlayerID(),
 		Str = self.attribute_str,
 		Agi = self.attribute_agi,
 		Int = self.attribute_int,

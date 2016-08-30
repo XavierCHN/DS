@@ -5,6 +5,13 @@ enum CardType {
     CARD_TYPE_EQUIPMENT = 4
 }
 
+enum CardAttribute {
+    ATTRIBUTE_NONE = 0,
+    ATTRIBUTE_STRENGTH = 1,
+    ATTRIBUTE_AGILITY = 2,
+    ATTRIBUTE_INTELLECT = 3
+}
+
 // 卡牌基类
 class Card{
 
@@ -26,6 +33,24 @@ class Card{
         this.cardType = cardType;
         this.cardData = cardData;
         this.panel = $.CreatePanel("Panel", parent, "");
+        switch(this.cardData.main_attr){
+            case CardAttribute.ATTRIBUTE_STRENGTH:
+                $.Msg("str");
+                this.panel.AddClass("MainAttributeStrength");
+                break;
+            case CardAttribute.ATTRIBUTE_AGILITY:
+                $.Msg("agi");
+                this.panel.AddClass("MainAttributeAgility");
+                break;
+            case CardAttribute.ATTRIBUTE_INTELLECT:
+                $.Msg("int");
+                this.panel.AddClass("MainAttributeIntellect");
+                break;
+            case CardAttribute.ATTRIBUTE_NONE:
+                $.Msg("none");
+                this.panel.AddClass("MainAttributeNone");
+                break;
+        }
 
         switch (cardType){
             case CardType.CARD_TYPE_ATTRIBUTE:
@@ -79,14 +104,13 @@ class Card{
         }
         let card_description = $.Localize(`#CardDescription_${dig_5_card_id}`);
         if (card_description == `CardDescription_${dig_5_card_id}`) card_description = "";
-       this.panel.FindChildTraverse("CardDescription").text = `${ability_descriptions}\n${card_description}`;
-
+       this.panel.FindChildTraverse("CardDescription").text = `${ability_descriptions}${ability_descriptions == ""?"":"\n"}${card_description}`;
         let card_lore = $.Localize(`#CardLore_${dig_5_card_id}`);
         if (card_lore == "" || card_lore == `CardLore_${dig_5_card_id}`){
-            $("#CardLore").AddClass("Empty");
+            this.panel.FindChildTraverse("CardLore").AddClass("Empty");
         }else{
-            $("#CardLore").RemoveClass("Empty");
-            $("#CardLore").text = card_lore;
+            this.panel.FindChildTraverse("CardLore").RemoveClass("Empty");
+            this.panel.FindChildTraverse("CardLore").text = card_lore;
         }
 
         this.panel.FindChildTraverse("CardID").text = `${$.Localize("#CardID")}:${dig_5_card_id}`
@@ -99,6 +123,9 @@ class HandCard extends Card{
     // 手牌的唯一ID，用以标识这张手牌
     uniqueId:string = "";
 
+    // 用以记录当前手牌数量
+    handCount: number = 1;
+
     constructor(parent:Panel, id: number, uniqueId: string, cardType: number, cardData:any){
 
         super(parent, id, cardType, cardData);
@@ -106,8 +133,7 @@ class HandCard extends Card{
         this.panel.SetPanelEvent("onmouseover", this.ShowHandCardTooltip.bind(this));
         this.panel.SetPanelEvent("onmouseout",  this.HideHandCardTooltip.bind(this));
         this.panel.SetPanelEvent("onactivate",  this.OnClickCard.bind(this));
-        this.panel.SetHasClass("HandCard", true);        
-        $.Msg(`New card instance is created, cardid=${this.card_id}, uniqueId = ${this.uniqueId}`)
+        this.panel.SetHasClass("HandCard", true);
     }
 
     ShowHandCardTooltip(){
@@ -134,6 +160,12 @@ class HandCard extends Card{
             this.panel.SetHasClass(this.highLightState, false);
         }
         this.highLightState = newState;
+    }
+
+    SetHandCount(count: number){
+        this.panel.SetHasClass(`CardCount_${this.handCount}`, false);
+        this.handCount = count;
+        this.panel.SetHasClass(`CardCount_${this.handCount}`, true);
     }
 }
 

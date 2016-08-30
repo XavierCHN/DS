@@ -1,3 +1,11 @@
+@define backColorStr: #d97f7f;
+@define foreColorStr: #f4a7a7;
+@define backColorAgi: #a4e183;
+@define foreColorAgi: #c3f4a8;
+@define backColorNone: #e6cae9;
+@define foreColorNone: #f6e6f7;
+@define backColorInt: #6b8dd2;
+@define foreColorInt: #a2bef5;
 .HandRoot {
     width: 100%;
     height: 100%;
@@ -6,134 +14,248 @@
 #HandCardContainerBackground {
     vertical-align: bottom;
     width: 100%;
-    min-height: 210px;
-    padding-top: 15px;
 }
 
 #HandCardContainer {
     vertical-align: bottom;
     horizontal-align: center;
     flow-children: right;
-    margin-bottom: 12px;
+    margin-bottom: 300px;
 }
 
 .CardRoot:hover {
-    tranform: translateY(30);
-    pre-transform-scale2d: 1;
     z-index: 1;
 }
 
 .CardRoot {
-    background-color: gradient( linear, 0% 0%, 0% 100%, from( #FF4D4C), color-stop( 0.3, #EA5E5E), color-stop( 0.6, #7B3737), to( #5C3230));
-    vertical-align: bottom;
-    margin-left: -50px;
-    width: 200px;
-    height: 280px;
-    border-radius: 18px;
-    transition-property: transform opacity;
-    transition-duration: 0.3;
-    transition-timing-function: ease-in-out;
-    pre-transform-scale2d: 0.7;
+    width: 234px;
+    height: 320px;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: black;
+    pre-transform-scale2d: 0.8;
     z-index: 0;
+    box-shadow: foreColorNone 1px 1px 10px 0px;
 }
 
-.CardRoot .State_Greyout {
-    wash-color: grey;
+.MainAttributeStrength .CardRoot {
+    box-shadow: foreColorStr 1px 1px 10px 0px;
 }
 
-.CardRoot .FadeOut {
-    opacity: 0;
+.MainAttributeAgility .CardRoot {
+    box-shadow: foreColorAgi 1px 1px 10px 0px;
 }
 
-#Background {
-    margin: 8px;
-    border-radius: 10px;
+.MainAttributeIntellect .CardRoot {
+    box-shadow: foreColorInt 1px 1px 10px 0px;
+}
+
+.MainAttributeNone .CardRoot {
+    box-shadow: foreColorNone 1px 1px 10px 0px;
+}
+
+.CardRoot:hover {
+    pre-transform-scale2d: 1;
+    z-index: 1;
+}
+
+.CardContent {
+    width: 214px;
+    height: 300px;
+    padding: 2px;
+    align: center center;
+    border-radius: 3px;
     flow-children: down;
+    background-color: backColorNone;
 }
 
-#TopCardSection {
-    width: 184px;
-    height: 184px;
+.MainAttributeStrength .CardContent {
+    background-color: backColorStr;
+}
+
+.MainAttributeAgility .CardContent {
+    background-color: backColorAgi;
+}
+
+.MainAttributeIntellect .CardContent {
+    background-color: backColorInt;
+}
+
+.CardTitlePanel {
+    width: 200px;
+    height: 24px;
+    /*border: 2px solid red;*/
+    vertical-align: top;
+    horizontal-align: center;
+    margin-top: 5px;
+    border-radius: 8px;
+    background-color: foreColorNone;
+    padding-left: 10px;
+    padding-right: 5px;
+    border: 2px solid black;
+}
+
+.MainAttributeStrength .CardTitlePanel {
+    background-color: foreColorStr;
+}
+
+.MainAttributeAgility .CardTitlePanel {
+    background-color: foreColorAgi;
+}
+
+.MainAttributeIntellect .CardTitlePanel {
+    background-color: foreColorInt;
+}
+
+.CardTypePanel {
+    width: 200px;
+    height: 24px;
+    vertical-align: top;
+    horizontal-align: center;
+    margin-top: -2px;
+    border-radius: 8px;
+    background-color: foreColorNone;
+    padding-left: 10px;
+    padding-right: 5px;
+    border: 2px solid black;
+}
+
+.MainAttributeStrength .CardTypePanel {
+    background-color: foreColorStr;
+}
+
+.MainAttributeAgility .CardTypePanel {
+    background-color: foreColorAgi;
+}
+
+.MainAttributeIntellect .CardTypePanel {
+    background-color: foreColorInt;
+}
+
+.CardIllusionPanel {
+    width: 186px;
+    height: 144px;
+    horizontal-align: center;
+    margin-top: -2px;
+    opacity: 0.9;
 }
 
 #CardIllusion {
-    width: 184px;
-    height: 184px;
-    vertical-align: bottom;
+    width: 186px;
+    height: 144px;
+    border: 3px solid black;
+}
+
+.CardDescriptionPanel {
+    width: 186px;
+    margin-top: -2px;
     horizontal-align: center;
+    height: fill-parent-flow(1.0);
 }
 
-#CardTitle {
-    width: 100%;
-    height: 50px;
-    vertical-align: bottom;
-}
-
-#CardTitleLabels {
-    flow-children: down;
-    padding-left: 10px;
-    padding: 4px;
-}
-
-#CardTitleLabels Label {
-    color: black;
-}
-
-#CardName {
-    font-size: 18px;
-    font-weight: bold;
-}
-
-#CardType {
-    font-size: 13px;
-}
-
-#CardTitleBackground {
-    width: 100%;
-    height: 100%;
-    background-color: #FFFFFF;
-    opacity: 0.4;
-}
-
-#BottomCardSection {
-    width: 100%;
-    height: 80px;
-    background-color: grey;
+.CardDescription_Ability_Lore {
+    background-color: foreColorNone;
+    height: 90px;
+    border: 2px solid black;
     padding: 5px;
+    flow-children: down;
 }
 
-#CardDescription {
-    color: black;
-    font-size: 12px;
+.MainAttributeStrength .CardDescription_Ability_Lore {
+    background-color: foreColorStr;
 }
 
-#CardDescription .Empty {
-    visibility: collapse;
+.MainAttributeAgility .CardDescription_Ability_Lore {
+    background-color: foreColorAgi;
 }
 
-#CardLore {
-    color: black;
-    font-size: 10px;
-    vertical-align: bottom;
-    margin-bottom: 10px;
+.MainAttributeIntellect .CardDescription_Ability_Lore {
+    background-color: foreColorInt;
 }
 
-#CardLore .Empty {
-    visibility: collapse;
-}
-
-#CardMessage {
-    background-color: lawngreen;
-    vertical-align: bottom;
-    margin-bottom: 2px;
-    width: 100%;
-}
-
-#CardMessage Label {
-    color: black;
-    font-size: 8px;
+.CardDescription_ExtraMessage {
+    height: 20px;
+    background-color: transparent;
+    margin-top: 92px;
+    flow-children: right;
 }
 
 #IllusionArtist {
-    horizontal-align: right;
+    margin-left: 5px;
+}
+
+.text-h1 {
+    font-size: 16px;
+    color: black;
+}
+
+.text-h2 {
+    font-size: 14px;
+    color: black;
+}
+
+.text-h3 {
+    font-size: 12px;
+    color: black;
+}
+
+.text-h4 {
+    font-size: 10px;
+    color: black;
+}
+
+.CardCount_1 {
+    margin-left: -50px;
+}
+
+.CardCount_2 {
+    margin-left: -50px;
+}
+
+.CardCount_3 {
+    margin-left: -50px;
+}
+
+.CardCount_4 {
+    margin-left: -50px;
+}
+
+.CardCount_5 {
+    margin-left: -50px;
+}
+
+.CardCount_6 {
+    margin-left: -80px;
+}
+
+.CardCount_7 {
+    margin-left: -100px;
+}
+
+.CardCount_8 {
+    margin-left: -100px;
+}
+
+.CardCount_9 {
+    margin-left: -100px;
+}
+
+.CardCount_10 {
+    margin-left: -100px;
+}
+
+.CardCount_11 {
+    margin-left: -100px;
+}
+
+.CardCount_12 {
+    margin-left: -100px;
+}
+
+.CardCount_13 {
+    margin-left: -100px;
+}
+
+.CardCount_14 {
+    margin-left: -100px;
 }
