@@ -27,8 +27,20 @@ end
 function ds_point:OnSpellStart(args)
     local caster = self:GetCaster()
     local card = caster:GetCurrentActiveCard()
-    -- 移除手牌
-    caster:RemoveCardAfterUse(card:GetUniqueId())
+    
+
+    if card:GetType() == CARD_TYPE_MINION then
+        CreateCardMinion(card, args.target_points[1], caster, caster:GetPlayerOwner(), caster:GetTeamNumber(), function(minion)
+            local atk = card.data.atk
+            local hp  = card.data.hp
+            minion:SetBaseDamageMax(atk)
+            minion:SetBaseDamageMin(atk)
+            minion:SetBaseMaxHealth(hp)
+            minion:SetHealth(hp)
+            minion.ms = card.data.move_speed
+            minion.ar = card.data.attack_range
+        end)
+    end
 
     -- 执行卡牌的效果代码
     local card_func = card.data.on_spell_start
@@ -36,4 +48,7 @@ function ds_point:OnSpellStart(args)
         print(string.format("processing card effect CARDID[%s] -> on_spell_start", card:GetID()))
         card_func(args)
     end
+
+    -- 移除手牌
+    caster:RemoveCardAfterUse(card:GetUniqueId())
 end

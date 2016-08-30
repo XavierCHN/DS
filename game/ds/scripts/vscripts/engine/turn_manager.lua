@@ -32,12 +32,44 @@ function TurnManager:SetPhase(newPhase)
 	if newPhase == TURN_PHASE_STRATEGY then
 		self.phase_duration = DS_ROUND_TIME_STRATEGY
 		self.phase_start_time = GameRules:GetGameTime()
+
+		for k, minion in pairs(GameRules.AllMinions) do
+			if IsValidEntity(minion) and minion:IsAlive() then
+				minion:RemoveModifierByName("modifier_summon_disorder") -- 在回合开始阶段去掉所有的召唤失调状态
+			else
+				GameRules.AllMinions[k] = nil
+			end
+		end
+
 	elseif newPhase == TURN_PHASE_BATTLE then
 		self.phase_duration = DS_ROUND_TIME_BATTLE
 		self.phase_start_time = GameRules:GetGameTime()
+
+		for k, minion in pairs(GameRules.AllMinions) do
+			if IsValidEntity(minion) and minion:IsAlive() then
+				if minion:HasModifier("modifier_summon_disorder") then
+					minion:RemoveModifierByName("modifier_minion_disable_attack")
+				else
+					minion:RemoveModifierByName("modifier_minion_disable_attack")
+					minion:RemoveModifierByName("modifier_minion_rooted")
+				end
+			else
+				GameRules.AllMinions[k] = nil
+			end
+		end
+
 	elseif newPhase == TURN_PHASE_POST_BATTLE then
 		self.phase_duration = DS_ROUND_TIME_POST_BATTLE
 		self.phase_start_time = GameRules:GetGameTime()
+
+		for k, minion in pairs(GameRules.AllMinions) do
+			if IsValidEntity(minion) and minion:IsAlive() then
+				minion:AddNewModifier(minion, nil, "modifier_minion_disable_attack", {})
+				minion:AddNewModifier(minion, nil, "modifier_minion_rooted", {})
+			else
+				GameRules.AllMinions[k] = nil
+			end
+		end
 	end
 end
 

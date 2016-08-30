@@ -26,25 +26,19 @@ sub_type = { "beast" } -- 副类别，如野兽
 -- 生物 ~ 半人马/领袖，这些属性在交互之中是有用的
 
 -- minion类型卡牌的特殊key，如果卡牌类型不是 CARD_TYPE_MINION 的话，以下这些key将会无效
+minion_name = "special_minon_name" -- 所要召唤的单位的名称，默认为 minion_{卡牌ID}
 atk = 2 -- 攻击力，默认为0
 hp = 3 -- 生命值，默认为1
 move_speed = 300 -- 移动速度，默认为300
 attack_range = 600 -- 攻击距离，如果是远程，默认为600，如果是近战，默认为128
-ranged = true -- 远程，默认为 false 近战
-model = "" -- 模型
-comestics = { -- 饰品
-"",
-"",
-"",
-}
 abilities = { -- 技能列表，之后将会进一步补充可以使用的默认技能名称
-"cannot_attack", -- 禁止攻击
-"blink", -- 闪烁
+    "cannot_attack", -- 禁止攻击
+    "blink", -- 闪烁
 }
 special_effects = function(minion)
-minion:一切可以执行给 CDOTA_BaseNPC 的API都可以在这里执行给minion
--- 这里面的内容将会在单位被召唤出来之后使用一个Timer来执行
--- 但是还是尽量使用技能来保持系统的一致性
+    minion:一切可以执行给 CDOTA_BaseNPC 的API都可以在这里执行给minion
+    -- 这里面的内容将会在单位被召唤出来之后使用一个Timer来执行
+    -- 但是还是尽量使用技能来保持系统的一致性
 end
 ]]
 local path_prefix = "cards."
@@ -91,7 +85,6 @@ if IsInToolsMode() then
     f:close()
 end
 
-
 -- 卡牌核心类
 if Card == nil then Card = class({}) end
 
@@ -106,7 +99,7 @@ function Card:constructor(id)
     self.HighLightState = ""
     self.draw_index = -1
 
-    -- 所有创建的卡牌都储存在GameRules.AllCreatedCards中
+    -- 所有创建的卡牌都储存在GameRules.AllCreatedCards中，用以在特殊的卡牌中使用
     GameRules.AllCreatedCards[self.UniqueID] = self
     
     data.card_type = data.card_type or CARD_TYPE_SPELL
@@ -123,22 +116,21 @@ function Card:constructor(id)
     data.can_cast_anytime = data.can_cast_anytime or false
     
     if self.card_behavior == CARD_BEHAVIOR_POINT then
-        if data.card_type == CARD_TYPE_MINION then
+        if data.card_type == CARD_TYPE_MINION then -- 随从类默认只能在己方半场使用
             data.can_cast_anywhere = data.can_cast_anywhere or CARD_CAST_POSITION_MY_FIELD
         end
-        if data.card_type == CARD_TYPE_SPELL then
+        if data.card_type == CARD_TYPE_SPELL then -- 法术类默认在全场使用，除非有特殊规定
             data.can_cast_anywhere = data.can_cast_anywhere or CARD_CAST_POSITION_BOTH
         end
     end
     
     -- 给minion类卡牌的特殊数值
     if data.card_type == CARD_TYPE_MINION then
+        data.minion_name = data.minion_name ~= "" and data.minion_name or "minion_" .. id -- 默认召唤单位为minion_{id}
         data.atk = data.atk or 0
         data.hp = data.hp or 1
         data.move_speed = data.move_speed or 300
         data.attack_range = data.attack_range or 600
-        data.model = data.model or ""
-        data.comestics = data.comestics or {}
         data.abilities = data.abilities or {}
         data.special_effects = data.special_effects or function(minion) end
     end
@@ -309,4 +301,8 @@ end
 
 function Card:SetPosition(pos)
     self.position = pos
+end
+
+function Card:GetMinionName()
+    return self.data.minion_name
 end

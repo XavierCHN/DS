@@ -20,7 +20,6 @@
     vertical-align: bottom;
     horizontal-align: center;
     flow-children: right;
-    margin-bottom: 300px;
 }
 
 .CardRoot:hover {
@@ -95,6 +94,10 @@
     border: 2px solid black;
 }
 
+#CardName{
+    vertical-align:center;
+}
+
 .MainAttributeStrength .CardTitlePanel {
     background-color: foreColorStr;
 }
@@ -119,7 +122,9 @@
     padding-right: 5px;
     border: 2px solid black;
 }
-
+#CardType{
+    vertical-align: center;
+}
 .MainAttributeStrength .CardTypePanel {
     background-color: foreColorStr;
 }

@@ -3,7 +3,7 @@ if DS == nil then DS = class({}) end
 require 'enums'
 require 'const'
 
-require 'utility_functions'
+require 'util.functions'
 require 'utils.json'
 require 'utils.debug_card_list'
 require 'utils.list'
@@ -15,10 +15,15 @@ require 'libraries.notifications'
 require 'engine.turn_manager'
 require 'engine.player_resource'
 require 'engine.card'
+require 'engine.minion'
 require 'engine.hero'
 require 'engine.deck'
 require 'engine.hand'
 require 'engine.battlefield'
+
+-- GameRules.UnitKV = LoadKeyValues("scripts/npc/npc_units_custom.txt")
+-- GameRules.AbilityKV = LoadKeyValues("scripts/npc/npc_abilities_custom.txt")
+-- GameRules.ItemsKV = LoadKeyValues("scripts/npc/npc_items_custom.txt")
 
 function DS:Init()
 
@@ -35,6 +40,7 @@ function DS:Init()
     GameRules:SetGoldPerTick(0)
     GameRules:SetGoldTickTime(0)
     GameRules:SetCustomGameSetupTimeout(3)
+
     
     self.mode = mode
     GameRules.mode = mode
@@ -44,7 +50,13 @@ function DS:Init()
     GameRules.BattleField = BattleField() -- todo 重新考虑战场的逻辑
     
     ListenToGameEvent("game_rules_state_change", Dynamic_Wrap(DS, "OnGameRulesStateChanged"), self)
+
     CustomGameEventManager:RegisterListener("ds_player_click_card",Dynamic_Wrap(DS, "OnPlayerClickCard"))
+    
+    LinkLuaModifier("modifier_minion_rooted", "engine/modifiers/modifier_minion_rooted", LUA_MODIFIER_MOTION_NONE)
+    LinkLuaModifier("modifier_minion_disable_attack", "engine/modifiers/modifier_minion_disable_attack", LUA_MODIFIER_MOTION_NONE)
+    LinkLuaModifier("modifier_minion_data", "engine/modifiers/modifier_minion_data", LUA_MODIFIER_MOTION_NONE)
+    LinkLuaModifier("modifier_summon_disorder", "engine/modifiers/modifier_minion_summon_disorder", LUA_MODIFIER_MOTION_NONE)
 end
 
 function DS:OnPlayerClickCard(args)
