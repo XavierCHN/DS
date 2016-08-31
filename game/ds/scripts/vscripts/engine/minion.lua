@@ -9,13 +9,16 @@ function AggroFilter( unit )
                     return
                 else
                     local enemies = FindEnemiesInRadius(unit, unit:GetAcquisitionRange())
+                    local target
                     if #enemies > 0 then
                         for _,enemy in pairs(enemies) do
                             if unit:CanAttackTarget(enemy) then
-                                unit:Attack(enemy)
-                                return
+                                if target and target:IsRealHero() then -- 不优先攻击英雄，todo除非！
+                                    target = enemy
+                                end
                             end
                         end
+                        unit:Attack(target)
                     end
                 end
             end
@@ -54,6 +57,7 @@ end
 
 function CDOTA_BaseNPC:Attack(target)
     self:MoveToTargetToAttack(target)
+    self:RemoveModifierByName("modifier_phased")
     self.target_pos = nil
     self.attack_target = target
     self.disable_autoattack = 0
@@ -138,6 +142,7 @@ function CDOTA_BaseNPC:StartMinionAIThink()
                     Position = target_pos
                 }
                 ExecuteOrderFromTable(order)
+                self:AddNewModifier(self, nil, "modifier_phased", {})
                 return 0.03
             end
         end
