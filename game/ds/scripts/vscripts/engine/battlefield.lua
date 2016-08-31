@@ -58,6 +58,7 @@ function BattleField:IsMinionInLine(unit)
     return o.x >= self:GetBattleLine(1):GetLeft().x and o.x <= self:GetBattleLine(1):GetRight().x
 end
 
+
 function BattleField:GetTargetPositionForTeam(team, lineNumber)
     if team == DOTA_TEAM_GOODGUYS then
         return self.line[lineNumber]:GetRight()

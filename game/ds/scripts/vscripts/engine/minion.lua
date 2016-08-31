@@ -1,31 +1,19 @@
 function AggroFilter( unit )
     local target = unit:GetAttackTarget() or unit:GetAggroTarget()
-    if target then
-        local bCanAttackTarget = unit:CanAttackTarget(target)
-        if unit.disable_autoattack == 0 then
-            if target ~= unit.attack_target then
-                if bCanAttackTarget then
-                    unit.attack_target = target
-                    return
-                else
-                    local enemies = FindEnemiesInRadius(unit, unit:GetAcquisitionRange())
-                    if #enemies > 0 then
-                        for _,enemy in pairs(enemies) do
-                            if unit:CanAttackTarget(enemy) then
-                                unit:Attack(enemy)
-                                return
-                            end
-                        end
-                    end
-                end
+    local enemies = FindEnemiesInRadius(unit, unit:GetAcquisitionRange())
+    if #enemies > 0 then
+        for _,enemy in pairs(enemies) do
+            if unit:CanAttackTarget(enemy) then
+                target = enemy
+                unit:Attack(enemy)
+                return
             end
         end
-
-        if not bCanAttackTarget then
-            unit.attack_target = nil
-            unit.disable_autoattack = 1
-            unit:Stop()
-        end
+    end
+    if target and not unit:CanAttackTarget(target) then
+        unit.attack_target = nil
+        unit.disable_autoattack = 1
+        unit:Stop()
     end
 end
 
@@ -52,8 +40,8 @@ end
 function CDOTA_BaseNPC:Attack(target)
     self:MoveToTargetToAttack(target)
     self.target_pos = nil
-    unit.attack_target = target
-    unit.disable_autoattack = 0
+    self.attack_target = target
+    self.disable_autoattack = 0
 end
 
 function FindAttackableEnemies( unit )
@@ -98,18 +86,24 @@ function CDOTA_BaseNPC:StartMinionAIThink()
             self.battle_line = battle_line
         elseif self.battle_line ~= battle_line then
             self.battle_line:RemoveMinion(self)
-            self.battle_line = battle_line
-            self.battle_line:AddMinion(self)
+            if battle_line then
+                self.battle_line = battle_line
+                self.battle_line:AddMinion(self)
+            end
         end
 
         if GameRules.TurnManager:GetPhase() == TURN_PHASE_BATTLE then
             AggroFilter( self )
-            if self.target_pos == nil or ( self.target_pos~= nil and (self:GetAbsOrigin() - self.target_pos):Length2D() <= 30) then
-                self.target_pos = self:GetCurrentGoalTargetPos()
+
+            self.target_pos = self:GetCurrentGoalTargetPos()
+
+            if (self.target_pos and (self.target_pos - self:GetAbsOrigin()):Length2D() < 20 ) then
+                self:Stop()
             end
-            if self.attack_target == nil then
-                DebugDrawCircle(self.target_pos, Vector(0, 255, 0), 100, 32, true, 0.2)
-                self:MoveToPositionAggressive(self.target_pos)
+     
+            if self.attack_target == nil and self.target_pos then
+                DebugDrawCircle(GetGroundPosition(self.target_pos, self), Vector(0, 255, 0), 100, 32, true, 0.2)
+                self:MoveToPosition(self.target_pos)
             else
                 if not IsValidAlive(self.attack_target) then
                     self.attack_target = nil
