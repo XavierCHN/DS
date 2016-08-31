@@ -108,6 +108,11 @@ function Turn:EnterNextPhase()
 			end
 		end
 	end
+
+    CustomGameEventManager:Send_ServerToAllClients("ds_new_phase", {
+        EndTime = self.phase_start_time + self.phase_duration,
+        NewPhase = newPhase,
+    })
 end
 
 function Turn:EndPhase()

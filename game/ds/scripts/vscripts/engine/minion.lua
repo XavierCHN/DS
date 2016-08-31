@@ -134,8 +134,7 @@ function CDOTA_BaseNPC:StartMinionAIThink()
         if self.attack_target == nil and not self.has_ordered then
             self.has_ordered = true
             if target_pos then
-                DebugDrawCircle(target_pos, Vector(255,0,0), 100, 50, true, 5)
-                print "sending order into unit"
+                -- DebugDrawCircle(target_pos, Vector(255,0,0), 100, 50, true, 5)
                 local order = {
                     OrderType = DOTA_UNIT_ORDER_ATTACK_MOVE,
                     UnitIndex = self:entindex(),
@@ -208,7 +207,7 @@ function CDOTA_BaseNPC:BuildPath(area)
     for i = 1, 3 do
         local node = path:GetData(i)
         if not node then break end
-        DebugDrawCircle(GetGroundPosition(node, self), Vector(0,255,0), 100, 64, true, 5)
+        -- DebugDrawCircle(GetGroundPosition(node, self), Vector(0,255,0), 100, 64, true, 5)
     end
 
     self.path = path

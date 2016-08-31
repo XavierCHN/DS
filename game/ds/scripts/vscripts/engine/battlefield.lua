@@ -101,6 +101,7 @@ function BattleField:GetMinionArea(minion)
     elseif x >= left and x <= right then
         return BATTLEFIELD_AREA_LINE
     end
+    print(x,left,right)
 end
 
 
