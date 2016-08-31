@@ -58,6 +58,20 @@ function List:Display()
     -- print("---- list display finished ---")
 end
 
+function List:GetHead()
+    return self.head.next
+end
+
+function List:GetData(i)
+    local n = self:GetNodeAt(i)
+    if n then
+        return n.data
+    else
+        -- print("GetData overflow @",i)
+        return nil
+    end
+end
+
 function List:GetNodeAt(i)
     local n = self.head
     for i = 1, i do
@@ -123,11 +137,3 @@ function List:Swap(i,j)
     n1.data, n2.data = n2.data, n1.data
 end
 
-function List:GetData(i)
-    local n = self:GetNodeAt(i)
-    if n then
-        return n.data
-    else
-        -- print("GetData overflow @",i)
-    end
-end

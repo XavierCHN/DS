@@ -79,6 +79,29 @@ function BattleField:GetPositionBattleLine(pos)
     end
 end
 
+-- 获取单位当前所在的战场区域
+function BattleField:GetMinionArea(minion)
+    local pos = minion:GetAbsOrigin()
+    local team = minion:GetTeamNumber()
+    local x = pos.x
+    local left = self:GetBattleLine(1):GetLeft().x
+    local right = self:GetBattleLine(1):GetRight().x
+    if x < left then
+        if team == DOTA_TEAM_GOODGUYS then
+            return BATTLEFIELD_AREA_MY_BASE
+        else
+            return BATTLEFIELD_AREA_ENEMY_BASE
+        end
+    elseif x > right then
+        if team == DOTA_TEAM_GOODGUYS then
+            return BATTLEFIELD_AREA_ENEMY_BASE
+        else
+            return BATTLEFIELD_AREA_MY_BASE
+        end
+    elseif x >= left and x <= right then
+        return BATTLEFIELD_AREA_LINE
+    end
+end
 
 
 
