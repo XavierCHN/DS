@@ -227,12 +227,12 @@ function Card:UpdateHighLightState()
     elseif self:MeetCostRequirement() then
         state = "HighLightGreen"
     end
-    
     if state ~= self.HighLightState then
         CustomGameEventManager:Send_ServerToPlayer(self:GetOwner():GetPlayerOwner(), "ds_highlight_state_changed", {
             CardID = self.UniqueID,
             NewState = state,
         })
+        self.HighLightState = state
     end
 end
 

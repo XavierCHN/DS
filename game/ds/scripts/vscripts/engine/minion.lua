@@ -27,13 +27,10 @@ function CDOTA_BaseNPC:GetPlayer()
 end
 
 function CDOTA_BaseNPC:StartMinionAIThink()
-
     self:AddNewModifier(self, nil, "modifier_minion_autoattack", {})
-
     self:SetContextThink(DoUniqueString("mb"), function()
-        if not (IsValidEntity(self) and self:IsAlive()) then
-            return nil
-        end
+        
+        if not IsValidAlive(self) then return nil end
 
         -- 根据当前的位置刷新单位所属的战场行
         local o = self:GetAbsOrigin()
@@ -48,7 +45,6 @@ function CDOTA_BaseNPC:StartMinionAIThink()
 
         if GameRules.TurnManager:GetPhase() == TURN_PHASE_BATTLE then
             if self.attack_target and IsValidAlive(self.attack_target) then
-                self.disable_autoattack = 0
                 return 0.03
             end
 

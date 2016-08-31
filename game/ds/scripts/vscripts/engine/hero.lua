@@ -145,12 +145,6 @@ function CDOTA_BaseNPC_Hero:SendDataToAllClients()
 	})
 end
 
-CustomGameEventManager:RegisterListener("ds_client_request_hero_data", function(args)
-	local heroes = GameRules.AllHeroes
-	for _, hero in pairs(heroes) do
-		hero:SendDataToAllClients()
-	end
-end)
 
 function CDOTA_BaseNPC_Hero:CreateCardMinion(card, pos, callback)
     local mn = card:GetMinionName()
@@ -162,10 +156,20 @@ function CDOTA_BaseNPC_Hero:CreateCardMinion(card, pos, callback)
         ent:AddNewModifier(ent, nil, "modifier_minion_disable_attack", {})
         ent:AddNewModifier(ent, nil, "modifier_minion_data", {})
         ent:AddNewModifier(ent, nil, "modifier_minion_summon_disorder", {})
+		ent:AddNewModifier(ent, nil, "modifier_phased", {})
         table.insert(GameRules.AllMinions, ent)
         callback(ent)
     end)
 end
+
+
+CustomGameEventManager:RegisterListener("ds_client_request_hero_data", function(args)
+	local heroes = GameRules.AllHeroes
+	for _, hero in pairs(heroes) do
+		hero:SendDataToAllClients()
+	end
+end)
+
 
 Convars:RegisterCommand("debug_set_hero_attribute", function(_, str, agi, int, mana)
 	local client = Convars:GetCommandClient()

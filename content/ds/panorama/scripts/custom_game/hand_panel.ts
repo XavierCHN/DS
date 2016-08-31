@@ -92,7 +92,9 @@ function ExecuteCardProxy(args){
         $.Msg(`unable to find valid ability to execute for behavior${cardBehavior}, ability_name=${ability_name}`);
         return;
     }
+
     $.Msg(`begin to execute abilty ${ability_name}, abilityIndex = ${ability}`)
+    GameUI.SelectUnit(hero, false);
     Abilities.ExecuteAbility(ability, hero, false);
 }
 
