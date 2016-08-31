@@ -73,6 +73,136 @@ function CDOTA_BaseNPC:GetPlayer()
     return self.hero
 end
 
+-- function CNWSpawner:CreateShipAI(ship, pathCornerTable)
+
+-- 	-- 重载IsValidEntity
+
+
+-- 	local old_Valid = IsValidEntity
+-- 	local function IsValidEntity(ent)
+-- 		return ent and old_Valid(ent) and ent:IsAlive()
+-- 	end
+
+-- 	-- 获取第一个路径点并开始移动
+
+
+-- 	ship.currentTargetIndex = 2
+-- 	ship.currentTarget = pathCornerTable[ship.currentTargetIndex]
+-- 	ship:MoveToPositionAggressive(GetGroundPosition(ship.currentTarget:GetAbsOrigin(), ship))
+
+-- 	-- 将船只加入碰撞检测器
+
+
+-- 	GameRules.ShipCollider:Push(ship)
+
+-- 	-- 启动小船AI循环
+
+
+-- 	ship:SetContextThink(DoUniqueString("ship_ai"), function()
+		
+-- 		-- 检测单位是否有效
+
+
+-- 		if not IsValidEntity(ship) then
+-- 			return nil
+-- 		end
+
+-- 		-- 获取当前位置
+
+
+-- 		if ship.currentTarget and ship.currentTarget:IsNull() then return nil end
+-- 		local so = ship:GetAbsOrigin()
+-- 		local to = ship.currentTarget:GetAbsOrigin()
+
+-- 		-- 如果距离当前目标地点很近，那么向下一个目标地点行进
+
+
+-- 		-- 如果当前目标已经是基地了，那么不再切换攻击移动目标位置
+
+
+-- 		-- 暂时改大路径点容差，避免因为某一个怪不动导致堆积
+
+
+-- 		if (so - to):Length2D() <= 250 and not ship.__bTargetingBase then
+-- 			ship.currentTargetIndex = ship.currentTargetIndex + 1
+-- 			ship.currentTarget = pathCornerTable[ship.currentTargetIndex]
+-- 			-- 如果没有下一个路径点了，将目标指向主基地
+
+
+-- 			if ship.currentTarget == nil then
+-- 				ship.currentTarget = self:GetEnemyBase(ship)
+-- 				if ship.currentTarget == nil then
+-- 					print("Warning! ship trying to target base which is not existed!")
+-- 					return nil
+-- 				end
+-- 				ship.__bTargetingBase = true
+-- 			end
+-- 			ship:MoveToPositionAggressive(GetGroundPosition(ship.currentTarget:GetAbsOrigin(), ship))
+-- 		end
+
+-- 		-- 如果NPC船只被英雄吸引了仇恨
+
+
+-- 		if ship:GetAggroTarget() ~= nil then
+-- 			if ship:GetAggroTarget().IsHero then
+-- 				if ship:GetAggroTarget():IsHero() then
+-- 					-- 寻找攻击范围内+buffer（这个常量设置为最多移动100距离）非英雄的单位
+
+
+-- 					local flAttackRange = ship:GetAttackRange() + 300
+-- 					local vCreepEnemies = FindUnitsInRadius(ship:GetTeamNumber(), ship:GetAbsOrigin(), nil, flAttackRange, DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_BASIC + DOTA_UNIT_TARGET_CREEP, DOTA_UNIT_TARGET_FLAG_NONE, FIND_CLOSEST, false)
+-- 					-- 选择最近的非英雄单位进行攻击
+
+
+-- 					if #vCreepEnemies > 0 and vCreepEnemies[1] then
+-- 						ship:MoveToTargetToAttack(vCreepEnemies[1])
+-- 						ship.__hAttackingTarget = vCreepEnemies[1]
+-- 					else
+-- 						-- 如果找不到非英雄目标，记录开始追击的位置
+
+
+-- 						ship.__chasingHeroStartPosition = ship:GetAbsOrigin()
+-- 					end
+-- 				end
+-- 			end
+-- 		end
+
+-- 		-- 如果是在追击完英雄回归正轨的状态，那么在遇上一个普通单位之前，不会再进行攻击
+
+
+-- 		if ship.__movingBackToNormalPath then
+-- 			local flAttackRange = ship:GetAttackRange() + 300
+-- 			local vCreepEnemies = FindUnitsInRadius(ship:GetTeamNumber(), ship:GetAbsOrigin(), nil, flAttackRange, DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_BASIC + DOTA_UNIT_TARGET_CREEP, DOTA_UNIT_TARGET_FLAG_NONE, FIND_CLOSEST, false)
+-- 			if #vCreepEnemies > 0 then
+-- 				-- 如果碰上了非英雄单位，那么开始正常攻击移动动作
+
+
+-- 				ship:MoveToPositionAggressive(GetGroundPosition(ship.currentTarget:GetAbsOrigin(), ship))
+-- 				ship.__movingBackToNormalPath = nil -- 清除回归状态
+
+-- 			end
+-- 		end
+
+-- 		-- 如果当前攻击目标死亡，那么继续往当前目标地点行进
+
+
+-- 		if ship.__hAttackingTarget and not IsValidEntity(ship.__hAttackingTarget) then
+-- 			ship:MoveToPositionAggressive(GetGroundPosition(ship.currentTarget:GetAbsOrigin(), ship))
+-- 			ship.__hAttackingTarget = nil
+-- 		end
+
+-- 		-- 最多追击英雄1000距离
+
+
+-- 		if ship.__chasingHeroStartPosition and (ship:GetAbsOrigin() - ship.__chasingHeroStartPosition):Length2D() > 1000 then
+-- 			ship:MoveToPosition(GetGroundPosition(ship.currentTarget:GetAbsOrigin(), ship))
+-- 			ship.__movingBackToNormalPath = true
+-- 			ship.__chasingHeroStartPosition = nil
+-- 		end
+-- 		return 0.1
+-- 	end, 0.1)
+-- end
+
 function CDOTA_BaseNPC:StartMinionAIThink()
     self:AddNewModifier(self, nil, "modifier_minion_autoattack", {})
     self:SetContextThink(DoUniqueString("mb"), function()
