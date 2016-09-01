@@ -17,6 +17,7 @@
     GameEvents.Subscribe("start_yes_no_selector", function(args){
         $("#TooltipLabel").AddClass("Hidden");
 
-        $("#SelectorMsg").text = $.Localize(args.title)
+        $("#SelectorMsg").text = $.Localize(args.title);
+        
     });
 })();
