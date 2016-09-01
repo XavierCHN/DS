@@ -13,8 +13,9 @@ function CDOTA_BaseNPC:AggroFilter()
                     if #enemies > 0 then
                         for _,enemy in pairs(enemies) do
                             if self:CanAttackTarget(enemy) then
-                                if target and target:IsRealHero() then -- 不优先攻击英雄，todo除非！
-                                    target = enemy
+                                target = enemy
+                                if not enemy:IsRealHero() then -- 找到了非英雄单位，则不再寻找，默认不直接攻击英雄
+                                    break;
                                 end
                             end
                         end

@@ -1,0 +1,18 @@
+<root>
+    <styles>
+        <include src="file://{resources}/styles/custom_game/selector.css" />
+    </styles>
+    <scripts>
+        <include src="file://{resources}/scripts/custom_game/selector.js" />
+    </scripts>
+    <!--<snippets>-->
+    <!--</snippets>-->
+    <Panel class="selector_Root">
+        <Label class="Hidden" id="TooltipLabel" text="#tooltip" />
+        <Panel class="Hidden" id="YesNoSelector">
+            <Label id="SelectorMsg" text="Msg" />
+            <Button id="YesButton" onactivate="OnClickYes()"/>
+            <Button id="NoButton" onactivate="OnClickNo()"/>
+        </Panel>
+    </Panel>
+</root>

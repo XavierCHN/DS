@@ -9,3 +9,8 @@ end
 function GetCardByUniqueID(uid)
     return GameRules.AllCreatedCards[uid]
 end
+
+function ShowError(playerid, msg)
+    EmitSoundOnClient("General.CastFail_AbilityNotLearned", PlayerResource:GetPlayer(playerid))
+    Notifications:Bottom(playerid,{text= msg, duration=1, style={color="red";["font-size"] = "30px"}})
+end

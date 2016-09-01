@@ -12,7 +12,7 @@ sub_type = {"creep"}
 artist = "Xavier"
 
 abilities = {
-    "ds_charge",
+    "tuxi",
 }
 
 atk = 1

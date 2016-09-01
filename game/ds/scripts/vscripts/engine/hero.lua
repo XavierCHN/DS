@@ -7,12 +7,12 @@ function CDOTA_BaseNPC_Hero:InitDSHero()
 
 	self:SetAbilityPoints(0)
 
-	self:FindAbilityByName('ds_no_target'):SetLevel(1)
 	self:FindAbilityByName('ds_point'):SetLevel(1)
 	self:FindAbilityByName('ds_single_target'):SetLevel(1)
 
 	self.deck = Deck(self)
 	self.hand = Hand(self)
+	self.selector = Selector(self)
 end
 
 function CDOTA_BaseNPC_Hero:GetCardList()
@@ -130,6 +130,10 @@ function CDOTA_BaseNPC_Hero:GetDeck()
 	return self.deck
 end
 
+function CDOTA_BaseNPC_Hero:GetSelector()
+	return self.selector
+end
+
 function CDOTA_BaseNPC_Hero:SetCardList(card_list)
 	self.card_list = card_list or {}
 end
@@ -144,7 +148,6 @@ function CDOTA_BaseNPC_Hero:SendDataToAllClients()
 		MaxMana = self.mmp
 	})
 end
-
 
 function CDOTA_BaseNPC_Hero:CreateCardMinion(card, pos, callback)
     local mn = card:GetMinionName()
@@ -162,14 +165,12 @@ function CDOTA_BaseNPC_Hero:CreateCardMinion(card, pos, callback)
     end)
 end
 
-
 CustomGameEventManager:RegisterListener("ds_client_request_hero_data", function(args)
 	local heroes = GameRules.AllHeroes
 	for _, hero in pairs(heroes) do
 		hero:SendDataToAllClients()
 	end
 end)
-
 
 Convars:RegisterCommand("debug_set_hero_attribute", function(_, str, agi, int, mana)
 	local client = Convars:GetCommandClient()

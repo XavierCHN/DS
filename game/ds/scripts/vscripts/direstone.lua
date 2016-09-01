@@ -7,8 +7,8 @@ require 'utils.functions'
 require 'utils.json'
 require 'utils.debug_card_list'
 require 'utils.list'
-require 'utils.attack'
 require 'utils.units'
+require 'utils.card_loader'
 
 require 'libraries.timers'
 require 'libraries.playertables'
@@ -71,21 +71,32 @@ function DS:OnPlayerClickCard(args)
     local hero = player:GetAssignedHero()
     local uid = args.UniqueId
     local card = GetCardByUniqueID(uid)
-    local ccb = card:GetCardBehavior()
 
-    -- 验证是否满足使用需求
-    local success, reason = card:Validate_BeforeExecute()
-    if not success then
-        EmitSoundOnClient("General.CastFail_AbilityNotLearned", PlayerResource:GetPlayer(playerid))
-        Notifications:Bottom(playerid,{text = reason, duration=1, style={color="red";["font-size"] = "30px"}})
-        return
+    -- 是否允许释放
+    local canuse, reason = card:Validate_BeforeExecute()
+    if not canuse then
+        ShowError(playerid, reason) 
+        return 
     end
 
-    hero:SetCurrentActiveCard(card)
-
-    CustomGameEventManager:Send_ServerToPlayer(player,"ds_execute_card_proxy",{
-        behavior = ccb,
-    })
+    local ccb = card:GetCardBehavior()
+    if ccb == CARD_BEHAVIOR_NO_TARGET then
+        card:RunEffect()
+    elseif ccb == CARD_BEHAVIOR_SINGLE_TARGET then
+        hero:GetSelector():Create({
+            type = SELECTOR_UNIT,
+            title = "#select_target",
+            validate = card:GetOnUseValidator(unit) or function() return true end,
+            callback = function(unit) card:RunEffect(unit) end
+        })
+    elseif ccb == CARD_BEHAVIOR_POINT then
+        hero:GetSelector():Create({
+            type = SELECTOR_POINT,
+            title = "#select_point",
+            validate = card:GetOnUseValidator(point) or function() return true end,
+            callback = function(point) card:RunEffect(point) end
+        })
+    end
 end
 
 function DS:OnGameRulesStateChanged()

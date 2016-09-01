@@ -9,7 +9,7 @@ prefix_type = {"basic"}
 artist = "Xavier"
 cast_time = CARD_CASTTIME_MY_ROUND
 
-on_spell_start = function(card, ability, args)
+effect = function(card, ability, args)
 	local caster = ability:GetCaster()
 	caster:SetAttributeIntellect(caster:GetAttributeIntellect() + 1) -- 获得智力+1
 	caster:SetMaxManaPool(caster:GetMaxManaPool() + 1) -- 最大法力值+1
