@@ -38,7 +38,7 @@ function modifier_minion_autoattack:OnIntervalThink()
         if #enemies > 0 then
             for _,enemy in pairs(enemies) do
                 if unit:CanAttackTarget(enemy) then
-                    Attack(unit, enemy)
+                    unit:Attack(enemy)
                     return
                 end
             end

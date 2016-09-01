@@ -1,5 +1,6 @@
 function AggroFilter( unit )
     local target = unit:GetAttackTarget() or unit:GetAggroTarget()
+<<<<<<< HEAD
     local enemies = FindEnemiesInRadius(unit, unit:GetAcquisitionRange())
     if #enemies > 0 then
         for _,enemy in pairs(enemies) do
@@ -7,6 +8,29 @@ function AggroFilter( unit )
                 target = enemy
                 unit:Attack(enemy)
                 return
+=======
+    if target then
+        local bCanAttackTarget = unit:CanAttackTarget(target)
+        if unit.disable_autoattack == 0 then
+            if target ~= unit.attack_target then
+                if bCanAttackTarget then
+                    unit.attack_target = target
+                    return
+                else
+                    local enemies = FindEnemiesInRadius(unit, unit:GetAcquisitionRange())
+                    local target
+                    if #enemies > 0 then
+                        for _,enemy in pairs(enemies) do
+                            if unit:CanAttackTarget(enemy) then
+                                if target and target:IsRealHero() then -- 不优先攻击英雄，todo除非！
+                                    target = enemy
+                                end
+                            end
+                        end
+                        unit:Attack(target)
+                    end
+                end
+>>>>>>> 43f6b6836fad4d66ac6aa4e566767d72d481fccd
             end
         end
     end
@@ -15,6 +39,9 @@ function AggroFilter( unit )
         unit.disable_autoattack = 1
         unit:Stop()
     end
+
+    -- 如果找不到目标，清空单位的目标
+    unit.attack_target = nil
 end
 
 
@@ -39,6 +66,7 @@ end
 
 function CDOTA_BaseNPC:Attack(target)
     self:MoveToTargetToAttack(target)
+    self:RemoveModifierByName("modifier_phased")
     self.target_pos = nil
     self.attack_target = target
     self.disable_autoattack = 0
@@ -50,19 +78,14 @@ function FindAttackableEnemies( unit )
     local enemies = FindEnemiesInRadius( unit, radius )
     for _,target in pairs(enemies) do
         if unit:CanAttackTarget(target) and not target:HasModifier("modifier_invisible") then
-            if bIncludeNeutrals then
-                return target
-            elseif target:GetTeamNumber() ~= DOTA_TEAM_NEUTRALS then
-                return target
-            end
+            return target
         end
     end
     return nil
 end
 
 function CDOTA_BaseNPC:InitDSMinion()
-    self.hero = nil
-    self.line = nil
+    self.has_ordered = nil
 end
 
 function CDOTA_BaseNPC:SetPlayer(hero)
@@ -73,176 +96,68 @@ function CDOTA_BaseNPC:GetPlayer()
     return self.hero
 end
 
--- function CNWSpawner:CreateShipAI(ship, pathCornerTable)
-
--- 	-- 重载IsValidEntity
-
-
--- 	local old_Valid = IsValidEntity
--- 	local function IsValidEntity(ent)
--- 		return ent and old_Valid(ent) and ent:IsAlive()
--- 	end
-
--- 	-- 获取第一个路径点并开始移动
-
-
--- 	ship.currentTargetIndex = 2
--- 	ship.currentTarget = pathCornerTable[ship.currentTargetIndex]
--- 	ship:MoveToPositionAggressive(GetGroundPosition(ship.currentTarget:GetAbsOrigin(), ship))
-
--- 	-- 将船只加入碰撞检测器
-
-
--- 	GameRules.ShipCollider:Push(ship)
-
--- 	-- 启动小船AI循环
-
-
--- 	ship:SetContextThink(DoUniqueString("ship_ai"), function()
-		
--- 		-- 检测单位是否有效
-
-
--- 		if not IsValidEntity(ship) then
--- 			return nil
--- 		end
-
--- 		-- 获取当前位置
-
-
--- 		if ship.currentTarget and ship.currentTarget:IsNull() then return nil end
--- 		local so = ship:GetAbsOrigin()
--- 		local to = ship.currentTarget:GetAbsOrigin()
-
--- 		-- 如果距离当前目标地点很近，那么向下一个目标地点行进
-
-
--- 		-- 如果当前目标已经是基地了，那么不再切换攻击移动目标位置
-
-
--- 		-- 暂时改大路径点容差，避免因为某一个怪不动导致堆积
-
-
--- 		if (so - to):Length2D() <= 250 and not ship.__bTargetingBase then
--- 			ship.currentTargetIndex = ship.currentTargetIndex + 1
--- 			ship.currentTarget = pathCornerTable[ship.currentTargetIndex]
--- 			-- 如果没有下一个路径点了，将目标指向主基地
-
-
--- 			if ship.currentTarget == nil then
--- 				ship.currentTarget = self:GetEnemyBase(ship)
--- 				if ship.currentTarget == nil then
--- 					print("Warning! ship trying to target base which is not existed!")
--- 					return nil
--- 				end
--- 				ship.__bTargetingBase = true
--- 			end
--- 			ship:MoveToPositionAggressive(GetGroundPosition(ship.currentTarget:GetAbsOrigin(), ship))
--- 		end
-
--- 		-- 如果NPC船只被英雄吸引了仇恨
-
-
--- 		if ship:GetAggroTarget() ~= nil then
--- 			if ship:GetAggroTarget().IsHero then
--- 				if ship:GetAggroTarget():IsHero() then
--- 					-- 寻找攻击范围内+buffer（这个常量设置为最多移动100距离）非英雄的单位
-
-
--- 					local flAttackRange = ship:GetAttackRange() + 300
--- 					local vCreepEnemies = FindUnitsInRadius(ship:GetTeamNumber(), ship:GetAbsOrigin(), nil, flAttackRange, DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_BASIC + DOTA_UNIT_TARGET_CREEP, DOTA_UNIT_TARGET_FLAG_NONE, FIND_CLOSEST, false)
--- 					-- 选择最近的非英雄单位进行攻击
-
-
--- 					if #vCreepEnemies > 0 and vCreepEnemies[1] then
--- 						ship:MoveToTargetToAttack(vCreepEnemies[1])
--- 						ship.__hAttackingTarget = vCreepEnemies[1]
--- 					else
--- 						-- 如果找不到非英雄目标，记录开始追击的位置
-
-
--- 						ship.__chasingHeroStartPosition = ship:GetAbsOrigin()
--- 					end
--- 				end
--- 			end
--- 		end
-
--- 		-- 如果是在追击完英雄回归正轨的状态，那么在遇上一个普通单位之前，不会再进行攻击
-
-
--- 		if ship.__movingBackToNormalPath then
--- 			local flAttackRange = ship:GetAttackRange() + 300
--- 			local vCreepEnemies = FindUnitsInRadius(ship:GetTeamNumber(), ship:GetAbsOrigin(), nil, flAttackRange, DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_BASIC + DOTA_UNIT_TARGET_CREEP, DOTA_UNIT_TARGET_FLAG_NONE, FIND_CLOSEST, false)
--- 			if #vCreepEnemies > 0 then
--- 				-- 如果碰上了非英雄单位，那么开始正常攻击移动动作
-
-
--- 				ship:MoveToPositionAggressive(GetGroundPosition(ship.currentTarget:GetAbsOrigin(), ship))
--- 				ship.__movingBackToNormalPath = nil -- 清除回归状态
-
--- 			end
--- 		end
-
--- 		-- 如果当前攻击目标死亡，那么继续往当前目标地点行进
-
-
--- 		if ship.__hAttackingTarget and not IsValidEntity(ship.__hAttackingTarget) then
--- 			ship:MoveToPositionAggressive(GetGroundPosition(ship.currentTarget:GetAbsOrigin(), ship))
--- 			ship.__hAttackingTarget = nil
--- 		end
-
--- 		-- 最多追击英雄1000距离
-
-
--- 		if ship.__chasingHeroStartPosition and (ship:GetAbsOrigin() - ship.__chasingHeroStartPosition):Length2D() > 1000 then
--- 			ship:MoveToPosition(GetGroundPosition(ship.currentTarget:GetAbsOrigin(), ship))
--- 			ship.__movingBackToNormalPath = true
--- 			ship.__chasingHeroStartPosition = nil
--- 		end
--- 		return 0.1
--- 	end, 0.1)
--- end
-
 function CDOTA_BaseNPC:StartMinionAIThink()
     self:AddNewModifier(self, nil, "modifier_minion_autoattack", {})
     self:SetContextThink(DoUniqueString("mb"), function()
-        
-        if not IsValidAlive(self) then return nil end
+        if not IsValidAlive(self) then
+            return nil 
+        end
 
-        -- 根据当前的位置刷新单位所属的战场行
-        local o = self:GetAbsOrigin()
-        local battle_line = GameRules.BattleField:GetPositionBattleLine(o)
-        if not self.battle_line then
-            self.battle_line = battle_line
-        elseif self.battle_line ~= battle_line then
-            self.battle_line:RemoveMinion(self)
-            if battle_line then
-                self.battle_line = battle_line
-                self.battle_line:AddMinion(self)
+        if GameRules.TurnManager.current_turn:GetPhase() ~= TURN_PHASE_BATTLE then 
+            self.has_ordered = nil
+            return 0.1 
+        end
+
+        local so = self:GetAbsOrigin()
+        local area = GameRules.BattleField:GetMinionArea(self)
+
+        if not self.path then
+            self:BuildPath(area)
+        end
+
+        if area and area == BATTLEFIELD_AREA_LINE then 
+            if not self.battle_line then
+                self.battle_line = GameRules.BattleField:GetPositionBattleLine(so)
+            else
+                local bn = GameRules.BattleField:GetPositionBattleLine(so)
+                if bn ~= self.battle_line then
+                    self.battle_line:RemoveMinion(self)
+                    bn:AddMinion(self)
+                    self.battle_line = bn
+                    -- 改变当前线路之后需要重新规划线路
+                    self:BuildPath(area)
+                end
             end
         end
 
-        if GameRules.TurnManager:GetPhase() == TURN_PHASE_BATTLE then
-            AggroFilter( self )
+        -- 如果发生了回退，那么需要重新规划线路
+        if self.area and area < self.area then self:BuildPath() end
+        
+        -- 记录当前已经行进到的区域
+        self.area = area
+        
+        -- 判断当前目标能否攻击
+        AggroFilter(self)
 
-            self.target_pos = self:GetCurrentGoalTargetPos()
-
-            if (self.target_pos and (self.target_pos - self:GetAbsOrigin()):Length2D() < 20 ) then
-                self:Stop()
+        local target_pos = self.path:GetData(1)
+        if self.attack_target == nil and not self.has_ordered then
+            self.has_ordered = true
+            if target_pos then
+                DebugDrawCircle(target_pos, Vector(255,0,0), 100, 50, true, 5)
+                print "sending order into unit"
+                local order = {
+                    OrderType = DOTA_UNIT_ORDER_ATTACK_MOVE,
+                    UnitIndex = self:entindex(),
+                    Position = target_pos
+                }
+                ExecuteOrderFromTable(order)
+                self:AddNewModifier(self, nil, "modifier_phased", {})
+                return 0.03
             end
-     
-            if self.attack_target == nil and self.target_pos then
-                DebugDrawCircle(GetGroundPosition(self.target_pos, self), Vector(0, 255, 0), 100, 32, true, 0.2)
-                self:MoveToPosition(self.target_pos)
-            else
-                if not IsValidAlive(self.attack_target) then
-                    self.attack_target = nil
-                end
-            end
-
-            return 0.03
-        else
-            -- self:Stop()
+        end
+        if self.attack_target ~= nil or (target_pos and (so - target_pos):Length2D() <= 30 ) then
+            self.path:Remove(1)
+            self.has_ordered = nil
         end
 
         return 0.03
@@ -263,37 +178,49 @@ function CDOTA_BaseNPC:IsTargetOnSameLine(target)
     return self:GetBattleLine() == target:GetBattleLine()
 end
 
-function CDOTA_BaseNPC:GetCurrentGoalTargetPos()
-    -- 如果尚在基地内，选择随机目标
-    if not self.has_selected_target_random_line then
-        self.target_battleLine = GameRules.BattleField:GetBattleLine(RandomInt(1, 5))
-        self.has_selected_target_random_line = true
+function CDOTA_BaseNPC:BuildPath(area)
+
+    local team = self:GetTeamNumber()
+    local path = List()
+
+    local random_line
+    if area == BATTLEFIELD_AREA_MY_BASE then
+        random_line = GameRules.BattleField:GetBattleLine(RandomInt(1, 5))
+        self.battle_line = random_line
+        if team == DOTA_TEAM_GOODGUYS then
+            path:AddRear(GetGroundPosition(self.battle_line:GetLeft(), self))
+        else
+            path:AddRear(GetGroundPosition(self.battle_line:GetRight(), self))
+        end
+        
     end
 
-    -- 如果尚在基地内，向随机目标点移动
-    if GameRules.BattleField:IsMinionInMyBaseArea(self) then
-        if self:GetTeamNumber() == DOTA_TEAM_GOODGUYS then
-            return self.target_battleLine:GetLeft() + Vector(50,0,0)
-        elseif self:GetTeamNumber() == DOTA_TEAM_BADGUYS then
-            return self.target_battleLine:GetRight() - Vector(50,0,0)
+    -- 如果是直接召唤在线上的，那么在召唤的时候就已经拥有battle_line属性了
+    if area <= BATTLEFIELD_AREA_LINE then
+        if not self.battle_line then 
+            self.battle_line = GameRules.BattleField:GetPositionBattleLine(self:GetAbsOrigin()) 
+        end
+        if team == DOTA_TEAM_GOODGUYS then
+            path:AddRear(GetGroundPosition(self.battle_line:GetRight(), self))
+        else
+            path:AddRear(GetGroundPosition(self.battle_line:GetLeft(), self))
         end
     end
 
-    -- 如果在线上，往另一侧移动
-    if GameRules.BattleField:IsMinionInLine(self) then
-        if self:GetTeamNumber() == DOTA_TEAM_GOODGUYS then
-            return self:GetBattleLine():GetRight() + Vector(50,0,0)
-        elseif self:GetTeamNumber() == DOTA_TEAM_BADGUYS then
-            return self:GetBattleLine():GetLeft() - Vector(50,0,0)
+    for _, hero in pairs(GameRules.AllHeroes) do
+        if hero:GetTeamNumber() ~= self:GetTeamNumber() then
+            path:AddRear(GetGroundPosition(hero:GetAbsOrigin(),self))
         end
     end
 
-    -- 如果在外面，往敌方英雄处移动
-    if GameRules.BattleField:IsMinionInEnemyBaseArea(self) then
-        for _, hero in pairs(GameRules.AllHeroes) do
-            if hero:GetTeamNumber() ~= self:GetTeamNumber() then
-                return hero:GetAbsOrigin()
-            end
-        end
+    local i = 1
+    for i = 1, 3 do
+        local node = path:GetData(i)
+        if not node then break end
+        DebugDrawCircle(GetGroundPosition(node, self), Vector(0,255,0), 100, 64, true, 5)
     end
+
+    self.path = path
+
+    return path
 end
