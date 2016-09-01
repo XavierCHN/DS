@@ -14,7 +14,7 @@
       "RunScript"
       {
         "Target"    "POINT"
-        "ScriptFile"  "engine/abilities/selector.lua"
+        "ScriptFile"  "engine/selector.lua"
         "Function"  "OnSelectPoint"
       }
     }
@@ -32,7 +32,7 @@
       "RunScript"
       {
         "Target"    "POINT"
-        "ScriptFile"  "engine/abilities/selector.lua"
+        "ScriptFile"  "engine/selector.lua"
         "Function"  "OnSelectTarget"
       }
     }

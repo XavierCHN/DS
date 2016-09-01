@@ -32,7 +32,7 @@ function UpdateHandCards(handCardData){
         // 如果不存在这个ID的卡牌，则创建新的卡牌
         if(!hand_cards[unique_id]){
             let card_data = all_card_data[card_id];
-            let card_type = card_data["card_type"];
+            let card_type = card_data.card_type;
             let new_card = new HandCard(handCardContainer, card_id, unique_id, card_type, card_data);
             hand_cards[unique_id] = new_card;
         }
@@ -107,6 +107,5 @@ function UpdateHandCardCount(args){
     RequestHandCard();
     GameEvents.Subscribe("ds_player_hand_changed", UpdateHandCards);
     GameEvents.Subscribe("ds_highlight_state_changed", UpdateHighLightState);
-    GameEvents.Subscribe("ds_execute_card_proxy", ExecuteCardProxy);
     GameEvents.Subscribe("ds_player_hand_count_changed", UpdateHandCardCount)
 })();

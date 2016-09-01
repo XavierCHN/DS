@@ -79,24 +79,7 @@ function DS:OnPlayerClickCard(args)
         return 
     end
 
-    local ccb = card:GetCardBehavior()
-    if ccb == CARD_BEHAVIOR_NO_TARGET then
-        card:RunEffect()
-    elseif ccb == CARD_BEHAVIOR_SINGLE_TARGET then
-        hero:GetSelector():Create({
-            type = SELECTOR_UNIT,
-            title = "#select_target",
-            validate = card:GetOnUseValidator(unit) or function() return true end,
-            callback = function(unit) card:RunEffect(unit) end
-        })
-    elseif ccb == CARD_BEHAVIOR_POINT then
-        hero:GetSelector():Create({
-            type = SELECTOR_POINT,
-            title = "#select_point",
-            validate = card:GetOnUseValidator(point) or function() return true end,
-            callback = function(point) card:RunEffect(point) end
-        })
-    end
+    card:OnExecute()
 end
 
 function DS:OnGameRulesStateChanged()

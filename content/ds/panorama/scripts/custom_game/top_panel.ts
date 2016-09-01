@@ -1,9 +1,5 @@
 var phase_end_time: number;
 
-
-    // let mana_panel = $("#ManaPanel");
-
-
 var enemyhero:number;
 var localhero:number;
 
@@ -24,13 +20,15 @@ function ShowAttributeTooltip(data) {
 function UpdateHealthBar(){
     if (localhero == null || localhero == -1)
         localhero = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
+    if (localhero == null || localhero == -1) return;
     let hp = Entities.GetHealth(localhero);
     let mhp = Entities.GetMaxHealth(localhero);
 
     $("#HealthValue").text = `${hp}/${mhp}`;
     $("#HealthBar").style.width = `${100 * hp/mhp}%`;
     
-    if(enemyhero == undefined) findEnemyHero();
+    if (enemyhero == undefined) findEnemyHero();
+    if (enemyhero == null || enemyhero == -1) return;
     hp = Entities.GetHealth(enemyhero);
     mhp = Entities.GetMaxHealth(enemyhero);
 
@@ -65,6 +63,7 @@ function UpdatePhaseTimer(){
 
 (function(){
     UpdatePhaseTimer();
+
     GameEvents.Subscribe("ds_new_phase", function(args)
     {
         let time = args.EndTime;

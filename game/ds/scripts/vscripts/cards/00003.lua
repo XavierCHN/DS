@@ -7,10 +7,9 @@ expansion = 0
 cost = {}
 prefix_type = {"basic"}
 artist = "Xavier"
-cast_time = CARD_CASTTIME_MY_ROUND
 
-effect = function(card, ability, args)
-	local caster = ability:GetCaster()
+Effect = function(args)
+	local caster = args.caster
 	caster:SetAttributeIntellect(caster:GetAttributeIntellect() + 1) -- 获得智力+1
 	caster:SetMaxManaPool(caster:GetMaxManaPool() + 1) -- 最大法力值+1
 	caster:SetManaPool(caster:GetManaPool() + 1) -- 法力值+1

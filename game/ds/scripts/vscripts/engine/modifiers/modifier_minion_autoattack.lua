@@ -31,7 +31,7 @@ end
 
 function modifier_minion_autoattack:OnIntervalThink()
     local unit = self:GetParent()
-    AggroFilter(unit)
+    unit:AggroFilter()
     
     if unit.disable_autoattack == 1 then
         local enemies = FindEnemiesInRadius(unit, unit:GetAcquisitionRange())

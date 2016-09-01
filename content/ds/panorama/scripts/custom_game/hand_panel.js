@@ -93,6 +93,5 @@ function UpdateHandCardCount(args) {
     RequestHandCard();
     GameEvents.Subscribe("ds_player_hand_changed", UpdateHandCards);
     GameEvents.Subscribe("ds_highlight_state_changed", UpdateHighLightState);
-    GameEvents.Subscribe("ds_execute_card_proxy", ExecuteCardProxy);
     GameEvents.Subscribe("ds_player_hand_count_changed", UpdateHandCardCount);
 })();

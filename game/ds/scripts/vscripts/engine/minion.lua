@@ -75,16 +75,35 @@ function FindAttackableEnemies( unit )
     return nil
 end
 
-function CDOTA_BaseNPC:InitDSMinion()
+function CDOTA_BaseNPC:InitDSMinion(card)
     self.has_ordered = nil
+
+    -- 设置血量等各种信息
+    self:SetBaseDamageMax(card.data.atk)
+    self:SetBaseDamageMin(card.data.atk)
+    self:SetBaseMaxHealth(card.data.hp)
+    self:SetHealth(card.data.hp)
+    self.ms = card.data.move_speed
+    self.ar = card.data.attack_range
+
+    self:AddNewModifier(self, nil, "modifier_minion_rooted", {})
+    self:AddNewModifier(self, nil, "modifier_minion_disable_attack", {})
+    self:AddNewModifier(self, nil, "modifier_minion_data", {})
+    self:AddNewModifier(self, nil, "modifier_minion_summon_disorder", {})
+    self:AddNewModifier(self, nil, "modifier_phased", {})
+
+    self:StartMinionAIThink()
+
+    self:SetCardID(card:GetID())
+
+    table.insert(GameRules.AllMinions, self)
 end
 
-function CDOTA_BaseNPC:SetPlayer(hero)
-    self.hero = hero
-end
-
-function CDOTA_BaseNPC:GetPlayer()
-    return self.hero
+function CDOTA_BaseNPC:SetCardID(id)
+    self.cardid = id
+    CustomGameEventManager:Send_ServerToAllClients("ds_minion_card", {
+        CardID = id,
+    })
 end
 
 function CDOTA_BaseNPC:StartMinionAIThink()
@@ -112,8 +131,6 @@ function CDOTA_BaseNPC:StartMinionAIThink()
             else
                 local bn = GameRules.BattleField:GetPositionBattleLine(so)
                 if bn ~= self.battle_line then
-                    self.battle_line:RemoveMinion(self)
-                    bn:AddMinion(self)
                     self.battle_line = bn
                     -- 改变当前线路之后需要重新规划线路
                     self:BuildPath(area)

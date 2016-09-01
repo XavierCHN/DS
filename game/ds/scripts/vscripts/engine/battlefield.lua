@@ -22,7 +22,10 @@ function BattleField:constructor()
     self.maxy = self:GetBattleLine(1):GetLeft().y + self.line_width / 2
 end
 
-function BattleField:IsMyField(hero, vLoc)
+function BattleField:IsPositionInMyField(hero, vLoc)
+    if not self:IsInsideBattleField(vLoc) then
+        return false
+    end 
     if hero:GetTeamNumber() == DOTA_TEAM_GOODGUYS and vLoc.x < self.origin.x then
         return true
     end
@@ -58,12 +61,14 @@ function BattleField:IsMinionInEnemyBaseArea(unit)
     return false
 end
 
-function BattleField:IsMinionInLine(unit)
-    local o = unit:GetAbsOrigin()
-    local t = unit:GetTeamNumber()
+function BattleField:IsPositionInLine(o)
     return o.x >= self:GetBattleLine(1):GetLeft().x and o.x <= self:GetBattleLine(1):GetRight().x
 end
 
+function BattleField:IsMinionInLine(unit)
+    local o = unit:GetAbsOrigin()
+    return self:IsPositionInLine(o)
+end
 
 function BattleField:GetTargetPositionForTeam(team, lineNumber)
     if team == DOTA_TEAM_GOODGUYS then
@@ -80,7 +85,7 @@ end
 
 function BattleField:GetPositionBattleLine(pos)
     for _, line in pairs(self.lines) do
-        if math.abs(pos.y - line:GetOrigin().y) <= BATTLE_FIELD_LINE_WIDTH / 2 then
+        if math.abs(pos.y - line:GetOrigin().y) <= self.line_width / 2 then
             return line
         end
     end
@@ -118,6 +123,25 @@ function BattleField:GetMinionArea(minion)
     end
 end
 
+-- 获取当前线对于玩家是否是空的
+function BattleField:IsLineEmpty(hero, pos)
+    if not self:IsPositionInLine(pos) then
+        return true
+    end
+
+    local pn = self:GetPositionBattleLine(pos)
+    for _, minion in pairs(GameRules.AllMinions) do
+        if minion:GetTeamNumber() == hero:GetTeamNumber() then
+            local o = minion:GetAbsOrigin()
+            local on = self:GetPositionBattleLine(o)
+            if pn == on then
+                return false
+            end
+        end
+    end
+
+    return true
+end
 
 
 if BattleLine == nil then
@@ -158,28 +182,6 @@ function BattleLine:GetNearestCornerForMyTeam(team)
     elseif team == DOTA_TEAM_BADGUYS then
         return self:GetRight()
     end
-end
-
-function BattleLine:AddMinion(minion)
-    self.minions[minion] = true
-end
-
-function BattleLine:RemoveMinion(minion)
-    self.minions[minion] = nil
-end
-
-function BattleLine:IsLineEmptyForPlayer(hero)
-    for minion, _ in pairs(self.minions) do
-        if IsValidEntity(minion) and minion:IsAlive() then
-            if minion:GetPlayer() == hero then
-                return false
-            end
-        else
-            self.minions[minion] = nil
-        end
-    end
-
-    return true
 end
 
 Convars:RegisterCommand("debug_draw_battlefield_bounds", function()

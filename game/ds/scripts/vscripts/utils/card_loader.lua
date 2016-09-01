@@ -14,10 +14,15 @@ print 'NOW RELOADING CARD DATA'
 local rcc = 0
 for id = 1, max_card_number do
     local f_name = path_prefix .. string.format("%05d", id)
-    local data = pcall(require, f_name)
+    local file = io.open("../../../game/dota_addons/ds/scripts/vscripts/cards/" .. string.format("%05d", id) .. ".lua")
+    local data,msg = pcall(require, f_name)
     if data then
+        print("registering", id)
         registerCard(require(f_name), id)
         rcc = rcc + 1
+    elseif file then
+        error("CARD LUA SCRIPT ERROR\n" .. msg)
+        print(msg)
     end
 end
 

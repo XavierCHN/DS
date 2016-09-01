@@ -30,9 +30,8 @@ function CDOTA_BaseNPC_Hero:DrawCard(numCards)
 		local card = self.deck:Pop()
 		if card then
 			self.hand:AddCard(card)
+			card:SetOwner(self)
 		else
-			-- 在测试阶段，不因为想要抽牌的时候抽不到牌的规则而输掉比赛
-			-- 
 			print("todo, no card damage")
 		end
 	end
@@ -149,19 +148,14 @@ function CDOTA_BaseNPC_Hero:SendDataToAllClients()
 	})
 end
 
-function CDOTA_BaseNPC_Hero:CreateCardMinion(card, pos, callback)
-    local mn = card:GetMinionName()
-    local ent = CreateUnitByNameAsync(mn, pos, false, self, self, self:GetTeamNumber(), function(ent)
-        ent:InitDSMinion()
+function CDOTA_BaseNPC_Hero:CreateMinion(card, minion_name, pos, callback)
+	if GameRules.BattleField:IsPositionInLine(pos) then
+		pos.y = GameRules.BattleField:GetPositionBattleLine(pos):GetOrigin().y-- 强行召唤在区域正中间
+	end 
+    local ent = CreateUnitByNameAsync(minion_name, pos, false, self, self, self:GetTeamNumber(), function(ent)
+        ent:InitDSMinion(card)
         ent:SetPlayer(self)
-        ent:StartMinionAIThink()
-        ent:AddNewModifier(ent, nil, "modifier_minion_rooted", {})
-        ent:AddNewModifier(ent, nil, "modifier_minion_disable_attack", {})
-        ent:AddNewModifier(ent, nil, "modifier_minion_data", {})
-        ent:AddNewModifier(ent, nil, "modifier_minion_summon_disorder", {})
-		ent:AddNewModifier(ent, nil, "modifier_phased", {})
-        table.insert(GameRules.AllMinions, ent)
-        callback(ent)
+		if callback then callback(ent) end
     end)
 end
 

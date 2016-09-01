@@ -1,5 +1,4 @@
 var phase_end_time;
-// let mana_panel = $("#ManaPanel");
 var enemyhero;
 var localhero;
 function findEnemyHero() {
@@ -11,17 +10,22 @@ function findEnemyHero() {
         }
     }
 }
+
 function ShowAttributeTooltip(data) {
 }
 function UpdateHealthBar() {
     if (localhero == null || localhero == -1)
         localhero = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
+    if (localhero == null || localhero == -1)
+        return;
     var hp = Entities.GetHealth(localhero);
     var mhp = Entities.GetMaxHealth(localhero);
     $("#HealthValue").text = hp + "/" + mhp;
     $("#HealthBar").style.width = 100 * hp / mhp + "%";
     if (enemyhero == undefined)
         findEnemyHero();
+    if (enemyhero == null || enemyhero == -1)
+        return;
     hp = Entities.GetHealth(enemyhero);
     mhp = Entities.GetMaxHealth(enemyhero);
     $("#Enemy_HealthValue").text = hp + "/" + mhp;
