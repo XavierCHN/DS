@@ -27,7 +27,7 @@ function Selector:Create(args)
             Numbers = JSON:encode(self.args.values),
         })
     elseif type == SELECTOR_YESNO then
-        CustomGameEventManager:Send_ServerToPlayer(self.player, "start_yes_no_selector", {})
+        CustomGameEventManager:Send_ServerToPlayer(self.player, "start_yes_no_selector", {title = self.args.title})
     end
 end
 
@@ -73,3 +73,14 @@ function OnSelectPoint(args)
         selector:Validate(point)
     end
 end
+
+CustomGameEventManager:RegisterListener("ds_player_select", function(args)
+    local id = args.PlayerID
+    local result = args.result
+    local player = PlayerResource:GetPlayer(id)
+    if not player then return end
+    local hero = player:GetAssignedHero()
+    if not hero then return end
+
+    hero:GetSelector():OnSelect(result)
+end)

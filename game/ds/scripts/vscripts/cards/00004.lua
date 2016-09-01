@@ -30,8 +30,23 @@ OnExecute = function(card)
             if not GameRules.BattleField:IsPositionInMyField(hero, pos) then
                 return false, "cannot_summon_here", false
             elseif not GameRules.BattleField:GetPositionBattleLine(pos):IsLineEmptyForPlayer(hero) then
-                print("line is not empty, creating selector")
-                return false, "", true -- 最后参数返回true，我们来创建一个新的
+                hero:GetSelector():Create({
+                    type = SELECTOR_YESNO,
+                    title = "#confirm_replace",
+                    callback = function(result)
+                        if result == "yes" then
+                            local old_minions = GameRules.BattleField:GetMinionsOnSameLine(hero, pos)
+                            for _, minion in pairs(old_minions) do
+                                minion:ForceKill(false)
+                            end
+                            card:ExecuteEffect({
+                                caster = hero,
+                                target_points = {pos}
+                            })
+                        end
+                    end,
+                })
+                return false, "", true -- 最后参数返回true，我们来创建一个新的selector，原来的结果会暂存
             else
                 return true
             end

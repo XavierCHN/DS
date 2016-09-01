@@ -7,12 +7,19 @@
     </scripts>
     <!--<snippets>-->
     <!--</snippets>-->
-    <Panel class="selector_Root">
-        <Label class="Hidden" id="TooltipLabel" text="#tooltip" />
-        <Panel class="Hidden" id="YesNoSelector">
-            <Label id="SelectorMsg" text="Msg" />
-            <Button id="YesButton" onactivate="OnClickYes()"/>
-            <Button id="NoButton" onactivate="OnClickNo()"/>
+    <Panel class="selector_Root" hittest="false" >
+        <Label class="" id="TooltipLabel" text="#tooltip" />
+        <Panel class="YesNoSelector" id="YesNoSelector">
+            <Label id="SelectorMsg" text="Do you want to replace the minion on this line?" />
+            <Panel class="ButtonContainer">
+                <Button id="YesButton" onactivate="OnClickYes()">
+                    <Label text="YES" />
+                </Button>
+                <Button id="NoButton" onactivate="OnClickNo()">
+                    <Label text="NO" />
+                </Button>
+            </Panel>
         </Panel>
+        
     </Panel>
 </root>

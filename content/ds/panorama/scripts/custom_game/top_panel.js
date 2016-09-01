@@ -10,7 +10,6 @@ function findEnemyHero() {
         }
     }
 }
-
 function ShowAttributeTooltip(data) {
 }
 function UpdateHealthBar() {

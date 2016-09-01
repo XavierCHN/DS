@@ -28,7 +28,7 @@ function UpdateHandCards(handCardData) {
         // 如果不存在这个ID的卡牌，则创建新的卡牌
         if (!hand_cards[unique_id]) {
             var card_data = all_card_data[card_id];
-            var card_type = card_data["card_type"];
+            var card_type = card_data.card_type;
             var new_card = new HandCard(handCardContainer, card_id, unique_id, card_type, card_data);
             hand_cards[unique_id] = new_card;
         }
