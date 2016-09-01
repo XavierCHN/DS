@@ -24,6 +24,7 @@ require 'engine.hero'
 require 'engine.deck'
 require 'engine.hand'
 require 'engine.battlefield'
+require 'engine.selector'
 
 -- GameRules.UnitKV = LoadKeyValues("scripts/npc/npc_units_custom.txt")
 -- GameRules.AbilityKV = LoadKeyValues("scripts/npc/npc_abilities_custom.txt")

@@ -1,38 +1,37 @@
-function AggroFilter( unit )
-    local target = unit:GetAttackTarget() or unit:GetAggroTarget()
+function CDOTA_BaseNPC:AggroFilter()
+    local target = self:GetAttackTarget() or self:GetAggroTarget()
     if target then
-        local bCanAttackTarget = unit:CanAttackTarget(target)
-        if unit.disable_autoattack == 0 then
-            if target ~= unit.attack_target then
+        local bCanAttackTarget = self:CanAttackTarget(target)
+        if self.disable_autoattack == 0 then
+            if target ~= self.attack_target then
                 if bCanAttackTarget then
-                    unit.attack_target = target
+                    self.attack_target = target
                     return
                 else
-                    local enemies = FindEnemiesInRadius(unit, unit:GetAcquisitionRange())
+                    local enemies = FindEnemiesInRadius(self, self:GetAcquisitionRange())
                     local target
                     if #enemies > 0 then
                         for _,enemy in pairs(enemies) do
-                            if unit:CanAttackTarget(enemy) then
+                            if self:CanAttackTarget(enemy) then
                                 if target and target:IsRealHero() then -- 不优先攻击英雄，todo除非！
                                     target = enemy
                                 end
                             end
                         end
-                        unit:Attack(target)
+                        self:Attack(target)
                     end
                 end
             end
         end
-
-        if not bCanAttackTarget then
-            unit.attack_target = nil
-            unit.disable_autoattack = 1
-            unit:Stop()
-        end
+    end
+    if target and not self:CanAttackTarget(target) then
+        self.attack_target = nil
+        self.disable_autoattack = 1
+        self:Stop()
     end
 
     -- 如果找不到目标，清空单位的目标
-    unit.attack_target = nil
+    self.attack_target = nil
 end
 
 
@@ -106,7 +105,7 @@ function CDOTA_BaseNPC:StartMinionAIThink()
             self:BuildPath(area)
         end
 
-        if area == BATTLEFIELD_AREA_LINE then 
+        if area and area == BATTLEFIELD_AREA_LINE then 
             if not self.battle_line then
                 self.battle_line = GameRules.BattleField:GetPositionBattleLine(so)
             else
@@ -128,7 +127,7 @@ function CDOTA_BaseNPC:StartMinionAIThink()
         self.area = area
         
         -- 判断当前目标能否攻击
-        AggroFilter(self)
+        self:AggroFilter()
 
         local target_pos = self.path:GetData(1)
         if self.attack_target == nil and not self.has_ordered then
