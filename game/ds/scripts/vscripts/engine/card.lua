@@ -21,19 +21,19 @@ function Card:constructor(id)
     data.agi_cost = data.cost.agi or 0
     data.int_cost = data.cost.int or 0
     data.mana_cost = data.cost.mana or 0
+    data.timing = data.timing or TIMING_NORMAL
     data.HighLight = data.HighLight
     data.Effect = data.Effect
     data.OnExecute = data.OnExecute
 
+
     -- 给minion类卡牌的特殊数值
     if data.card_type == CARD_TYPE_MINION then
-        data.minion_name = data.minion_name ~= "" and data.minion_name or "minion_" .. id -- 默认召唤单位为minion_{id}
         data.atk = data.atk or 0
         data.hp = data.hp or 1
         data.move_speed = data.move_speed or 300
         data.attack_range = data.attack_range or 600
         data.abilities = data.abilities or {}
-        data.special_effects = data.special_effects or function(minion) end
     end
     
     self.data = data
@@ -52,18 +52,19 @@ function Card:Validate_BeforeExecute()
         return false, "game_havent_started_yet"
     end
     
+    -- 必须满足费用需求
+    local meet, reason = hero:HasEnough({str = self.data.str_cost, agi = self.data.agi_cost, int = self.data.int_cost, mana = self.data.mana_cost})
+    if not meet then return meet, reason end
+
     -- 通用规则，一回合只能使用一张属性牌
     if self:GetType() == CARD_TYPE_ATTRIBUTE then
         if hero:HasUsedAttributeCardThisRound() then
             return false, "one_attribute_card_one_round"
         end
     end
-    
-    -- 通用规则，必须满足费用需求，告知具体是什么费用不足
-    local meet, reason = self:MeetCostRequirement()
-    if not meet then
-        return false, reason
-    end
+
+    meet, reason = GameRules.TurnManager:IsMeetTimingRequirement(hero, timing)
+    if not meet then return meet, reason end
 
     return true
 end
@@ -115,28 +116,6 @@ end
 -- 这个函数需要重写
 function Card:UpdateHighLightState()
     if not GameRules.TurnManager:HasGameStarted() then return nil end
-end
-
--- 是否满足费用的使用需求
-function Card:MeetCostRequirement()
-    local str = self.data.str_cost
-    local agi = self.data.agi_cost
-    local int = self.data.int_cost
-    local mana = self.data.mana_cost
-
-    if self.owner:GetAttributeStrength() < str then
-        return false, "str_not_enough"
-    end
-    if self.owner:GetAttributeAgility() < agi then
-        return false, "agi_not_enough"
-    end
-    if self.owner:GetAttributeIntellect() < int then
-        return false, "int_not_enough"
-    end
-    if self.owner:GetManaPool() < mana then
-        return false, "mana_not_enough"
-    end
-    return true
 end
 
 function Card:GetCardBehavior()

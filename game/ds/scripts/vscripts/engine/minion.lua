@@ -78,6 +78,8 @@ end
 function CDOTA_BaseNPC:InitDSMinion(card)
     self.has_ordered = nil
 
+    self.card = card
+
     -- 设置血量等各种信息
     self:SetBaseDamageMax(card.data.atk)
     self:SetBaseDamageMin(card.data.atk)
@@ -92,11 +94,17 @@ function CDOTA_BaseNPC:InitDSMinion(card)
     self:AddNewModifier(self, nil, "modifier_minion_summon_disorder", {})
     self:AddNewModifier(self, nil, "modifier_phased", {})
 
+    self:SetupAbilities()
+
     self:StartMinionAIThink()
 
     self:SetCardID(card:GetID())
 
     table.insert(GameRules.AllMinions, self)
+end
+
+function CDOTA_BaseNPC:SetPlayer(player)
+    self.player = player
 end
 
 function CDOTA_BaseNPC:SetCardID(id)
@@ -230,4 +238,17 @@ function CDOTA_BaseNPC:BuildPath(area)
     self.path = path
 
     return path
+end
+
+function CDOTA_BaseNPC:SetupAbilities()
+    local abilities = self.card.abilities or {}
+    for _, ability_data in pairs(abilities) do
+        if ability_data.Type == "static" then
+            self:AddNewModifier(self, nil, ability_data.ModifierName, ability_data.ModifierData or {})
+        end
+        if ability_data.Type == "trigger" then
+        end
+        if ability_data.Type == "active" then
+        end
+    end
 end

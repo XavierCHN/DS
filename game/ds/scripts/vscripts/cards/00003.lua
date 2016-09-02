@@ -2,7 +2,8 @@ module(..., package.seeall)
 
 card_type = CARD_TYPE_ATTRIBUTE
 main_attr = ATTRIBUTE_INTELLECT
-card_behavior = CARD_BEHAVIOR_NO_TARGET
+timing = TIMGING_NORMAL
+
 expansion = 0
 cost = {}
 prefix_type = {"basic"}

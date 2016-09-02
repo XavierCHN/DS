@@ -58,6 +58,27 @@ function CDOTA_BaseNPC_Hero:HasUsedAttributeCardThisRound()
 	return self.has_used_attribute_card
 end
 
+-- 是否拥有足够的资源以满足使用需求
+function CDOTA_BaseNPC_Hero:HasEnough(cost)
+	cost.str = cost.str or 0
+	cost.agi = cost.agi or 0
+	cost.int = cost.int or 0
+	cost.mana = cost.mana or 0
+	if self.mp < cost.mana then
+		return false, "not_enough_mana"
+	end
+
+	if self.attribute_str < cost.str then
+		return false, "not_enough_str"
+	end
+	if self.attribute_agi < cost.agi then 
+		return false, "not_enough_agi"
+	end
+	if self.attribute_int < cost.int then
+		return false, "not_enough_int"
+	end
+end
+
 function CDOTA_BaseNPC_Hero:FillManaPool()
 	self.mp = self.mmp
 	self:SendDataToAllClients()

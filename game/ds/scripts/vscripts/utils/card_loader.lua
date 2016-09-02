@@ -1,5 +1,5 @@
 local path_prefix = "cards."
-local max_card_number = 10 -- 当前最大的卡牌数量
+local max_card_number = 1000 -- 当前最大的卡牌数量
 
 -- 储存游戏中的全部卡牌
 GameRules.AllCards = {}
@@ -34,7 +34,12 @@ if IsInToolsMode() then
         local line = tonumber(id) .. ":"
         local d = {}
         for k, v in pairs(data) do
-            if type(v) ~= "function" and k ~= "_NAME" and k ~= '_PACKAGE' and k ~= '_M' then
+            if k == "abilities" then
+                d.abilities = k
+                for name, _ in pairs(v) do
+                    table.insert(d.abilities, name) -- 特殊处理技能，把技能都放里面去
+                end
+            elseif type(v) ~= "function" and k ~= "_NAME" and k ~= '_PACKAGE' and k ~= '_M' then
                 d[k] = v
             end
         end

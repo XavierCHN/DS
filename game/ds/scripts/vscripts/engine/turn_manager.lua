@@ -11,7 +11,6 @@ end
 function TurnManager:OnPlayerSkipPhase(args)
 	local playerid = args.PlayerID
 	if playerid ~= self.ActivePlayer:GetPlayerID() then return end
-	
 	local turn = self.current_turn
 	if not turn then return end
 	if turn:GetCurrentPhase() == TURN_PHASE_BATTLE then return end
@@ -55,8 +54,10 @@ function TurnManager:Run()
 		if self.current_turn:IsTurnEnd() then
 			if self.ap == self.fp then
 				self.ap = self.nfp
+				self.nap = self.fp
 			else
 				self.ap = self.fp
+				self.nap = self.nfp
 			end
 			self.current_turn = Turn(self.ap)
 			self.current_turn:Start()
@@ -66,17 +67,28 @@ function TurnManager:Run()
 end
 
 function TurnManager:GetActivePlayer()
-	return self.current_turn:GetPlayer()
+	return self.ap
 end
 
 function TurnManager:GetNoneActivePlayer()
-	return self.ap
+	return self.nap
 end
 
 function TurnManager:HasGameStarted()
 	return self.game_started
 end
 
+function TurnManager:IsMeetTimingRequirement(hero, timing)
+	if not timing == TIMING_INSTANT then
+        if self:GetActivePlayer() ~= hero then
+            return false, "cannot_cast_in_enemy_turn"
+        end
+        if self:GetPhase() ~= TURN_PHASE_STRATEGY then
+            return false, "cannot_cast_outside_strategy_phase"
+        end
+    end
+    return true
+end
 
 Convars:RegisterCommand("debug_force_phase_end", function()
 	GameRules.TurnManager.current_turn:EndPhase()
