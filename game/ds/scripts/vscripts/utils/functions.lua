@@ -14,3 +14,7 @@ function ShowError(playerid, msg)
     EmitSoundOnClient("General.CastFail_AbilityNotLearned", PlayerResource:GetPlayer(playerid))
     Notifications:Bottom(playerid,{text= msg, duration=1, style={color="red";["font-size"] = "30px"}})
 end
+
+function GetAbilityByUniqueID(uid)
+	return GameRules.AllAbilities[uid]
+end

@@ -25,6 +25,12 @@ require 'engine.deck'
 require 'engine.hand'
 require 'engine.battlefield'
 require 'engine.selector'
+require 'engine.event_manager'
+
+require 'engine.ability.ability'
+require 'engine.ability.trigger_ability'
+require 'engine.ability.static_ability'
+require 'engine.ability.active_ability'
 
 -- GameRules.UnitKV = LoadKeyValues("scripts/npc/npc_units_custom.txt")
 -- GameRules.AbilityKV = LoadKeyValues("scripts/npc/npc_abilities_custom.txt")
@@ -33,6 +39,7 @@ require 'engine.selector'
 function DS:Init()
 
     GameRules.AllCreatedCards = {}
+    GameRules.AllAbilities = {}
 
     local mode = GameRules:GetGameModeEntity()
     
@@ -45,7 +52,6 @@ function DS:Init()
     GameRules:SetGoldPerTick(0)
     GameRules:SetGoldTickTime(0)
     GameRules:SetCustomGameSetupTimeout(3)
-
     
     self.mode = mode
     GameRules.mode = mode
@@ -53,16 +59,33 @@ function DS:Init()
     
     GameRules.TurnManager = TurnManager()
     GameRules.BattleField = BattleField() -- todo 重新考虑战场的逻辑
-    
+    GameRules.EventManager = EventManager()
+
     ListenToGameEvent("game_rules_state_change", Dynamic_Wrap(DS, "OnGameRulesStateChanged"), self)
 
     CustomGameEventManager:RegisterListener("ds_player_click_card",Dynamic_Wrap(DS, "OnPlayerClickCard"))
-    
+    CustomGameEventManager:RegisterListener('ds_player_active_ability' ,Dynamic_Wrap(DS, "OnPlayerActiveAbility"))
+
     LinkLuaModifier("modifier_minion_rooted", "engine/modifiers/modifier_minion_rooted", LUA_MODIFIER_MOTION_NONE)
     LinkLuaModifier("modifier_minion_disable_attack", "engine/modifiers/modifier_minion_disable_attack", LUA_MODIFIER_MOTION_NONE)
     LinkLuaModifier("modifier_minion_data", "engine/modifiers/modifier_minion_data", LUA_MODIFIER_MOTION_NONE)
     LinkLuaModifier("modifier_minion_summon_disorder", "engine/modifiers/modifier_minion_summon_disorder", LUA_MODIFIER_MOTION_NONE)
     LinkLuaModifier("modifier_minion_autoattack", "engine/modifiers/modifier_minion_autoattack", LUA_MODIFIER_MOTION_NONE)
+end
+
+function DS:OnPlayerActiveAbility(args)
+    local player = PlayerResource:GetPlayer(args.PlayerID)
+    local hero = player:GetAssignedHero()
+    local uid = args.UniqueId
+    local ability = GetAbilityByUniqueID(uid)
+
+    local canuse, reason = ability:Validate_BeforeExecute()
+    if not canuse then
+        ShowError(args.PlayerID, reason)
+        return
+    end
+
+    ability:OnActive()
 end
 
 function DS:OnPlayerClickCard(args)

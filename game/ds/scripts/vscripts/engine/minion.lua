@@ -94,7 +94,18 @@ function CDOTA_BaseNPC:InitDSMinion(card)
     self:AddNewModifier(self, nil, "modifier_minion_summon_disorder", {})
     self:AddNewModifier(self, nil, "modifier_phased", {})
 
-    self:SetupAbilities()
+    local abilities = self.card.abilities or {}
+    for _, ability_data in pairs(abilities) do
+        if ability_data.type == "static" then
+            self:AddAbility(StaticAbility(ability_data, self))
+        end
+        if ability_data.type == "trigger" then
+            self:AddAbility(TriggerAbility(ability_data, self))
+        end
+        if ability_data.type == "active" then
+            self:AddAbility(ActiveAbility(ability_data, self))
+        end
+    end
 
     self:StartMinionAIThink()
 
@@ -131,6 +142,12 @@ function CDOTA_BaseNPC:StartMinionAIThink()
 
         if not self.path then
             self:BuildPath(area)
+        end
+
+        if area and area == BATTLEFIELD_AREA_MY_BASE then
+            -- 如果在己方基地，发现目标位置的线上已经有单位，那么需要
+            -- 重新选择目标线路？
+            -- 这个规则还是可以todo一下，看看实际的运用效果看看是利大于弊还是弊大于利
         end
 
         if area and area == BATTLEFIELD_AREA_LINE then 
@@ -238,17 +255,4 @@ function CDOTA_BaseNPC:BuildPath(area)
     self.path = path
 
     return path
-end
-
-function CDOTA_BaseNPC:SetupAbilities()
-    local abilities = self.card.abilities or {}
-    for _, ability_data in pairs(abilities) do
-        if ability_data.Type == "static" then
-            self:AddNewModifier(self, nil, ability_data.ModifierName, ability_data.ModifierData or {})
-        end
-        if ability_data.Type == "trigger" then
-        end
-        if ability_data.Type == "active" then
-        end
-    end
 end

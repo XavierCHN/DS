@@ -39,6 +39,10 @@ function Card:constructor(id)
     self.data = data
 end
 
+function Card:GetAbilities()
+    return self.data.abilities
+end
+
 -- 验证一张牌是否能使用（执行技能之前）
 function Card:Validate_BeforeExecute()
 

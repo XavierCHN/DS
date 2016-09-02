@@ -11,31 +11,15 @@ artist = "Xavier"
 
 abilities = {
     flying = {
-    	Type = "static",
+    	type = "static",
     	ModifierName = "modifier_minion_flying",
         ModifierData = {} -- 可以为空
     },
     a4_1 = {
         type = "active",
+		cost = {mana = 2},
+		timing = TIMING_NORMAL,
         OnActive = function(minion)
-        	
-        	-- 这部分要转移成普遍的东西
-        	local cost = {mana = 2}
-        	local timing = TIMING_NORMAL
-
-        	local hero = minion.player
-        	local meet, reason = hero:HasEnough(cost)
-            if not meet then
-            	ShowError(hero:GetPlayeriD(), reason)
-            	return
-            end
-
-            meet, reason = GameRules.TurnManager:IsMeetTimingRequirement(hero, timing)
-            if not meet then
-            	ShowError(hero:GetPlayerID(), reason)
-            	return
-            end
-
             hero:GetSelector():Create({
             	type = SELECTOR_UNIT,
             	title = "select_friendly_minion",
@@ -60,11 +44,8 @@ abilities = {
     	type = "trigger",
     	event = {
     		name = "OnPlayerDrawCard",
-    		condition = function(minion, args)
-    			local hero = minion.player
-    			if hero:GetPlayerID() == args.PlayerID then
-    				return true
-    			end
+    		condition = function(args)
+				return true
     		end,
 	    },
 	    OnTriggered = function(minion)
@@ -72,7 +53,6 @@ abilities = {
 	    	minion:AddNewModifier( minion.player, nil, "modifier_atk_hp_bonus", bonus)
 	    end,
 	}
-
 }
 
 atk = 5

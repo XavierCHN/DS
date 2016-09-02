@@ -80,7 +80,7 @@ function CreateSummonMinionSelector(card)
         type = SELECTOR_POINT,
         title = "#select_position_to_summon",
         validate = function(pos)
-            if not GameRules.BattleField:IsPositionInMyField(hero, pos) then
+            if not GameRules.BattleField:IsPositionInMyField(hero, pos) then -- 只能在己方半场释放
                 return false, "#cannot_summon_here", false
             elseif not GameRules.BattleField:GetPositionBattleLine(pos):IsLineEmptyForPlayer(hero) then
                 hero:GetSelector():Create({
