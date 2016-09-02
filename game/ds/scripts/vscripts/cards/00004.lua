@@ -9,6 +9,9 @@ cost = {mana = 1, str = 1, agi = 0, int = 0}
 sub_type = {"creep"}
 artist = "Xavier"
 
+atk = 5
+hp = 5
+
 abilities = {
     flying = {
     	type = "static",
@@ -54,9 +57,6 @@ abilities = {
 	    end,
 	}
 }
-
-atk = 5
-hp = 5
 
 Effect = function(args)
     local caster = args.caster
