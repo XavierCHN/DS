@@ -113,3 +113,15 @@ function ReplaceUnit( unit, new_unit_name )
 
     return new_unit
 end
+
+function FindAttackableEnemies( unit )
+    local radius = unit:GetAcquisitionRange()
+    if not radius then return end
+    local enemies = FindEnemiesInRadius( unit, radius )
+    for _,target in pairs(enemies) do
+        if unit:CanAttackTarget(target) and not target:HasModifier("modifier_invisible") then
+            return target
+        end
+    end
+    return nil
+end

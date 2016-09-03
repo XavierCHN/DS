@@ -1,4 +1,4 @@
-if GameRules.CommandRegistered then return end
+if GameRules.CommandRegistered or not IsInToolsMode() then return end
 GameRules.CommandRegistered = true
 
 Convars:RegisterCommand("debug_force_phase_end", function()
@@ -30,3 +30,14 @@ end, "  ", FCVAR_CHEAT)
 Convars:RegisterCommand("debug_disable_card_validate", function()
     GameRules.FORCE_VALIDATE = false
 end, "  ", FCVAR_CHEAT)
+
+Convars:RegisterCommand("debug_set_hero_attribute", function(_, str, agi, int, mana)
+	local client = Convars:GetCommandClient()
+	local hero = PlayerResource:GetPlayer(client:GetPlayerID()):GetAssignedHero()
+
+	hero:SetAttributeStrength(tonumber(str))
+	hero:SetAttributeAgility(tonumber(agi))
+	hero:SetAttributeIntellect(tonumber(int))
+	hero:SetMaxManaPool(tonumber(mana))
+	hero:FillManaPool()
+end, "debug set hero attribute", FCVAR_CHEAT);

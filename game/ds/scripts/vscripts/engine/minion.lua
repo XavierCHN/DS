@@ -1,3 +1,45 @@
+function CDOTA_BaseNPC:InitDSMinion(card)
+    self.has_ordered = nil
+    self.card = card
+
+    -- 设置血量等各种信息
+    self:SetBaseDamageMax(card.data.atk)
+    self:SetBaseDamageMin(card.data.atk)
+    self:SetBaseMaxHealth(card.data.hp)
+    self:SetHealth(card.data.hp)
+    self.ms = card.data.move_speed
+    self.ar = card.data.attack_range
+
+    self:AddNewModifier(self, nil, "modifier_minion_rooted", {})
+    self:AddNewModifier(self, nil, "modifier_minion_disable_attack", {})
+    self:AddNewModifier(self, nil, "modifier_minion_data", {})
+    self:AddNewModifier(self, nil, "modifier_minion_summon_disorder", {})
+    self:AddNewModifier(self, nil, "modifier_phased", {})
+
+    local abilities = self.card.abilities or {}
+    for _, ability_data in pairs(abilities) do
+        if ability_data.type == "static" then
+            self:AddAbility(StaticAbility(ability_data, self))
+        end
+        if ability_data.type == "trigger" then
+            self:AddAbility(TriggerAbility(ability_data, self))
+        end
+        if ability_data.type == "active" then
+            self:AddAbility(ActiveAbility(ability_data, self))
+        end
+    end
+
+    print("creating world panel for entity", self:entindex())
+    WorldPanels:CreateWorldPanelForAll({
+        layout = "file://{resources}/layout/custom_game/world_panels/minion_states.xml",
+        entity = self:entindex(),
+    })
+
+    self:StartMinionAIThink()
+    self:SetCardID(card:GetUniqueID())
+    table.insert(GameRules.AllMinions, self)
+end
+
 function CDOTA_BaseNPC:AggroFilter()
     local target = self:GetAttackTarget() or self:GetAggroTarget()
     if target then
@@ -78,57 +120,6 @@ function CDOTA_BaseNPC:Attack(target)
     self.target_pos = nil
     self.attack_target = target
     self.disable_autoattack = 0
-end
-
-function FindAttackableEnemies( unit )
-    local radius = unit:GetAcquisitionRange()
-    if not radius then return end
-    local enemies = FindEnemiesInRadius( unit, radius )
-    for _,target in pairs(enemies) do
-        if unit:CanAttackTarget(target) and not target:HasModifier("modifier_invisible") then
-            return target
-        end
-    end
-    return nil
-end
-
-function CDOTA_BaseNPC:InitDSMinion(card)
-    self.has_ordered = nil
-
-    self.card = card
-
-    -- 设置血量等各种信息
-    self:SetBaseDamageMax(card.data.atk)
-    self:SetBaseDamageMin(card.data.atk)
-    self:SetBaseMaxHealth(card.data.hp)
-    self:SetHealth(card.data.hp)
-    self.ms = card.data.move_speed
-    self.ar = card.data.attack_range
-
-    self:AddNewModifier(self, nil, "modifier_minion_rooted", {})
-    self:AddNewModifier(self, nil, "modifier_minion_disable_attack", {})
-    self:AddNewModifier(self, nil, "modifier_minion_data", {})
-    self:AddNewModifier(self, nil, "modifier_minion_summon_disorder", {})
-    self:AddNewModifier(self, nil, "modifier_phased", {})
-
-    local abilities = self.card.abilities or {}
-    for _, ability_data in pairs(abilities) do
-        if ability_data.type == "static" then
-            self:AddAbility(StaticAbility(ability_data, self))
-        end
-        if ability_data.type == "trigger" then
-            self:AddAbility(TriggerAbility(ability_data, self))
-        end
-        if ability_data.type == "active" then
-            self:AddAbility(ActiveAbility(ability_data, self))
-        end
-    end
-
-    self:StartMinionAIThink()
-
-    self:SetCardID(card:GetID())
-
-    table.insert(GameRules.AllMinions, self)
 end
 
 function CDOTA_BaseNPC:SetPlayer(player)

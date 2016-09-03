@@ -1,8 +1,6 @@
-.minion_states_Root
-{
-    width:200px;
-    height:100px;
-
-    color: #123456;
-    border: 2px solid orangered;
+.minion_states_Root {
+    width: 200px;
+    height: 100px;
+    background-color: #126;
+    border: 3px solid orangered;
 }

@@ -195,20 +195,3 @@ function CDOTA_BaseNPC_Hero:CreateMinion(card, minion_name, pos, callback)
     end)
 end
 
-CustomGameEventManager:RegisterListener("ds_client_request_hero_data", function(args)
-	local heroes = GameRules.AllHeroes
-	for _, hero in pairs(heroes) do
-		hero:SendDataToAllClients()
-	end
-end)
-
-Convars:RegisterCommand("debug_set_hero_attribute", function(_, str, agi, int, mana)
-	local client = Convars:GetCommandClient()
-	local hero = PlayerResource:GetPlayer(client:GetPlayerID()):GetAssignedHero()
-
-	hero:SetAttributeStrength(tonumber(str))
-	hero:SetAttributeAgility(tonumber(agi))
-	hero:SetAttributeIntellect(tonumber(int))
-	hero:SetMaxManaPool(tonumber(mana))
-	hero:FillManaPool()
-end, "debug set hero attribute", FCVAR_CHEAT);

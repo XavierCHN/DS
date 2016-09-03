@@ -71,12 +71,19 @@ function DS:Init()
     CustomGameEventManager:RegisterListener("ds_request_hand",Dynamic_Wrap(DS, "OnRequestHand"))
     CustomGameEventManager:RegisterListener("ds_request_deck", Dynamic_Wrap(DS, "OnRequestDeck"))
     CustomGameEventManager:RegisterListener("ds_player_end_phase", Dynamic_Wrap(DS, "OnPlayerClickEndPhase"))
-
+    CustomGameEventManager:RegisterListener("ds_client_request_hero_data", Dynamic_Wrap(DS, "OnClientRequestHeroData")); 
+    
     LinkLuaModifier("modifier_minion_rooted", "engine/modifiers/modifier_minion_rooted", LUA_MODIFIER_MOTION_NONE)
     LinkLuaModifier("modifier_minion_disable_attack", "engine/modifiers/modifier_minion_disable_attack", LUA_MODIFIER_MOTION_NONE)
     LinkLuaModifier("modifier_minion_data", "engine/modifiers/modifier_minion_data", LUA_MODIFIER_MOTION_NONE)
     LinkLuaModifier("modifier_minion_summon_disorder", "engine/modifiers/modifier_minion_summon_disorder", LUA_MODIFIER_MOTION_NONE)
     LinkLuaModifier("modifier_minion_autoattack", "engine/modifiers/modifier_minion_autoattack", LUA_MODIFIER_MOTION_NONE)
+end
+
+function DS:OnClientRequestHeroData()
+	for _, hero in pairs(GameRules.AllHeroes) do
+		hero:SendDataToAllClients()
+	end
 end
 
 function DS:OnPlayerClickEndPhase(args)

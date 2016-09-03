@@ -6,6 +6,13 @@
         <include src="file://{resources}/scripts/worldpanels/minion_states.js" />
     </scripts>
     <Panel class="minion_states_Root">
-        
+        <Panel id="ATK_Panel">
+            <Image id="ATK_Image" src="file://{resources}/images/custom_game/minion/atk_button.png" />
+            <Label id="ATK_Label" text="9"/>
+        </Panel>
+        <Panel id="HP_Panel">
+            <Image id="ATK_Image" src="file://{resources}/images/custom_game/minion/hp_button.png" />
+            <Label id="HP_Label" text="9" />
+        </Panel>
     </Panel>
 </root>
