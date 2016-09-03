@@ -42,14 +42,19 @@ function Selector:Validate(arg)
             if not success then
                 ShowError(self.player:GetPlayerID(), reason)
                 self:Create()
+            else
+                self:OnSelect(arg) -- 选择成功
+                self.args = nil
             end
-            self:OnSelect(arg) -- 选择成功
-            self.args = nil
         end
     end
 end
 
 function Selector:OnSelect(arg)
+    if not self.args then -- 避免因为任何原因的重复发送指令
+        return
+    end
+    CustomGameEventManager:Send_ServerToPlayer(self.player, "ds_clear_selector_message", {})
     if self.args.callback then
         self.args.callback(arg)
     end
@@ -82,7 +87,7 @@ function CreateSummonMinionSelector(card)
         validate = function(pos)
             if not GameRules.BattleField:IsPositionInMyField(hero, pos) then -- 只能在己方半场释放
                 return false, "#cannot_summon_here", false
-            elseif not GameRules.BattleField:GetPositionBattleLine(pos):IsLineEmptyForPlayer(hero) then
+            elseif not GameRules.BattleField:IsLineEmpty(hero, pos) then
                 hero:GetSelector():Create({
                     type = SELECTOR_YESNO,
                     title = "#confirm_replace",
@@ -113,13 +118,3 @@ function CreateSummonMinionSelector(card)
     })
 end
 
-CustomGameEventManager:RegisterListener("ds_player_select", function(args)
-    local id = args.PlayerID
-    local result = args.result
-    local player = PlayerResource:GetPlayer(id)
-    if not player then return end
-    local hero = player:GetAssignedHero()
-    if not hero then return end
-
-    hero:GetSelector():OnSelect(result)
-end)

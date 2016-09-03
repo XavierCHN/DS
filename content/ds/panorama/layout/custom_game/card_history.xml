@@ -1,0 +1,23 @@
+<root>
+    <styles>
+        <include src="file://{resources}/styles/custom_game/card_history.css" />
+    </styles>
+    <scripts>
+        <include src="file://{resources}/scripts/custom_game/card.js" />
+        <include src="file://{resources}/scripts/custom_game/card_history.js" />
+    </scripts>
+    <snippets>
+        <snippet name="HistoryMiniCard">
+            <Panel class="HistoryMiniCardRoot" >
+                <Image id="CardImage" />
+            </Panel>
+        </snippet>
+    </snippets>
+    <Panel class="card_history_Root" hittest="false">
+        <Panel id="CardHistoryColumn">
+            
+        </Panel>
+        <Panel id="CardShow">
+        </Panel>
+    </Panel>
+</root>

@@ -2,7 +2,7 @@ module(..., package.seeall)
 
 card_type = CARD_TYPE_MINION
 main_attr = ATTRIBUTE_STRENGTH
-timing = TIMGING_NORMAL
+timing = TIMING_INSTANT
 
 expansion = 0
 cost = {mana = 1, str = 1, agi = 0, int = 0}

@@ -99,30 +99,4 @@ function Hand:RemoveRandomCard(count)
     self:UpdateToClient()
 end
 
-function Hand:OnRequestHand(args)
-    local playerid = args.PlayerID
-    local hero = PlayerResource:GetPlayer(playerid):GetAssignedHero()
-    if not hero then return end
-    hero:GetHand():UpdateToClient()
-end
 
--- 客户端请求发送手牌数据
-CustomGameEventManager:RegisterListener("ds_request_hand", Dynamic_Wrap(Hand, "OnRequestHand"))
-
-Convars:RegisterCommand("debug_add_card",function(_, id)
-
-	local client = Convars:GetCommandClient()
-	local hero = client:GetAssignedHero()
-    print("trying to add card to player", id, hero:GetPlayerID())
-	local hand = hero:GetHand()
-	local card = Card(tonumber(id))
-	card:SetOwner(hero)
-	hand:AddCard(card)
-end,"debug add a card to a player's hand",FCVAR_CHEAT)
-
-Convars:RegisterCommand("debug_clear_hand",function(_, id)
-    local client = Convars:GetCommandClient()
-    local hero = client:GetAssignedHero()
-    local hand = hero:GetHand()
-    hand:Clear()
-end,"debug add a card to a player's hand",FCVAR_CHEAT)

@@ -12,19 +12,29 @@ function findEnemyHero() {
 }
 function ShowAttributeTooltip(data) {
 }
+function EndPhaseEarly() {
+    GameEvents.SendCustomGameEventToServer("ds_player_end_phase", {
+        PlayerID: Players.GetLocalPlayer(),
+    });
+}
 function UpdateHealthBar() {
     if (localhero == null || localhero == -1)
         localhero = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
-    if (localhero == null || localhero == -1)
+    if (localhero == null || localhero == -1) {
+        $.Schedule(0.03, UpdateHealthBar);
         return;
+    }
     var hp = Entities.GetHealth(localhero);
     var mhp = Entities.GetMaxHealth(localhero);
     $("#HealthValue").text = hp + "/" + mhp;
     $("#HealthBar").style.width = 100 * hp / mhp + "%";
     if (enemyhero == undefined)
         findEnemyHero();
-    if (enemyhero == null || enemyhero == -1)
+    if (enemyhero == null || enemyhero == -1) {
+        $.Schedule(0.03, UpdateHealthBar);
         return;
+    }
+    ;
     hp = Entities.GetHealth(enemyhero);
     mhp = Entities.GetMaxHealth(enemyhero);
     $("#Enemy_HealthValue").text = hp + "/" + mhp;
@@ -38,17 +48,19 @@ function UpdatePhaseTimer() {
     }
     var ct = Game.GetGameTime();
     var tr = phase_end_time - ct;
-    var sec = Math.floor(tr);
-    var msec = Math.floor((tr - sec) * 100);
-    if (msec < 10)
-        msec = "0" + msec;
-    var timer = $("#PhaseTimer");
-    timer.text = sec + "." + msec;
-    if (sec < 5) {
-        timer.SetHasClass("Near", true);
-    }
-    else {
-        timer.SetHasClass("Near", false);
+    if (tr >= 0) {
+        var sec = Math.floor(tr);
+        var msec = Math.floor((tr - sec) * 100);
+        if (msec < 10)
+            msec = "0" + msec;
+        var timer = $("#PhaseTimer");
+        timer.text = sec + "." + msec;
+        if (sec < 5) {
+            timer.SetHasClass("Near", true);
+        }
+        else {
+            timer.SetHasClass("Near", false);
+        }
     }
     $.Schedule(0.03, UpdatePhaseTimer);
 }

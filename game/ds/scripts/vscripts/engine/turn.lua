@@ -70,30 +70,28 @@ function Turn:EnterNextPhase()
 
 		for k, minion in pairs(GameRules.AllMinions) do
 			if IsValidAlive(minion) then
-				minion:RemoveModifierByName("modifier_minion_summon_disorder") -- 在回合开始阶段去掉所有的召唤失调状态
+                if self.player:GetTeamNumber() == minion:GetTeamNumber() then
+    				minion:RemoveModifierByName("modifier_minion_summon_disorder") -- 在在己方回合的开始阶段去掉所有的召唤失调状态
+                end
 			else
 				GameRules.AllMinions[k] = nil
 			end
 		end
-
 	elseif newPhase == TURN_PHASE_BATTLE then
-		print("entering phase battle", math.floor(GameRules:GetGameTime()))
+        print("entering phase battle", math.floor(GameRules:GetGameTime()))
 		self.phase_duration = DS_ROUND_TIME_BATTLE
 		self.phase_start_time = GameRules:GetGameTime()
 
 		for k, minion in pairs(GameRules.AllMinions) do
 			if IsValidEntity(minion) and minion:IsAlive() then
-				if not minion:HasModifier("modifier_minion_summon_disorder") or minion:HasModifier("ds_charge") then
-					minion:RemoveModifierByName("modifier_minion_rooted")
-					minion:RemoveModifierByName("modifier_minion_disable_attack")
-				else
-					minion:RemoveModifierByName("modifier_minion_disable_attack")
-				end
+				if self.player:GetTeamNumber() == minion:GetTeamNumber() and not minion:HasModifier("modifier_minion_summon_disorder") then
+                    minion:RemoveModifierByName("modifier_minion_rooted")
+                end
+				minion:RemoveModifierByName("modifier_minion_disable_attack")
 			else
 				GameRules.AllMinions[k] = nil
 			end
 		end
-
 	elseif newPhase == TURN_PHASE_POST_BATTLE then
 		print("entering phase post battle", math.floor(GameRules:GetGameTime()))
 		self.phase_duration = DS_ROUND_TIME_POST_BATTLE

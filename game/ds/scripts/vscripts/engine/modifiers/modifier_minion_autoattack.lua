@@ -14,6 +14,11 @@ function modifier_minion_autoattack:OnCreated( params )
 end
 
 function modifier_minion_autoattack:GetDisableAutoAttack( params )
+
+    if self:GetParent():GetBaseDamageMax() <= 0 then
+        return 1
+    end
+
     local bDisabled = self:GetParent().disable_autoattack
 
     if bDisabled == 1 then

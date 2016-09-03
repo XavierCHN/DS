@@ -9,6 +9,7 @@ require 'utils.debug_card_list'
 require 'utils.list'
 require 'utils.units'
 require 'utils.card_loader'
+require 'utils.commands'
 
 require 'libraries.timers'
 require 'libraries.playertables'
@@ -40,6 +41,7 @@ function DS:Init()
 
     GameRules.AllCreatedCards = {}
     GameRules.AllAbilities = {}
+    GameRules.UsedCards = List() -- 使用有序列表来储存释放过的牌
 
     local mode = GameRules:GetGameModeEntity()
     
@@ -65,12 +67,50 @@ function DS:Init()
 
     CustomGameEventManager:RegisterListener("ds_player_click_card",Dynamic_Wrap(DS, "OnPlayerClickCard"))
     CustomGameEventManager:RegisterListener('ds_player_active_ability' ,Dynamic_Wrap(DS, "OnPlayerActiveAbility"))
+    CustomGameEventManager:RegisterListener("ds_player_select",Dynamic_Wrap(DS, "OnPlayerSelect"))
+    CustomGameEventManager:RegisterListener("ds_request_hand",Dynamic_Wrap(DS, "OnRequestHand"))
+    CustomGameEventManager:RegisterListener("ds_request_deck", Dynamic_Wrap(DS, "OnRequestDeck"))
+    CustomGameEventManager:RegisterListener("ds_player_end_phase", Dynamic_Wrap(DS, "OnPlayerClickEndPhase"))
 
     LinkLuaModifier("modifier_minion_rooted", "engine/modifiers/modifier_minion_rooted", LUA_MODIFIER_MOTION_NONE)
     LinkLuaModifier("modifier_minion_disable_attack", "engine/modifiers/modifier_minion_disable_attack", LUA_MODIFIER_MOTION_NONE)
     LinkLuaModifier("modifier_minion_data", "engine/modifiers/modifier_minion_data", LUA_MODIFIER_MOTION_NONE)
     LinkLuaModifier("modifier_minion_summon_disorder", "engine/modifiers/modifier_minion_summon_disorder", LUA_MODIFIER_MOTION_NONE)
     LinkLuaModifier("modifier_minion_autoattack", "engine/modifiers/modifier_minion_autoattack", LUA_MODIFIER_MOTION_NONE)
+end
+
+function DS:OnPlayerClickEndPhase(args)
+    local playerid = args.PlayerID
+	if playerid ~= GameRules.TurnManager:GetActivePlayer():GetPlayerID() then return end
+	local turn = GameRules.TurnManager.current_turn
+	if not turn then return end
+	if turn.current_phase ~= TURN_PHASE_STRATEGY then return end
+	turn:EndPhase()
+end
+
+function DS:OnRequestHand(args)
+    local playerid = args.PlayerID
+    local hero = PlayerResource:GetPlayer(playerid):GetAssignedHero()
+    if not hero then return end
+    hero:GetDeck():UpdateToClient()
+end
+
+function DS:OnRequestHand(args)
+    local playerid = args.PlayerID
+    local hero = PlayerResource:GetPlayer(playerid):GetAssignedHero()
+    if not hero then return end
+    hero:GetHand():UpdateToClient()
+end
+
+function DS:OnPlayerSelect(args)
+    local id = args.PlayerID
+    local result = args.result
+    local player = PlayerResource:GetPlayer(id)
+    if not player then return end
+    local hero = player:GetAssignedHero()
+    if not hero then return end
+
+    hero:GetSelector():OnSelect(result)
 end
 
 function DS:OnPlayerActiveAbility(args)

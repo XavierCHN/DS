@@ -1,0 +1,42 @@
+.card_history_Root {
+    width: 100%;
+    height: 100%;
+}
+
+#CardHistoryColumn {
+    vertical-align: center;
+    horizontal-align: left;
+    margin-left: -3px;
+    width: 62px;
+    height: 620px;
+    border: 3px solid #514f59;
+    border-radius: 15px;
+    flow-children: down;
+    background-color: #8d889e;
+}
+
+.HistoryMiniCard {
+    width: 50px;
+    height: 50px;
+    margin: 5px;
+    border: 3px solid darkgreen;
+    border-radius: 10px;
+}
+
+.EnemyCard {
+    border: 3px solid darkred;
+}
+
+#CardShow {
+    vertical-align: top;
+    horizontal-align: left;
+    margin-left: 200px;
+    flow-children: right;
+    min-width: 100px;
+    min-height: 100px;
+    margin-top: 200px;
+}
+
+.ShowedCard {
+    margin-left: -100px;
+}

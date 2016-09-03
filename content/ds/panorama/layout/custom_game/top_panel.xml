@@ -6,72 +6,78 @@
         <include src="file://{resources}/scripts/custom_game/top_panel.js" />
     </scripts>
     <Panel class="top_panel_Root" hittest = "false">
-        <Panel class="HeroStatePanel">
-            <Panel class="PlayerPortrait" >
-                <DOTAAvatarImage steamid="local" class="PlayerAvatar" />
-                <DOTAUserName steamid="local" class="PlayerName" />                
-            </Panel>
-            <Panel class="PlayerStatus" >
-                <Panel class="HeroHealthPanel">
-                    <Panel id="HealthBar" class="HealthBar" />
-                    <Label id="HealthValue" class="HealthValue" text= "100/100" />
+        <Panel class="TopPanelRoot">
+            <Panel class="HeroStatePanel">
+                <Panel class="PlayerPortrait" >
+                    <DOTAAvatarImage steamid="local" class="PlayerAvatar" />
+                    <DOTAUserName steamid="local" class="PlayerName" />                
                 </Panel>
-                
-                <Panel id="ManaPanel" class="Hidden" />
+                <Panel class="PlayerStatus" >
+                    <Panel class="HeroHealthPanel">
+                        <Panel id="HealthBar" class="HealthBar" />
+                        <Label id="HealthValue" class="HealthValue" text= "100/100" />
+                    </Panel>
+                    
+                    <Panel id="ManaPanel" class="Hidden" />
 
-                <Panel class="AttributesPanel">
-                    <Panel class="AttributePanel Hidden" id="Str_Panel">
-                        <Image class="AttributeBackground" src="file://{images}/custom_game/top_panel/hero/str.png" />
-                        <Label class="AttributeLabel" id="StrValue" text="99" />
-                        <Label class="RemoveAttributeHover Hidden" text="X" />
-                    </Panel>
-                    <Panel class="AttributePanel Hidden" id="Agi_Panel">
-                        <Image class="AttributeBackground" src="file://{images}/custom_game/top_panel/hero/agi.png" />
-                        <Label class="AttributeLabel" id="AgiValue" text="99" />
-                        <Label class="RemoveAttributeHover Hidden" text="X" />
-                    </Panel>
-                    <Panel class="AttributePanel Hidden" id="Int_Panel">
-                        <Image class="AttributeBackground" src="file://{images}/custom_game/top_panel/hero/int.png" />
-                        <Label class="AttributeLabel" id="IntValue" text="99" />
-                        <Label class="RemoveAttributeHover Hidden" text="X" />
+                    <Panel class="AttributesPanel">
+                        <Panel class="AttributePanel Hidden" id="Str_Panel">
+                            <Image class="AttributeBackground" src="file://{images}/custom_game/top_panel/hero/str.png" />
+                            <Label class="AttributeLabel" id="StrValue" text="99" />
+                            <Label class="RemoveAttributeHover Hidden" text="X" />
+                        </Panel>
+                        <Panel class="AttributePanel Hidden" id="Agi_Panel">
+                            <Image class="AttributeBackground" src="file://{images}/custom_game/top_panel/hero/agi.png" />
+                            <Label class="AttributeLabel" id="AgiValue" text="99" />
+                            <Label class="RemoveAttributeHover Hidden" text="X" />
+                        </Panel>
+                        <Panel class="AttributePanel Hidden" id="Int_Panel">
+                            <Image class="AttributeBackground" src="file://{images}/custom_game/top_panel/hero/int.png" />
+                            <Label class="AttributeLabel" id="IntValue" text="99" />
+                            <Label class="RemoveAttributeHover Hidden" text="X" />
+                        </Panel>
                     </Panel>
                 </Panel>
             </Panel>
-        </Panel>
-        <Panel class="CenterMessage">
-            <Label text="#game_not_start" id="RoundIndicator" />
-            <Label text="#no_phase" id="PhaseIndicator" />
-            <Label text="99:99" id="PhaseTimer" class="MonoNumbersFont" />
-        </Panel>
-
-        <Panel class="HeroStatePanel Enemy">
-            <Panel class="PlayerPortrait" >
-                <DOTAAvatarImage steamid="local" class="PlayerAvatar" />
-                <DOTAUserName steamid="local" class="PlayerName" />                
-            </Panel>
-            <Panel class="PlayerStatus" >
-                <Panel class="HeroHealthPanel">
-                    <Panel id="Enemy_HealthBar" class="HealthBar" />
-                    <Label id="Enemy_HealthValue" class="HealthValue" text= "100/100" />
+            <Panel class="CenterSection">
+                <Panel class="CenterMessage">
+                    <Label text="#game_not_start" id="RoundIndicator" />
+                    <Label text="#no_phase" id="PhaseIndicator" />
+                    <Label text="99:99" id="PhaseTimer" class="MonoNumbersFont" />
                 </Panel>
+                <Button id="EndPhaseButton" onactivate="EndPhaseEarly()">
+                    <Label text="#end_phase"/>
+                </Button>
+            </Panel>
+            <Panel class="HeroStatePanel Enemy">
+                <Panel class="PlayerPortrait" >
+                    <DOTAAvatarImage steamid="local" class="PlayerAvatar" />
+                    <DOTAUserName steamid="local" class="PlayerName" />                
+                </Panel>
+                <Panel class="PlayerStatus" >
+                    <Panel class="HeroHealthPanel">
+                        <Panel id="Enemy_HealthBar" class="HealthBar" />
+                        <Label id="Enemy_HealthValue" class="HealthValue" text= "100/100" />
+                    </Panel>
 
-                <Panel id="Enemy_ManaPanel" class="Hidden"/>
-                
-                <Panel class="AttributesPanel">
-                    <Panel class="AttributePanel Hidden" id="Enemy_Str_Panel">
-                        <Image class="AttributeBackground" src="file://{images}/custom_game/top_panel/hero/str.png" />
-                        <Label class="AttributeLabel" id="Enemy_StrValue" text="99" />
-                        <Label class="RemoveAttributeHover Hidden" text="X" />
-                    </Panel>
-                    <Panel class="AttributePanel Hidden" id="Enemy_Agi_Panel">
-                        <Image class="AttributeBackground" src="file://{images}/custom_game/top_panel/hero/agi.png" />
-                        <Label class="AttributeLabel" id="Enemy_AgiValue" text="99" />
-                        <Label class="RemoveAttributeHover Hidden" text="X" />
-                    </Panel>
-                    <Panel class="AttributePanel Hidden" id="Enemy_Int_Panel">
-                        <Image class="AttributeBackground" src="file://{images}/custom_game/top_panel/hero/int.png" />
-                        <Label class="AttributeLabel" id="Enemy_IntValue" text="99" />
-                        <Label class="RemoveAttributeHover Hidden" text="X" />
+                    <Panel id="Enemy_ManaPanel" class="Hidden"/>
+                    
+                    <Panel class="AttributesPanel">
+                        <Panel class="AttributePanel Hidden" id="Enemy_Str_Panel">
+                            <Image class="AttributeBackground" src="file://{images}/custom_game/top_panel/hero/str.png" />
+                            <Label class="AttributeLabel" id="Enemy_StrValue" text="99" />
+                            <Label class="RemoveAttributeHover Hidden" text="X" />
+                        </Panel>
+                        <Panel class="AttributePanel Hidden" id="Enemy_Agi_Panel">
+                            <Image class="AttributeBackground" src="file://{images}/custom_game/top_panel/hero/agi.png" />
+                            <Label class="AttributeLabel" id="Enemy_AgiValue" text="99" />
+                            <Label class="RemoveAttributeHover Hidden" text="X" />
+                        </Panel>
+                        <Panel class="AttributePanel Hidden" id="Enemy_Int_Panel">
+                            <Image class="AttributeBackground" src="file://{images}/custom_game/top_panel/hero/int.png" />
+                            <Label class="AttributeLabel" id="Enemy_IntValue" text="99" />
+                            <Label class="RemoveAttributeHover Hidden" text="X" />
+                        </Panel>
                     </Panel>
                 </Panel>
             </Panel>

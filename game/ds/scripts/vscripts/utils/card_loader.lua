@@ -10,14 +10,14 @@ local function registerCard(data, id)
     GameRules.AllCards[tonumber(id)] = data
 end
 
-print 'NOW RELOADING CARD DATA'
+print 'NOW LOADING CARD DATA'
 local rcc = 0
 for id = 1, max_card_number do
     local f_name = path_prefix .. string.format("%05d", id)
     local file = io.open("../../../game/dota_addons/ds/scripts/vscripts/cards/" .. string.format("%05d", id) .. ".lua")
     local data,msg = pcall(require, f_name)
     if data then
-        print("registering", id)
+        print(string.format("registering card from %s for cardid=>%s", f_name, id))
         registerCard(require(f_name), id)
         rcc = rcc + 1
     elseif file then
@@ -35,7 +35,7 @@ if IsInToolsMode() then
         local d = {}
         for k, v in pairs(data) do
             if k == "abilities" then
-                d.abilities = k
+                d.abilities = {}
                 for name, _ in pairs(v) do
                     table.insert(d.abilities, name) -- 特殊处理技能，把技能都放里面去
                 end

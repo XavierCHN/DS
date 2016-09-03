@@ -3,5 +3,7 @@
   custom_net_tables =
   [
     "selection",
+    "card_history",
+    "card_data"
   ]
 }

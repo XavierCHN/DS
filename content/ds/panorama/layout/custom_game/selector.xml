@@ -8,8 +8,8 @@
     <!--<snippets>-->
     <!--</snippets>-->
     <Panel class="selector_Root" hittest="false" >
-        <Label class="" id="TooltipLabel" text="#tooltip" />
-        <Panel class="YesNoSelector" id="YesNoSelector">
+        <Label class="Hidden" id="TooltipLabel" text="#tooltip" />
+        <Panel class="YesNoSelector Hidden" id="YesNoSelector">
             <Label id="SelectorMsg" text="Do you want to replace the minion on this line?" />
             <Panel class="ButtonContainer">
                 <Button id="YesButton" onactivate="OnClickYes()">

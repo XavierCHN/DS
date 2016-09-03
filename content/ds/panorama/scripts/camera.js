@@ -4,7 +4,7 @@ function SetupCamera() {
     if (info.player_team_id == 2) {
         GameUI.SetCameraPitchMin(70);
         GameUI.SetCameraPitchMax(70);
-        GameUI.SetCameraTargetPosition([0, -400, 0], 0.1);
+        GameUI.SetCameraTargetPosition([0, -100, 0], 0.1);
     } else if (info.player_team_id == 3) {
         GameUI.SetCameraTargetPosition([0, 500, 0], 0.1);
         GameUI.SetCameraPitchMin(70);

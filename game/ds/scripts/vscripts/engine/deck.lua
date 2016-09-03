@@ -14,6 +14,7 @@ function Deck:constructor(player)
             self.cards:AddRear(card)
         end
     end
+    self:UpdateToClient();
     -- self:DisplayData()
 end
 
@@ -44,17 +45,20 @@ end
 
 -- 返回topdeck
 function Deck:Pop()
+    self:UpdateToClient()
     return self.cards:Remove(1)
 end
 
 -- 添加卡牌，放在尾部
 function Deck:AddCard(card)
     self.cards:AddRear(card)
+    self:UpdateToClient()
 end
 
 -- 添加卡牌到牌库顶
 function Deck:AddAtHead(card)
     self.cards:AddHead(card)
+    self:UpdateToClient()
 end
 
 -- 更新套牌数据到客户端

@@ -10,11 +10,9 @@ enum CardBehavior{
 let hand_cards = <{[uniqueId: string ]: HandCard}>{};
 let player_tables = GameUI.CustomUIConfig().PlayerTables;
 let player_id :number = Players.GetLocalPlayer();
-let all_card_data = GameUI.CustomUIConfig().AllCards;
-var schedule;
-// 刷新手牌
+
+// 刷新手牌 
 function UpdateHandCards(handCardData){
-    let all_card_data = GameUI.CustomUIConfig().AllCards;
     let handCardContainer = $("#HandCardContainer");
 
     for( let uniqueId in hand_cards){
@@ -27,13 +25,13 @@ function UpdateHandCards(handCardData){
     for(let idx in handCardData){
         let hand_card_data = JSON.parse(handCardData[idx]);
         let unique_id = hand_card_data.unique_id;
-        let card_id = hand_card_data.id;
 
         // 如果不存在这个ID的卡牌，则创建新的卡牌
         if(!hand_cards[unique_id]){
-            let card_data = all_card_data[card_id];
+            let card_data = CustomNetTables.GetTableValue("card_data", unique_id);
+            let id = card_data.id;
             let card_type = card_data.card_type;
-            let new_card = new HandCard(handCardContainer, card_id, unique_id, card_type, card_data);
+            let new_card = new HandCard(handCardContainer, id, unique_id, card_type, card_data);
             hand_cards[unique_id] = new_card;
         }
         // 如果这个id还存在于服务器的hand中，那么标记为不需要移除
@@ -102,10 +100,21 @@ function UpdateHandCardCount(args){
 
 }
 
+function OnDeckChanged(args){
+    let id = args.Player;
+    let count = args.DeckCount;
+    let label = $("#DeckCount_Enemy");
+    if (id == Players.GetLocalPlayer()){
+        label = $("#DeckCount");
+    }
+    label.text = count;
+}
+
 (function(){
     $.Msg(`hand_panel.js is loaded`);
     RequestHandCard();
     GameEvents.Subscribe("ds_player_hand_changed", UpdateHandCards);
     GameEvents.Subscribe("ds_highlight_state_changed", UpdateHighLightState);
-    GameEvents.Subscribe("ds_player_hand_count_changed", UpdateHandCardCount)
+    GameEvents.Subscribe("ds_player_hand_count_changed", UpdateHandCardCount);
+    GameEvents.Subscribe("ds_deck_card_changed", OnDeckChanged);
 })();

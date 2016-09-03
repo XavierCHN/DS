@@ -28,13 +28,30 @@ function CDOTA_BaseNPC:AggroFilter()
     if target and not self:CanAttackTarget(target) then
         self.attack_target = nil
         self.disable_autoattack = 1
-        self:Stop()
+        -- 重新发送指令
+        self:AttackMoveToNextTarget()
     end
 
     -- 如果找不到目标，清空单位的目标
     self.attack_target = nil
 end
 
+function CDOTA_BaseNPC:AttackMoveToNextTarget()
+    local target_pos = self.path:GetData(1)
+    if self.attack_target == nil and not self.has_ordered then
+        self.has_ordered = true
+        if target_pos then
+            local order = {
+                OrderType = DOTA_UNIT_ORDER_ATTACK_MOVE,
+                UnitIndex = self:entindex(),
+                Position = target_pos
+            }
+            ExecuteOrderFromTable(order)
+            self:AddNewModifier(self, nil, "modifier_phased", {})
+            return 0.03
+        end
+    end
+end
 
 function CDOTA_BaseNPC:CanAttackTarget( target )
     local attacks_enabled = self:HasAttackCapability()
@@ -172,24 +189,13 @@ function CDOTA_BaseNPC:StartMinionAIThink()
         -- 判断当前目标能否攻击
         self:AggroFilter()
 
+        self:AttackMoveToNextTarget()
+
         local target_pos = self.path:GetData(1)
-        if self.attack_target == nil and not self.has_ordered then
-            self.has_ordered = true
-            if target_pos then
-                -- DebugDrawCircle(target_pos, Vector(255,0,0), 100, 50, true, 5)
-                local order = {
-                    OrderType = DOTA_UNIT_ORDER_ATTACK_MOVE,
-                    UnitIndex = self:entindex(),
-                    Position = target_pos
-                }
-                ExecuteOrderFromTable(order)
-                self:AddNewModifier(self, nil, "modifier_phased", {})
-                return 0.03
-            end
-        end
         if self.attack_target ~= nil or (target_pos and (so - target_pos):Length2D() <= 30 ) then
             self.path:Remove(1)
             self.has_ordered = nil
+            self:AttackMoveToNextTarget()
         end
 
         return 0.03

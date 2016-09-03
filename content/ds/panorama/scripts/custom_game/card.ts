@@ -12,6 +12,11 @@ enum CardAttribute {
     ATTRIBUTE_INTELLECT = 3
 }
 
+enum CardTiming {
+    TIMING_NORMAL = 0,
+    TIMING_INSTANT = 1
+}
+
 // 卡牌基类
 class Card{
 
@@ -62,7 +67,7 @@ class Card{
                 break;
         }
 
-        this.panel.BLoadLayoutSnippet("Card");
+        this.panel.BLoadLayout("file://{resources}/layout/custom_game/card.xml", false, false);
         this.UpdateCardMessage();
     }
 
@@ -130,21 +135,25 @@ class Card{
         }
         this.panel.FindChildTraverse("CardType").text = `${prefix_type_str}${card_type_str} ${sub_type_str==""?"":"~"} ${sub_type_str}`
 
+        // 设置使用时机标志
+        if (this.cardData.timing == CardTiming.TIMING_INSTANT)
+            this.panel.FindChildTraverse("TimingImage").SetImage("file://{resources}/images/custom_game/card/timing_instant.png");
+
         // 设置卡片描述
         let abilities = this.cardData.abilities;
         let ability_descriptions = "";
         if (abilities !== undefined){
             for(let aid in abilities){
-                ability_descriptions += `${$.Localize(`Ability_${abilities[aid]}`)} `;
-                ability_descriptions += " ";
+                ability_descriptions += `${$.Localize(`Ability_${abilities[aid]}`)}${aid==abilities.length?"":"\n"}`;
+                // ability_descriptions += " ";
             }
         }
         let card_description = $.Localize(`#CardDescription_${dig_5_card_id}`);
         if (card_description == `CardDescription_${dig_5_card_id}`) card_description = "";
-       this.panel.FindChildTraverse("CardDescription").text = `${ability_descriptions}${ability_descriptions == ""?"":"\n"}${card_description}`;
+        this.panel.FindChildTraverse("CardDescription").text = `${ability_descriptions}${card_description}`;
+
         let card_lore = $.Localize(`#CardLore_${dig_5_card_id}`);
         if (card_lore == "" || card_lore == `CardLore_${dig_5_card_id}`){
-            $.Msg("empty");
             this.panel.FindChildTraverse("CardLore").AddClass("Empty");
             this.panel.FindChildTraverse("CardLore").text = card_lore;
         }else{
@@ -175,7 +184,6 @@ class HandCard extends Card{
     highLightState :string = "";
 
     constructor(parent:Panel, id: number, uniqueId: string, cardType: number, cardData:any){
-
         super(parent, id, cardType, cardData);
         this.uniqueId = uniqueId;
         this.panel.SetPanelEvent("onmouseover", this.ShowHandCardTooltip.bind(this));

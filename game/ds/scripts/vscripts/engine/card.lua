@@ -8,24 +8,23 @@ function Card:constructor(id)
     if not data then print("invalid id", id) end
     -- 初始化各种卡牌数据
     self.ID = id
-    self.UniqueID = DoUniqueString("")
+    self.UniqueID = DoUniqueString("") -- 卡牌的唯一标识，不允许改变
     self.HighLightState = ""
-    self.draw_index = -1
 
     -- 所有创建的卡牌都储存在GameRules.AllCreatedCards中，用以在特殊的卡牌中使用
     GameRules.AllCreatedCards[self.UniqueID] = self
     
-    -- 这里读取的信息只限于显示在卡牌上的信息
-    -- 不显示在卡牌的信息，不读取到卡牌类中
+    data.id = id
+    data.card_type = data.card_type or CARD_TYPE_MINION
+    data.main_attr = data.main_attr or ATTRIBUTE_STRENGTH
     data.str_cost = data.cost.str or 0
     data.agi_cost = data.cost.agi or 0
     data.int_cost = data.cost.int or 0
     data.mana_cost = data.cost.mana or 0
     data.timing = data.timing or TIMING_NORMAL
     data.HighLight = data.HighLight
-    data.Effect = data.Effect
-    data.OnExecute = data.OnExecute
-
+    data.Effect = data.Effect -- 执行的效果
+    data.OnExecute = data.OnExecute -- 使用后到执行前需要进行的验证啦 选择目标之类的操作
 
     -- 给minion类卡牌的特殊数值
     if data.card_type == CARD_TYPE_MINION then
@@ -37,6 +36,8 @@ function Card:constructor(id)
     end
     
     self.data = data
+
+    self:UpdateToClient()
 end
 
 function Card:GetAbilities()
@@ -46,16 +47,16 @@ end
 -- 验证一张牌是否能使用（执行技能之前）
 function Card:Validate_BeforeExecute()
 
-    if GameRules.FORCE_VALIDATE then
-        return true
-    end
-
+    if GameRules.FORCE_VALIDATE then return true end
     local hero = self.owner
 
     if not GameRules.TurnManager:HasGameStarted() then
         return false, "game_havent_started_yet"
     end
-    
+
+    meet, reason = GameRules.TurnManager:IsMeetTimingRequirement(hero, self.data.timing)
+    if not meet then return meet, reason end
+
     -- 必须满足费用需求
     local meet, reason = hero:HasEnough({str = self.data.str_cost, agi = self.data.agi_cost, int = self.data.int_cost, mana = self.data.mana_cost})
     if not meet then return meet, reason end
@@ -66,10 +67,6 @@ function Card:Validate_BeforeExecute()
             return false, "one_attribute_card_one_round"
         end
     end
-
-    meet, reason = GameRules.TurnManager:IsMeetTimingRequirement(hero, timing)
-    if not meet then return meet, reason end
-
     return true
 end
 
@@ -90,6 +87,17 @@ function Card:ExecuteEffect(args)
         print("card has no effect defined! cardid =>", self:GetID())
         return;
     end
+
+    CustomGameEventManager:Send_ServerToAllClients('ds_show_card', {
+        UniqueID = self:GetUniqueID(),
+    })
+
+    GameRules.UsedCards:AddHead(self:GetUniqueID())
+    if GameRules.UsedCards:Count() > 10 then
+        GameRules.UsedCards:RemoveRear()
+    end
+
+    CustomNetTables:SetTableValue("card_history", "card_history", GameRules.UsedCards:ToArray())
 
     -- 因为经常会默认return nil，如果这里返回了一个非nil的值，那么就会触发对应的效果
     args.card = self
@@ -132,6 +140,7 @@ end
 
 function Card:SetOwner(owner)
     self.owner = owner
+    self.data.playerid = owner:GetPlayerID()
 end
 
 function Card:GetOwner()
@@ -150,10 +159,34 @@ function Card:GetUniqueID()
     return self.UniqueID
 end
 
-Convars:RegisterCommand("debug_force_card_validate", function()
-    GameRules.FORCE_VALIDATE = true
-end, "  ", FCVAR_CHEAT)
+-- 必须使用这个API来改变某张卡牌的数值，这样才会更新到UI中
+function Card:ChangeData(key, value)
+    self.data[key] = value
 
-Convars:RegisterCommand("debug_disable_card_validate", function()
-    GameRules.FORCE_VALIDATE = false
-end, "  ", FCVAR_CHEAT)
+    self:UpdateToClient()
+    
+    CustomGameEventManager:Send_ServerToAllClients("ds_card_data_changed", {
+        UniqueID = self:GetUniqueID(),
+    })
+end
+
+function Card:UpdateToClient()
+    local d = {}
+    for k,v in pairs(self.data) do
+        if k == "abilities" then
+            local abilities = {}
+            for name, ability_data in pairs(v) do
+                abilities[name] = {}
+                for _k, _v in pairs(ability_data) do
+                    if type(_v) ~= "function" then
+                        abilities[name][_k] = _v
+                    end
+                end
+            end
+        elseif type(v) ~= "function" and k ~= "_NAME" and k ~= '_PACKAGE' and k ~= '_M' then
+            d[k] = v
+        end
+    end
+
+    CustomNetTables:SetTableValue("card_data", self:GetUniqueID(), d)
+end

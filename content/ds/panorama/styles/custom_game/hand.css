@@ -20,7 +20,7 @@
     vertical-align: bottom;
     horizontal-align: center;
     flow-children: right;
-    margin-bottom: 300px;
+    /*margin-bottom: 300px;*/
 }
 
 .CardRoot:hover {
@@ -162,6 +162,14 @@
     padding-left: 10px;
     padding-right: 5px;
     border: 2px solid black;
+    flow-children: right;
+}
+
+#TimingImage {
+    width: 15px;
+    height: 15px;
+    margin-right: 3px;
+    vertical-align: center;
 }
 
 #CardType {
@@ -271,6 +279,36 @@
     horizontal-align: center;
     color: black;
     font-size: 16px;
+}
+
+
+/*==============================================================*/
+
+.DeckPanel {
+    vertical-align: bottom;
+    horizontal-align: right;
+}
+
+.EnemyDeckPanel {
+    vertical-align: top;
+    horizontal-align: right;
+    transform: rotateZ( -90deg);
+    margin-top: 20px;
+}
+
+.DeckImage {
+    width: 200px;
+    height: 240px;
+}
+
+.DeckCount {
+    vertical-align: center;
+    horizontal-align: center;
+    color: white;
+    transform: rotateZ( -21deg);
+    font-weight: bold;
+    font-size: 50px;
+    margin-left: 80px;
 }
 
 .text-h1 {

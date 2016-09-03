@@ -5,16 +5,6 @@ function TurnManager:Start()
 	self:SelectFirstActivePlayer()
 	self:ShufflePlayerDeckAndDrawInitialCards()
 	GameRules.AllMinions = GameRules.AllMinions or {}
-	CustomGameEventManager:RegisterListener("ds_player_end_phase", Dynamic_Wrap(TurnManager, "OnPlayerSkipPhase"))
-end
-
-function TurnManager:OnPlayerSkipPhase(args)
-	local playerid = args.PlayerID
-	if playerid ~= self.ActivePlayer:GetPlayerID() then return end
-	local turn = self.current_turn
-	if not turn then return end
-	if turn:GetCurrentPhase() == TURN_PHASE_BATTLE then return end
-	turn:EndPhase()
 end
 
 function TurnManager:SelectFirstActivePlayer()
@@ -46,7 +36,6 @@ function TurnManager:Run()
 	self.ap = self.fp
 	self.current_turn = Turn(self.ap)
 	self.current_turn:Start()
-
 	self.game_started = true
 
 	-- 启动主循环计时器
@@ -79,17 +68,13 @@ function TurnManager:HasGameStarted()
 end
 
 function TurnManager:IsMeetTimingRequirement(hero, timing)
-	if not timing == TIMING_INSTANT then
-        if self:GetActivePlayer() ~= hero then
+	if timing ~= TIMING_INSTANT then
+        if self:GetActivePlayer():GetTeamNumber() ~= hero:GetTeamNumber() then
             return false, "cannot_cast_in_enemy_turn"
         end
         if self:GetPhase() ~= TURN_PHASE_STRATEGY then
             return false, "cannot_cast_outside_strategy_phase"
         end
     end
-    return true
+    return true,""
 end
-
-Convars:RegisterCommand("debug_force_phase_end", function()
-	GameRules.TurnManager.current_turn:EndPhase()
-end, "" , FCVAR_CHEAT)

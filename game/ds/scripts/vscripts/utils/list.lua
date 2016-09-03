@@ -23,8 +23,7 @@ if List == nil then
 end
 
 function List:constructor()
-    self.tail = {}
-    self.head = self.tail
+    self.head = {}
     self.head.next = nil
     self.count = 0
 end
@@ -41,8 +40,11 @@ end
 function List:AddRear(d)
     local nn = {}
     nn.data = d
-    self.tail.next = nn
-    self.tail = nn
+    local n = self.head
+    while (n.next) do
+        n = n.next
+    end
+    n.next = nn
     self.count = self.count + 1
     return nn
 end
@@ -97,6 +99,14 @@ function List:Remove(i)
     return t.data
 end
 
+function List:RemoveHead()
+    self:Remove(1)
+end
+
+function List:RemoveRear()
+    self:Remove(self.count)
+end
+
 function List:Insert(i, data)
     local node = self:GetNodeAt(i-1)
     if not node then
@@ -137,3 +147,15 @@ function List:Swap(i,j)
     n1.data, n2.data = n2.data, n1.data
 end
 
+function List:ToArray()
+    local r = {}
+    local i = 1
+    local data = self:GetData(i)
+    while(data) do
+        table.insert(r, data)
+        i = i + 1
+        data = self:GetData(i)
+    end
+
+    return r
+end

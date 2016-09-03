@@ -3,15 +3,6 @@
     height: 100%;
 }
 
-.Hidden #TooltipLabel {
-    /*visibility: collapse;*/
-}
-
-.Hidden .YesNoSelector {
-    /*opacity: 0.0;*/
-    pre-transform-scale2d: 0.4;
-}
-
 .Hidden {
     visibility: collapse;
 }
@@ -38,11 +29,6 @@
     transition-duration: 0.2s;
     transition-timing-function: ease-in-out;
     transition-delay: 0.0s;
-}
-
-.Hidden .YesNoSelector {
-    opacity: 0.0;
-    pre-transform-scale2d: 0.75;
 }
 
 .ButtonContainer {
@@ -95,4 +81,13 @@
     font-size: 26px;
     horizontal-align: center;
     text-align: center;
+}
+
+#TooltipLabel {
+    color: white;
+    font-size: 50px;
+    horizontal-align: center;
+    text-align: center;
+    vertical-align: top;
+    margin-top: 150px;
 }

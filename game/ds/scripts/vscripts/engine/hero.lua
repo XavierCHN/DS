@@ -13,6 +13,17 @@ function CDOTA_BaseNPC_Hero:InitDSHero()
 	self.deck = Deck(self)
 	self.hand = Hand(self)
 	self.selector = Selector(self)
+
+	self:AddNewModifier(self,nil,"modifier_minion_autoattack",{})
+
+	Timers:CreateTimer(function()
+		self:SetAbsOrigin(GetGroundPosition(GameRules.BattleField:GetHeroPos(self),self))
+		if self:GetTeamNumber() == DOTA_TEAM_GOODGUYS then
+			self:SetForwardVector(Vector(1,0,0))
+		else
+			self:SetForwardVector(Vector(-1,0,0))
+		end
+	end)
 end
 
 function CDOTA_BaseNPC_Hero:GetCardList()
@@ -77,6 +88,8 @@ function CDOTA_BaseNPC_Hero:HasEnough(cost)
 	if self.attribute_int < cost.int then
 		return false, "not_enough_int"
 	end
+
+	return true, ""
 end
 
 function CDOTA_BaseNPC_Hero:FillManaPool()
@@ -101,7 +114,9 @@ end
 function CDOTA_BaseNPC_Hero:SpendManaCost(val)
 	self.mp = self.mp - val
 	if self.mp < 0 then
+		print(self.mmp)
 		print(debug.traceback("something must be wrong, negative value is not okay"))
+		return
 	end
 	self:SendDataToAllClients()
 end

@@ -17,6 +17,11 @@ var CardAttribute;
     CardAttribute[CardAttribute["ATTRIBUTE_AGILITY"] = 2] = "ATTRIBUTE_AGILITY";
     CardAttribute[CardAttribute["ATTRIBUTE_INTELLECT"] = 3] = "ATTRIBUTE_INTELLECT";
 })(CardAttribute || (CardAttribute = {}));
+var CardTiming;
+(function (CardTiming) {
+    CardTiming[CardTiming["TIMING_NORMAL"] = 0] = "TIMING_NORMAL";
+    CardTiming[CardTiming["TIMING_INSTANT"] = 1] = "TIMING_INSTANT";
+})(CardTiming || (CardTiming = {}));
 // 卡牌基类
 var Card = (function () {
     function Card(parent, id, cardType, cardData) {
@@ -56,7 +61,7 @@ var Card = (function () {
                 this.panel.AddClass("EquipmentCard");
                 break;
         }
-        this.panel.BLoadLayoutSnippet("Card");
+        this.panel.BLoadLayout("file://{resources}/layout/custom_game/card.xml", false, false);
         this.UpdateCardMessage();
     }
     Card.prototype.UpdateCardMessage = function () {
@@ -116,22 +121,23 @@ var Card = (function () {
             sub_type_str += $.Localize("#SubType_" + st[id]);
         }
         this.panel.FindChildTraverse("CardType").text = "" + prefix_type_str + card_type_str + " " + (sub_type_str == "" ? "" : "~") + " " + sub_type_str;
+        // 设置使用时机标志
+        if (this.cardData.timing == CardTiming.TIMING_INSTANT)
+            this.panel.FindChildTraverse("TimingImage").SetImage("file://{resources}/images/custom_game/card/timing_instant.png");
         // 设置卡片描述
         var abilities = this.cardData.abilities;
         var ability_descriptions = "";
         if (abilities !== undefined) {
             for (var aid in abilities) {
-                ability_descriptions += $.Localize("Ability_" + abilities[aid]) + " ";
-                ability_descriptions += " ";
+                ability_descriptions += "" + $.Localize("Ability_" + abilities[aid]) + (aid == abilities.length ? "" : "\n");
             }
         }
         var card_description = $.Localize("#CardDescription_" + dig_5_card_id);
         if (card_description == "CardDescription_" + dig_5_card_id)
             card_description = "";
-        this.panel.FindChildTraverse("CardDescription").text = "" + ability_descriptions + (ability_descriptions == "" ? "" : "\n") + card_description;
+        this.panel.FindChildTraverse("CardDescription").text = "" + ability_descriptions + card_description;
         var card_lore = $.Localize("#CardLore_" + dig_5_card_id);
         if (card_lore == "" || card_lore == "CardLore_" + dig_5_card_id) {
-            $.Msg("empty");
             this.panel.FindChildTraverse("CardLore").AddClass("Empty");
             this.panel.FindChildTraverse("CardLore").text = card_lore;
         }

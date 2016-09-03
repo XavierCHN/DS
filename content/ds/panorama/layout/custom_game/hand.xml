@@ -7,55 +7,18 @@
 	<styles>
 		<include src="file://{resources}/styles/custom_game/hand.css" />
 	</styles>
-
-	<snippets>
-		<!--卡背-->
-		<snippet name="CardBack">
-			<Panel class="CardRoot">
-			</Panel>
-		</snippet>
-		<!--卡牌-->
-		<snippet name="Card">
-			<Panel class="CardRoot">
-				<Panel class="CardContent">
-					<Panel class="CardTitlePanel">
-						<Label class="text-h1" id="CardName" />
-						<Panel id="CardCost">
-							<Panel id="CardCost_Attributes" />
-							<Panel class="CardCost_ManaHolder">
-								<Label id="CardCost_Mana" />
-							</Panel>
-						</Panel>
-					</Panel>
-					<Panel class="CardIllusionPanel">
-						<Image id="CardIllusion" class="CardIllusion"/>
-					</Panel>
-
-					<Panel class="CardTypePanel">
-						<Label id="CardType" class="text-h1" text="#test_card_type" />
-					</Panel>
-					<Panel class="CardDescriptionPanel">
-						<Panel class="CardDescription_Ability_Lore">
-							<Label class="text-h2" id="CardDescription" text="#test_card_description" />
-							<Label class="text-h3" id="CardLore" text="#test_card_lore" />
-						</Panel>
-						<Panel class="CardDescription_ExtraMessage">
-							<Label class="text-h4" id="CardID" />
-							<Label class="text-h4" id="IllusionArtist" />
-						</Panel>
-						<Panel class="MinionAttackPanel">
-							<Label id="AttackDefLabel" class="AttackDefLabel" text="0/0" />
-						</Panel>
-					</Panel>
-				</Panel>
-			</Panel>
-		</snippet>
-	</snippets>
-
 	<Panel class="HandRoot" hittest="false">
 		<Panel id="HandCardContainerBackground" hittest="false">
 			<Panel id="EnemyHandCardContainer" hittest="false" />
 			<Panel id="HandCardContainer" hittest="false" />
+		</Panel>
+		<Panel class="DeckPanel">
+			<Image class="DeckImage" src="file://{resources}/images/custom_game/card/deck.png" />
+			<Label class="DeckCount" id="DeckCount" text="999" />
+		</Panel>
+		<Panel class="EnemyDeckPanel Hidden">
+			<Image class="DeckImage" src="file://{resources}/images/custom_game/card/deck.png" />
+			<Label class="DeckCount" id="DeckCount_Enemy" text="999" />
 		</Panel>
 	</Panel>
 </root>

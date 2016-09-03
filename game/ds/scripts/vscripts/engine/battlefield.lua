@@ -84,6 +84,9 @@ function BattleField:GetBattleLine(i)
 end
 
 function BattleField:GetPositionBattleLine(pos)
+    if not self:IsPositionInLine(pos) then
+        return nil
+    end
     for _, line in pairs(self.lines) do
         if math.abs(pos.y - line:GetOrigin().y) <= self.line_width / 2 then
             return line
@@ -130,19 +133,51 @@ function BattleField:IsLineEmpty(hero, pos)
     end
 
     local pn = self:GetPositionBattleLine(pos)
-    for _, minion in pairs(GameRules.AllMinions) do
-        if minion:GetTeamNumber() == hero:GetTeamNumber() then
-            local o = minion:GetAbsOrigin()
-            local on = self:GetPositionBattleLine(o)
-            if pn == on then
-                return false
+    for k, minion in pairs(GameRules.AllMinions) do
+        if IsValidAlive(minion) then
+            if minion:GetTeamNumber() == hero:GetTeamNumber() then
+                local o = minion:GetAbsOrigin()
+                local on = self:GetPositionBattleLine(o)
+                if pn == on then
+                    return false
+                end
             end
+        else
+            GameRules.AllMinions[k] = nil
         end
     end
 
     return true
 end
 
+function BattleField:GetMinionsOnSameLine(hero, pos)
+    local r = {}
+
+    local pn = self:GetPositionBattleLine(pos)
+    for k, minion in pairs(GameRules.AllMinions) do
+        if IsValidAlive(minion) then
+            if minion:GetTeamNumber() == hero:GetTeamNumber() then
+                local o = minion:GetAbsOrigin()
+                local on = self:GetPositionBattleLine(o)
+                if pn == on then
+                    table.insert(r, minion)
+                end
+            end
+        else
+            GameRules.AllMinions[k] = nil
+        end
+    end
+
+    return r
+end
+
+function BattleField:GetHeroPos(hero)
+    if hero:GetTeamNumber() == DOTA_TEAM_GOODGUYS then
+        return Vector(self.minx, self:GetBattleLine(4).origin.y,0)
+    else
+        return Vector(self.maxx, self:GetBattleLine(2).origin.y,0)
+    end
+end
 
 if BattleLine == nil then
     BattleLine = class({})

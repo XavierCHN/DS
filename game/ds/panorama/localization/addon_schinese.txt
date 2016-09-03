@@ -52,11 +52,17 @@
     "Ability_ds_lifesteal"  "吸血"
     "Ability_ds_charge"     "冲锋"
 
+    // HUD提示和错误
+    // Tooltips and errors
+    
     "one_attribute_card_one_round"  "一回合只能使用一张属性牌"
     "cannot_use_at_enemy_round" "无法在敌方回合使用"
     "cant_use_at_my_round"      "无法在我方回合使用"
     "cant_cast_at_enemy_field"  "无法在敌方阵地使用"
     "cant_cast_at_my_field"     "无法在我方阵地使用"
     "game_havent_started_yet"  "游戏尚未开始"
+
+    "select_position_to_summon" "选择召唤位置"
+    "confirm_replace" "这条战线上已经有我方单位，依然在此处召唤将会以此单位替换之前单位，确定吗？"
 
 }

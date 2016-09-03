@@ -13,6 +13,6 @@
     checkShouldPaddingLeft();
   </script>
   <Panel class="AddonLoadingRoot">
-      <Image id="loading" src="file://{images}/custom_game/loading_screen/loading_background.png" />
+      <Image id="loading" src="file://{images}/custom_game/loading_screen/loading-card-game.psd" />
   </Panel>
 </root>

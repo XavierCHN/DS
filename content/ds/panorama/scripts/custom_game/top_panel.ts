@@ -17,10 +17,19 @@ function ShowAttributeTooltip(data) {
     
 }
 
+function EndPhaseEarly() {
+    GameEvents.SendCustomGameEventToServer("ds_player_end_phase", {
+        PlayerID : Players.GetLocalPlayer(),
+    })
+}
+
 function UpdateHealthBar(){
     if (localhero == null || localhero == -1)
         localhero = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
-    if (localhero == null || localhero == -1) return;
+    if (localhero == null || localhero == -1) {
+        $.Schedule(0.03, UpdateHealthBar);
+        return;
+    }
     let hp = Entities.GetHealth(localhero);
     let mhp = Entities.GetMaxHealth(localhero);
 
@@ -28,7 +37,10 @@ function UpdateHealthBar(){
     $("#HealthBar").style.width = `${100 * hp/mhp}%`;
     
     if (enemyhero == undefined) findEnemyHero();
-    if (enemyhero == null || enemyhero == -1) return;
+    if (enemyhero == null || enemyhero == -1){
+        $.Schedule(0.03, UpdateHealthBar);
+        return;
+    };
     hp = Entities.GetHealth(enemyhero);
     mhp = Entities.GetMaxHealth(enemyhero);
 
@@ -48,15 +60,17 @@ function UpdatePhaseTimer(){
 
     let ct:number = Game.GetGameTime();
     let tr = phase_end_time - ct;
-    let sec = Math.floor(tr)
-    let msec = Math.floor(( tr - sec ) * 100);
-    if (msec < 10) msec = "0" + msec;
-    let timer = $("#PhaseTimer")
-    timer.text = `${sec}.${msec}`;
-    if (sec < 5){
-        timer.SetHasClass("Near", true);
-    }else{
-        timer.SetHasClass("Near", false);
+    if (tr >= 0 ){
+        let sec = Math.floor(tr)
+        let msec = Math.floor(( tr - sec ) * 100);
+        if (msec < 10) msec = "0" + msec;
+        let timer = $("#PhaseTimer")
+        timer.text = `${sec}.${msec}`;
+        if (sec < 5){
+            timer.SetHasClass("Near", true);
+        }else{
+            timer.SetHasClass("Near", false);
+        }
     }
     $.Schedule(0.03, UpdatePhaseTimer);
 }
