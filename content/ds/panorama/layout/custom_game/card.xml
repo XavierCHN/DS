@@ -4,12 +4,13 @@
     </styles>
     <scripts>
     </scripts>
+    
     <Panel class="CardRoot">
         <Panel class="CardContent">
             <Panel class="CardTitlePanel">
                 <Label class="text-h1" id="CardName" />
                 <Panel id="CardCost">
-                    <Panel id="CardCost_Attributes" />
+                    <Panel id="CardCost_Attributes" class="CostImageNormal"/>
                     <Panel class="CardCost_ManaHolder">
                         <Label id="CardCost_Mana" />
                     </Panel>

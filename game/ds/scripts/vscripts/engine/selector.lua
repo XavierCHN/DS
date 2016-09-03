@@ -110,6 +110,7 @@ function CreateSummonMinionSelector(card)
             end
         end,
         callback = function(pos)
+            print("summon position select finished")
             card:ExecuteEffect({
                 caster = hero,
                 target_points = {pos}

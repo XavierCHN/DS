@@ -45,9 +45,9 @@
                     <Label text="#no_phase" id="PhaseIndicator" />
                     <Label text="99:99" id="PhaseTimer" class="MonoNumbersFont" />
                 </Panel>
-                <Button id="EndPhaseButton" onactivate="EndPhaseEarly()">
+                <!--<Button id="EndPhaseButton" onactivate="EndPhaseEarly()">
                     <Label text="#end_phase"/>
-                </Button>
+                </Button>-->
             </Panel>
             <Panel class="HeroStatePanel Enemy">
                 <Panel class="PlayerPortrait" >

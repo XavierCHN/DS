@@ -12,6 +12,7 @@
 			<Panel id="EnemyHandCardContainer" hittest="false" />
 			<Panel id="HandCardContainer" hittest="false" />
 		</Panel>
+		
 		<Panel class="DeckPanel">
 			<Image class="DeckImage" src="file://{resources}/images/custom_game/card/deck.png" />
 			<Label class="DeckCount" id="DeckCount" text="999" />

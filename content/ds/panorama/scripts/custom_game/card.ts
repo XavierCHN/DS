@@ -96,27 +96,43 @@ class Card{
         }else{
             cost_panel.RemoveClass("NoCost");
             attr_panel.RemoveAndDeleteChildren();
+            let total_cost = 0;
+            let images = [];
             if(str_cost !== undefined && str_cost > 0){
                 for( let i:number = 0;i < str_cost; i++){
                     let s = $.CreatePanel("Image", attr_panel, "");
                     s.SetImage("file://{resources}/images/custom_game/card/card_cost_str.png");
+                    images.push(s);
                 }
+                total_cost += str_cost;
             }
             if(agi_cost !== undefined && agi_cost > 0){
                 for( let i:number = 0;i < agi_cost; i++){
                     let s = $.CreatePanel("Image", attr_panel, "");
                     s.SetImage("file://{resources}/images/custom_game/card/card_cost_agi.png");
+                    images.push(s);
                 }
+                total_cost += agi_cost;
             }
             if(int_cost !== undefined && int_cost > 0){
                 for( let i:number = 0;i < int_cost; i++){
                     let s = $.CreatePanel("Image", attr_panel, "");
                     s.SetImage("file://{resources}/images/custom_game/card/card_cost_int.png");
+                    images.push(s);
                 }
+                total_cost += int_cost;
             }
 
             mana_cost = mana_cost || 0;
             mana_label.text = mana_cost;
+
+
+            // if (total_cost > 8){
+            //     for (let x in images){
+            //         images[x].RemoveClass("CostImageNormal");
+            //         images[x].SetHasClass("TooMuchCost", true);
+            //     }
+            // }
         }
         
 

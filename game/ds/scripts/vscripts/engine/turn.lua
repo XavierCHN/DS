@@ -11,8 +11,6 @@ function Turn:Start()
     self.player:FillManaPool()
     self.player:SetHasUsedAttributeCardThisRound(false)
 
-    self:EnterNextPhase()
-
     CustomGameEventManager:Send_ServerToAllClients("ds_turn_start", {
 		PlayerID = self.player:GetPlayerID(),
 	})
@@ -24,6 +22,8 @@ function Turn:Start()
             Notifications:Top(hero:GetPlayerID(),{text="enemy_round_start", duration=2, style={color="white",["font-size"] = "100px"}})
         end
     end
+
+    self:EnterNextPhase()
 
     Timers:CreateTimer(function()
         if self.bTurnEnd then
@@ -65,6 +65,9 @@ function Turn:EnterNextPhase()
 
 	if newPhase == TURN_PHASE_STRATEGY then
 		print("entering phase strategy", math.floor(GameRules:GetGameTime()))
+
+        Notifications:TopToAll({text="phase_0", duration=2, style={color="white",["font-size"] = "50px"}})
+            
 		self.phase_duration = DS_ROUND_TIME_STRATEGY
 		self.phase_start_time = GameRules:GetGameTime()
 
@@ -82,6 +85,8 @@ function Turn:EnterNextPhase()
 		self.phase_duration = DS_ROUND_TIME_BATTLE
 		self.phase_start_time = GameRules:GetGameTime()
 
+        Notifications:TopToAll({text="phase_1", duration=2, style={color="white",["font-size"] = "50px"}})
+
 		for k, minion in pairs(GameRules.AllMinions) do
 			if IsValidEntity(minion) and minion:IsAlive() then
 				if self.player:GetTeamNumber() == minion:GetTeamNumber() and not minion:HasModifier("modifier_minion_summon_disorder") then
@@ -96,6 +101,8 @@ function Turn:EnterNextPhase()
 		print("entering phase post battle", math.floor(GameRules:GetGameTime()))
 		self.phase_duration = DS_ROUND_TIME_POST_BATTLE
 		self.phase_start_time = GameRules:GetGameTime()
+
+        Notifications:TopToAll({text="phase_2", duration=2, style={color="white",["font-size"] = "50px"}})
 
 		for k, minion in pairs(GameRules.AllMinions) do
 			if IsValidEntity(minion) and minion:IsAlive() then

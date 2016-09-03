@@ -198,12 +198,12 @@ function CDOTA_BaseNPC:GetBattleLine()
 end
 
 function CDOTA_BaseNPC:IsTargetOnNeighborLine(target)
-    if not target:GetBattleLine() then return false end
+    if not target:GetBattleLine() and self:GetBattleLine() then return false end
     return math.abs(self:GetBattleLine() - target:GetBattleLine()) == 1
 end
 
 function CDOTA_BaseNPC:IsTargetOnSameLine(target)
-    if not target:GetBattleLine() then return false end
+    if not target:GetBattleLine() and self:GetBattleLine() then return false end
     return self:GetBattleLine() == target:GetBattleLine()
 end
 

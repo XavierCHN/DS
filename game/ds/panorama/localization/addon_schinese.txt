@@ -13,8 +13,7 @@
     "your_round_start"      "你的回合"
     "enemy_round_start"     "敌方回合"
     "PrefixType_basic"      "基本"
-    "PrefixType_ultimate"      "极限"
-    "PrefixType_hero"      "英雄"
+   
 
     "game_not_start"        "尚未开始"
     "no_phase"              "无阶段"
@@ -26,6 +25,10 @@
 
     "SubType_test"          "测试副类别"
     "SubType_creep"         "小兵"
+    "SubType_god"           "神"
+
+    "PrefixType_ultimate"      "无双"
+    "PrefixType_hero"      "英雄"
     
     "CardType_0"            "属性"
     "CardType_1"            "法术"
@@ -47,6 +50,10 @@
     "CardName_00004"       "天辉近战小兵"
     "CardDescription_00004"  ""
     "CardLore_00004"        "这些英勇无畏的战士们，不知死亡为何物。必死则生，幸生则死。"
+
+    "CardName_00005"       "冰蛙"
+    "CardDescription_00005"  "当你从手上打出这张牌的时候，你赢得这场游戏。"
+    "CardLore_00005"		"+1s"
 
     "Ability_ds_flying"     "飞行"
     "Ability_ds_lifesteal"  "吸血"
