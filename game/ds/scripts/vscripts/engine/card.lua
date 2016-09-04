@@ -194,3 +194,21 @@ function Card:UpdateToClient()
     CustomNetTables:SetTableValue("card_data", self:GetUniqueID(), d)
 end
 
+-- 执行卡牌的技能
+function Card:ExecuteMinionAbility(minion, ability_name)
+    local ability = self.data.abilities[ability_name]
+    local cost = ability.cost
+	local timing = ability.timing
+	local hero = self.owner
+	local meet, reason = hero:HasEnough(cost)
+	if not meet then
+		ShowError(hero:GetPlayerID(), reason)
+		return
+	end
+	meet, reason = GameRules.TurnManager:IsMeetTimingRequirement(hero, timing)
+	if not meet then
+		ShowError(hero:GetPlayerID(), reason)
+		return
+	end
+	ability.OnActive(minion)
+end

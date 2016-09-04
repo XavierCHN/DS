@@ -22,13 +22,30 @@ function OnClickYes(){
         let hero = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
         let ability = Entities.GetAbilityByName(hero, "ds_point");
         if(ability == -1) {
-            $.Msg(`unable to find valid ability to execute for behavior${cardBehavior}, ability_name=${ability_name}`);
+            // $.Msg(`unable to find valid ability to execute for behavior${cardBehavior}, ability_name=${ability_name}`);
             return;
         }
-        $.Msg(`begin to execute abilty`);
+        // $.Msg(`begin to execute abilty`);
         GameUI.SelectUnit(hero, false);
         Abilities.ExecuteAbility(ability, hero, false);
     });
+
+    GameEvents.Subscribe("start_unit_selector", function(args){
+        $("#YesNoSelector").AddClass("Hidden");
+        $("#TooltipLabel").RemoveClass("Hidden");
+
+        $("#TooltipLabel").text = $.Localize(args.title);
+
+        let hero = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
+        let ability = Entities.GetAbilityByName(hero, "ds_single_target");
+        if(ability == -1) {
+            // $.Msg(`unable to find valid ability to execute for behavior${cardBehavior}, ability_name=${ability_name}`);
+            return;
+        }
+        // $.Msg(`begin to execute abilty`);
+        GameUI.SelectUnit(hero, false);
+        Abilities.ExecuteAbility(ability, hero, false);
+    })
 
     GameEvents.Subscribe("start_yes_no_selector", function(args){
         $("#TooltipLabel").AddClass("Hidden");

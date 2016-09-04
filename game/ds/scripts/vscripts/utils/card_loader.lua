@@ -26,28 +26,30 @@ for id = 1, max_card_number do
     end
 end
 
-if IsInToolsMode() then
-    -- 输出所有卡牌的数据到all_card_data.js文件中
-    print("writting card data to js file")
-    local all_lines = '$.Msg("Card data has refreshed in all_card_data.js;");\nGameUI.CustomUIConfig().AllCards = {\n'
-    for id, data in pairs(GameRules.AllCards) do
-        local line = tonumber(id) .. ":"
-        local d = {}
-        for k, v in pairs(data) do
-            if k == "abilities" then
-                d.abilities = {}
-                for name, _ in pairs(v) do
-                    table.insert(d.abilities, name) -- 特殊处理技能，把技能都放里面去
-                end
-            elseif type(v) ~= "function" and k ~= "_NAME" and k ~= '_PACKAGE' and k ~= '_M' then
-                d[k] = v
-            end
-        end
-        local dd = JSON:encode(d)
-        all_lines = all_lines .. '\t' .. id .. ':' .. dd .. ',\n'
-    end
-    all_lines = all_lines .. '}'
-    local f = io.open('../../../content/dota_addons/ds/panorama/scripts/all_card_data.js', 'w')
-    f:write(all_lines)
-    f:close()
-end
+-- 现在不需要把这些东西输出到JS了
+-- 
+-- if IsInToolsMode() then
+--     -- 输出所有卡牌的数据到all_card_data.js文件中
+--     print("writting card data to js file")
+--     local all_lines = '$.Msg("Card data has refreshed in all_card_data.js;");\nGameUI.CustomUIConfig().AllCards = {\n'
+--     for id, data in pairs(GameRules.AllCards) do
+--         local line = tonumber(id) .. ":"
+--         local d = {}
+--         for k, v in pairs(data) do
+--             if k == "abilities" then
+--                 d.abilities = {}
+--                 for name, _ in pairs(v) do
+--                     table.insert(d.abilities, name) -- 特殊处理技能，把技能都放里面去
+--                 end
+--             elseif type(v) ~= "function" and k ~= "_NAME" and k ~= '_PACKAGE' and k ~= '_M' then
+--                 d[k] = v
+--             end
+--         end
+--         local dd = JSON:encode(d)
+--         all_lines = all_lines .. '\t' .. id .. ':' .. dd .. ',\n'
+--     end
+--     all_lines = all_lines .. '}'
+--     local f = io.open('../../../content/dota_addons/ds/panorama/scripts/all_card_data.js', 'w')
+--     f:write(all_lines)
+--     f:close()
+-- end

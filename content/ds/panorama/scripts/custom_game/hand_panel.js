@@ -56,7 +56,7 @@ function UpdateHighLightState(args) {
     }
 }
 function RequestHandCard() {
-    $.Msg("requesting card data at server l");
+    // $.Msg("requesting card data at server l")
     GameEvents.SendCustomGameEventToServer("ds_request_hand", {});
 }
 function ExecuteCardProxy(args) {
@@ -79,7 +79,7 @@ function ExecuteCardProxy(args) {
         $.Msg("unable to find valid ability to execute for behavior" + cardBehavior + ", ability_name=" + ability_name);
         return;
     }
-    $.Msg("begin to execute abilty " + ability_name + ", abilityIndex = " + ability);
+    // $.Msg(`begin to execute abilty ${ability_name}, abilityIndex = ${ability}`)
     GameUI.SelectUnit(hero, false);
     Abilities.ExecuteAbility(ability, hero, false);
 }
@@ -95,7 +95,7 @@ function OnDeckChanged(args) {
     label.text = count;
 }
 (function () {
-    $.Msg("hand_panel.js is loaded");
+    // $.Msg(`hand_panel.js is loaded`);
     RequestHandCard();
     GameEvents.Subscribe("ds_player_hand_changed", UpdateHandCards);
     GameEvents.Subscribe("ds_highlight_state_changed", UpdateHighLightState);

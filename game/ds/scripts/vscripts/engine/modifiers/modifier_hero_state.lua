@@ -3,7 +3,8 @@ modifier_hero_state = class({})
 -- 无法移动
 function modifier_hero_state:CheckState()
     return {
-        [MODIFIER_STATE_ROOTED] = true
+        [MODIFIER_STATE_ROOTED] = true,
+        [MODIFIER_STATE_DISARMED] = true,
     }
 end
 

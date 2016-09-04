@@ -24,7 +24,6 @@ function UpdateMinionTooltip(){
             let x = Game.WorldToScreenX(pos[0], pos[1], pos[2]);
             let y = Game.WorldToScreenY(pos[0], pos[1], pos[2]);
             tooltip_card.panel.style.position =x + "px " + y + "px 0px;";
-
         }else{
             $.GetContextPanel().AddClass("Hidden");
         }

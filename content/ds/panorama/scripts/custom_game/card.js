@@ -232,7 +232,7 @@ var ActiveAbilityLabel = (function () {
     }
     ActiveAbilityLabel.prototype.OnClickActiveAbility = function () {
         // 发送事件到服务器
-        // $.Msg("sending to server", this.name, this.owner);
+        $.Msg("sending ds_player_click_active_ability to server", this.name, this.owner);
         GameEvents.SendCustomGameEventToServer("ds_player_click_active_ability", {
             AbilityName: this.name,
             Owner: this.owner
@@ -247,9 +247,7 @@ var TooltipCard = (function (_super) {
         this.owner = owner;
     }
     TooltipCard.prototype.UpdateCardMessage = function () {
-        $.Msg("updating tooltip card message");
         _super.prototype.UpdateCardMessage.call(this);
-        // this.panel.FindChildTraverse("CardDescription").text = "";
         var abilities = this.cardData.abilities;
         var abilities_container = this.panel.FindChildTraverse("CardAbilities");
         abilities_container.RemoveAndDeleteChildren();

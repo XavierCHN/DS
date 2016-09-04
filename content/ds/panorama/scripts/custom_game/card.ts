@@ -258,10 +258,10 @@ class ActiveAbilityLabel {
 
     OnClickActiveAbility() {
         // 发送事件到服务器
-        // $.Msg("sending to server", this.name, this.owner);
+        $.Msg("sending ds_player_click_active_ability to server", this.name, this.owner);
         GameEvents.SendCustomGameEventToServer("ds_player_click_active_ability", {
             AbilityName: this.name,
-            Owner: this.owner;
+            Owner: this.owner
         })
     }
 }
@@ -276,10 +276,7 @@ class TooltipCard extends Card{
         this.owner = owner;
     }
     UpdateCardMessage(){
-        $.Msg("updating tooltip card message");
         super.UpdateCardMessage();
-        // this.panel.FindChildTraverse("CardDescription").text = "";
-
         let abilities = this.cardData.abilities;
         let abilities_container = this.panel.FindChildTraverse("CardAbilities");
         abilities_container.RemoveAndDeleteChildren();

@@ -64,7 +64,7 @@ function UpdateHighLightState(args){
 }
 
 function RequestHandCard(){
-    $.Msg("requesting card data at server l")
+    // $.Msg("requesting card data at server l")
     GameEvents.SendCustomGameEventToServer("ds_request_hand",{})
 }
 
@@ -91,7 +91,7 @@ function ExecuteCardProxy(args){
         return;
     }
 
-    $.Msg(`begin to execute abilty ${ability_name}, abilityIndex = ${ability}`)
+    // $.Msg(`begin to execute abilty ${ability_name}, abilityIndex = ${ability}`)
     GameUI.SelectUnit(hero, false);
     Abilities.ExecuteAbility(ability, hero, false);
 }
@@ -111,7 +111,7 @@ function OnDeckChanged(args){
 }
 
 (function(){
-    $.Msg(`hand_panel.js is loaded`);
+    // $.Msg(`hand_panel.js is loaded`);
     RequestHandCard();
     GameEvents.Subscribe("ds_player_hand_changed", UpdateHandCards);
     GameEvents.Subscribe("ds_highlight_state_changed", UpdateHighLightState);

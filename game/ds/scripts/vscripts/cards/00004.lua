@@ -12,54 +12,6 @@ artist = "Xavier"
 atk = 1
 hp = 5
 
-abilities = {
-    flying = {
-    	type = "static",
-    	ModifierName = "modifier_minion_flying",
-        ModifierData = {} -- 可以为空
-    },
-    a4_1 = {
-        type = "active",
-		cost = {mana = 2},
-		timing = TIMING_NORMAL,
-        OnActive = function(minion)
-			local hero = minion:GetPlayer()
-			print ("Creating")
-            hero:GetSelector():Create({
-            	type = SELECTOR_UNIT,
-            	title = "select_friendly_minion",
-            	validate = function(target)
-            		if target:GetTeamNumber() ~= hero:GetTeamNumber() then
-            			return false, "must_target_friendly"
-            		end
-            		if target:IsRealHero() then
-            			return false, "must_target_minion"
-            		end
-            		return true
-	            end,
-	            callback = function(target)
-	            	hero:SpendManaCost(cost.mana);
-	            	local bonus = {atk = 1, hp=1}
-	            	target:AddNewModifier(hero,nil,"modifier_atk_hp_bonus",bonus)
-		        end
-            })
-        end
-    },
-    a4_2 = {
-    	type = "trigger",
-    	event = {
-    		name = "OnPlayerDrawCard",
-    		condition = function(args)
-				return true
-    		end,
-	    },
-	    OnTriggered = function(minion)
-	    	local bonus = {atk = 1, hp = 1}
-	    	minion:AddNewModifier( minion.player, nil, "modifier_atk_hp_bonus", bonus)
-	    end,
-	}
-}
-
 Effect = function(args)
     local caster = args.caster
     local pos = args.target_points[1]
