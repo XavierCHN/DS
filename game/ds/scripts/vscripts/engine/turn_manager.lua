@@ -16,17 +16,22 @@ function TurnManager:SelectFirstActivePlayer()
 		self.fp, self.nfp = GameRules.AllHeroes[2], GameRules.AllHeroes[1]
 	end
 	self.ActivePlayer, self.NoneActivePlayer = self.fp, self.nfp -- 主动玩家，被动玩家
+    
 end
 
 -- 初始化玩家的卡组，并抽取初始手牌
 function TurnManager:ShufflePlayerDeckAndDrawInitialCards()
+
+	Notifications:Top(self.fp:GetPlayerID(),{text="first_player_tooltip", duration=10, style={color="white",["font-size"] = "60px"}})
+    Notifications:Top(self.nfp:GetPlayerID(),{text="none_first_player_tooltip", duration=10, style={color="white",["font-size"] = "60px"}})
+
 	-- 调度手牌
 	self.fp:GetDeck():Shuffle()
 	self.fp:DrawCard(NUM_INIT_CARD_COUNT)
-	self.fp:GetHand():Mulligan(self.fp, NUM_INIT_CARD_COUNT - 1)
+	self.fp:GetHand():Mulligan()
 	self.nfp:GetDeck():Shuffle()
 	self.nfp:DrawCard(NUM_INIT_CARD_COUNT + 1)
-	self.nfp:GetHand():Mulligan(self.nfp, NUM_INIT_CARD_COUNT)
+	self.nfp:GetHand():Mulligan()
 end
 
 function TurnManager:SetPreparedFinished(player)

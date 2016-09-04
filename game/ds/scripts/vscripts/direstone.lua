@@ -28,11 +28,6 @@ require 'engine.battlefield'
 require 'engine.selector'
 require 'engine.event_manager'
 
-require 'engine.ability.ability'
-require 'engine.ability.trigger_ability'
-require 'engine.ability.static_ability'
-require 'engine.ability.active_ability'
-
 -- GameRules.UnitKV = LoadKeyValues("scripts/npc/npc_units_custom.txt")
 -- GameRules.AbilityKV = LoadKeyValues("scripts/npc/npc_abilities_custom.txt")
 -- GameRules.ItemsKV = LoadKeyValues("scripts/npc/npc_items_custom.txt")
@@ -47,13 +42,17 @@ function DS:Init()
     
     mode:SetFogOfWarDisabled(true)
     mode:SetCustomGameForceHero("npc_dota_hero_invoker")
-    
+    mode:SetKillingSpreeAnnouncerDisabled(true)    
+    mode:SetAnnouncerDisabled(true)
+
     GameRules:SetCustomGameTeamMaxPlayers(DOTA_TEAM_GOODGUYS, 1)
     GameRules:SetCustomGameTeamMaxPlayers(DOTA_TEAM_BADGUYS, 1)
     GameRules:SetPreGameTime(DS_TURN_TIME)
     GameRules:SetGoldPerTick(0)
     GameRules:SetGoldTickTime(0)
     GameRules:SetCustomGameSetupTimeout(3)
+    GameRules:SetHideKillMessageHeaders(true)
+
     
     self.mode = mode
     GameRules.mode = mode

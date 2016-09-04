@@ -10,6 +10,9 @@
 	
 	"addonname"										"刀塔传奇·遗迹英雄传"
 
+    "first_player_tooltip"      "你获得了先手"
+    "none_first_player_tooltip" "你可以多抽一张牌"
+
     "your_round_start"      "你的回合"
     "enemy_round_start"     "敌方回合"
     "PrefixType_basic"      "基本"

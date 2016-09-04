@@ -3,12 +3,13 @@ var old_selected_unit = -1;
 var tooltip_card;
 function UpdateMinionTooltip() {
     var selected_unit = Players.GetLocalPlayerPortraitUnit();
-    if (old_selected_unit !== selected_unit && selected_unit !== -1) {
+    if (old_selected_unit !== selected_unit) {
         if (!Entities.IsRealHero(selected_unit)) {
             var associated_card_id = CustomNetTables.GetTableValue("minion_card_id", selected_unit.toString());
             if (associated_card_id == undefined)
                 return;
-            $.GetContextPanel().RemoveClass("Hidden");
+            $.GetContextPanel().visible = true;
+            // $.GetContextPanel().RemoveClass("Hidden");
             var container = $("#CardHolder");
             var card_data = CustomNetTables.GetTableValue("card_data", associated_card_id.value);
             var id = card_data.id;
@@ -21,12 +22,13 @@ function UpdateMinionTooltip() {
             tooltip_card.UpdateCardMessage();
         }
         else {
-            $.GetContextPanel().AddClass("Hidden");
+            $.GetContextPanel().visible = false;
         }
     }
     old_selected_unit = selected_unit;
     $.Schedule(1 / 30, UpdateMinionTooltip);
 }
 (function () {
+    old_selected_unit = Players.GetLocalPlayerPortraitUnit();
     UpdateMinionTooltip();
 })();
