@@ -27,7 +27,12 @@ function Selector:Create(args)
             Numbers = JSON:encode(self.args.values),
         })
     elseif type == SELECTOR_YESNO then
-        CustomGameEventManager:Send_ServerToPlayer(self.player, "start_yes_no_selector", {title = self.args.title})
+        print "creating yes no selector for"
+        print (self.player:GetPlayerID())
+        CustomGameEventManager:Send_ServerToPlayer(self.player, "start_yes_no_selector", {
+            title = self.args.title,
+            title_args = self.args.title_args
+        })
     end
 end
 

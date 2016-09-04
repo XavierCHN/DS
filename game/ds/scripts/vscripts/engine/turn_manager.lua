@@ -20,10 +20,26 @@ end
 
 -- 初始化玩家的卡组，并抽取初始手牌
 function TurnManager:ShufflePlayerDeckAndDrawInitialCards()
+	-- 调度手牌
 	self.fp:GetDeck():Shuffle()
 	self.fp:DrawCard(NUM_INIT_CARD_COUNT)
+	self.fp:GetHand():Mulligan(self.fp, NUM_INIT_CARD_COUNT - 1)
 	self.nfp:GetDeck():Shuffle()
 	self.nfp:DrawCard(NUM_INIT_CARD_COUNT + 1)
+	self.nfp:GetHand():Mulligan(self.nfp, NUM_INIT_CARD_COUNT)
+end
+
+function TurnManager:SetPreparedFinished(player)
+	player.prepare_finished = true
+	if player == self.fp then
+		if self.nfp.prepare_finished then
+			self:OkToStartGame()
+		end
+	else
+		if self.fp.prepare_finished then
+			self:OkToStartGame()
+		end
+	end
 end
 
 function TurnManager:GetPhase()

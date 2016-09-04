@@ -51,3 +51,23 @@ Convars:RegisterCommand("debug_refresh_hand_data", function()
 		card:UpdateToClient()
 	end
 end, "", FCVAR_CHEAT)
+
+Convars:RegisterCommand("debug_mulligan", function()
+	local client = Convars:GetCommandClient()
+	local hero = PlayerResource:GetPlayer(client:GetPlayerID()):GetAssignedHero()
+
+	local hand = hero:GetHand()
+	hand:Mulligan()
+end, "", FCVAR_CHEAT)
+
+Convars:RegisterCommand("debug_add_card_to_deck", function(_, id, count)
+	local client = Convars:GetCommandClient()
+	local hero = client:GetAssignedHero()
+	local deck = hero:GetDeck()
+	count = tonumber(count) or 1
+	for i = 1, count do
+		local card = Card(tonumber(id))
+		card:SetOwner(hero)
+		deck:AddCard(card)
+	end
+end,"debug add a card to a player's hand",FCVAR_CHEAT)

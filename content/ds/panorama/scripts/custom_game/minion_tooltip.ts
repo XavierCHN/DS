@@ -20,10 +20,10 @@ function UpdateMinionTooltip(){
             tooltip_card = new TooltipCard(container, id, associated_card_id, card_type, card_data, selected_unit);
             tooltip_card.panel.AddClass("TooltipCard");
             tooltip_card.UpdateCardMessage();
-            let pos = Entities.GetAbsOrigin(selected_unit);
-            let x = Game.WorldToScreenX(pos[0], pos[1], pos[2]);
-            let y = Game.WorldToScreenY(pos[0], pos[1], pos[2]);
-            tooltip_card.panel.style.position =x + "px " + y + "px 0px;";
+            // let pos = Entities.GetAbsOrigin(selected_unit);
+            // let x = Game.WorldToScreenX(pos[0], pos[1], pos[2]);
+            // let y = Game.WorldToScreenY(pos[0], pos[1], pos[2]);
+            // tooltip_card.panel.style.position =x + "px " + y + "px 0px;";
         }else{
             $.GetContextPanel().AddClass("Hidden");
         }

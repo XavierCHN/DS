@@ -43,7 +43,7 @@
             <Panel class="CenterSection">
                 <Panel class="CenterMessage">
                     <Label text="#game_not_start" id="RoundIndicator" />
-                    <Label text="#no_phase" id="PhaseIndicator" />
+                    <Label text="#phase_mulligan" id="PhaseIndicator" />
                     <Label text="99:99" id="PhaseTimer" class="MonoNumbersFont" />
                 </Panel>
                 <!--<Button id="EndPhaseButton" onactivate="EndPhaseEarly()">

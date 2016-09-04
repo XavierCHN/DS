@@ -48,9 +48,18 @@ function OnClickYes(){
     })
 
     GameEvents.Subscribe("start_yes_no_selector", function(args){
+        $.Msg("yes not selector");
         $("#TooltipLabel").AddClass("Hidden");
         $("#YesNoSelector").RemoveClass("Hidden");
-        $("#SelectorMsg").text = $.Localize(args.title);
+        let title = $.Localize(args.title);
+        if (args.title_args != undefined){
+            $.Msg(args.title_args);
+            for (let id in args.title_args){
+                var reg = new RegExp(`{${id}}`, "g");
+                title = title.replace(reg, args.title_args[id]);
+            }
+        }
+        $("#SelectorMsg").text = title;
     });
 
     GameEvents.Subscribe("ds_clear_selector_message", function(){

@@ -104,4 +104,33 @@ function Hand:RemoveRandomCard(count)
     self:UpdateToClient()
 end
 
-
+-- 手牌调度
+function Hand:Mulligan()
+    local mulligan_count = self:GetCardCount() - 1
+    if mulligan_count > -1 then -- 哪怕只有一张！ 我也不要！
+        self.player:GetSelector():Create({
+            type = SELECTOR_YESNO,
+            title = "#selector_tooltip_confirm_mulligan",
+            title_args = {CardCount = mulligan_count},
+            callback = function(result)
+                if result == "yes" then
+                    -- 重新调度手牌
+                    local hand = self.player:GetHand()
+                    local deck = self.player:GetDeck()
+                    for _, card in pairs(hand.cards) do
+                        deck:AddCard(card)
+                    end
+                    hand:Clear()
+                    deck:Shuffle()
+                    self.player:DrawCard(mulligan_count) -- 少抽一张牌
+                    self:Mulligan()
+                else
+                    GameRules.TurnManager:SetPreparedFinished(self.player)
+                end
+            end,
+        })
+    else
+        -- 最后一张也丢掉了，没得调度了，设置为准备好了
+        GameRules.TurnManager:SetPreparedFinished(self.player)
+    end
+end

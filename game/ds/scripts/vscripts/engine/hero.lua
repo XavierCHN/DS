@@ -192,7 +192,7 @@ function CDOTA_BaseNPC_Hero:CreateMinion(card, minion_name, pos, callback)
 	end 
     local ent = CreateUnitByNameAsync(minion_name, pos, false, self, self, self:GetTeamNumber(), function(ent)
         ent:InitDSMinion(card)
-        ent:SetPlayer(self)
+        ent.owner = self
 		if callback then callback(ent) end
     end)
 end

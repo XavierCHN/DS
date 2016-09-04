@@ -17,6 +17,7 @@
 
     "game_not_start"        "尚未开始"
     "no_phase"              "无阶段"
+    "phase_mulligan"        "手牌调度"
     "enemy_round"           "敌方回合"
     "my_round"              "我方回合"
     "phase_0"               "策略阶段"
@@ -74,5 +75,6 @@
 
     "select_position_to_summon" "选择召唤位置"
     "confirm_replace" "这条战线上已经有我方单位，依然在此处召唤将会以此单位替换之前单位，确定吗？"
+    "selector_tooltip_confirm_mulligan" "重新调度\n您是否需要重新抽取{CardCount}张手牌来作为你的初始手牌？"
 
 }
