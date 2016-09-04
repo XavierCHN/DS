@@ -18,7 +18,7 @@ var entities = [];
 // Delete call to server for cleanup
 
 function WorldPanelChange(id, changes, dels) {
-    $.Msg("change ", id, ' -- ', changes, ' -- ', dels);
+    // $.Msg("change ", id, ' -- ', changes, ' -- ', dels);
     for (var k in changes) {
         var wp = panels[k];
         if (!wp) {

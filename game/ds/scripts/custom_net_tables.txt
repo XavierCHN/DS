@@ -4,6 +4,8 @@
   [
     "selection",
     "card_history",
-    "card_data"
+    "card_data",
+    "minion_card_id",
+
   ]
 }

@@ -86,31 +86,23 @@ var Card = (function () {
         else {
             cost_panel.RemoveClass("NoCost");
             attr_panel.RemoveAndDeleteChildren();
-            var total_cost = 0;
-            var images = [];
             if (str_cost !== undefined && str_cost > 0) {
                 for (var i = 0; i < str_cost; i++) {
                     var s = $.CreatePanel("Image", attr_panel, "");
                     s.SetImage("file://{resources}/images/custom_game/card/card_cost_str.png");
-                    images.push(s);
                 }
-                total_cost += str_cost;
             }
             if (agi_cost !== undefined && agi_cost > 0) {
                 for (var i = 0; i < agi_cost; i++) {
                     var s = $.CreatePanel("Image", attr_panel, "");
                     s.SetImage("file://{resources}/images/custom_game/card/card_cost_agi.png");
-                    images.push(s);
                 }
-                total_cost += agi_cost;
             }
             if (int_cost !== undefined && int_cost > 0) {
                 for (var i = 0; i < int_cost; i++) {
                     var s = $.CreatePanel("Image", attr_panel, "");
                     s.SetImage("file://{resources}/images/custom_game/card/card_cost_int.png");
-                    images.push(s);
                 }
-                total_cost += int_cost;
             }
             mana_cost = mana_cost || 0;
             mana_label.text = mana_cost;
@@ -133,17 +125,24 @@ var Card = (function () {
         if (this.cardData.timing == CardTiming.TIMING_INSTANT)
             this.panel.FindChildTraverse("TimingImage").SetImage("file://{resources}/images/custom_game/card/timing_instant.png");
         // 设置卡片描述
+        // 技能部分使用互相独立的panel来制作 
+        var ability_container = this.panel.FindChildTraverse("CardAbilities");
         var abilities = this.cardData.abilities;
-        var ability_descriptions = "";
+        ability_container.RemoveAndDeleteChildren();
         if (abilities !== undefined) {
             for (var aid in abilities) {
-                ability_descriptions += "" + $.Localize("Ability_" + abilities[aid]) + (aid == abilities.length ? "" : "\n");
+                var ability_data = JSON.parse(abilities[aid]);
+                if (ability_data == null)
+                    continue;
+                var ability_label = $.CreatePanel("Label", ability_container, "");
+                ability_label.text = $.Localize("Ability_" + ability_data["name"]);
+                ability_label.AddClass("text-h3");
             }
         }
         var card_description = $.Localize("#CardDescription_" + dig_5_card_id);
         if (card_description == "CardDescription_" + dig_5_card_id)
             card_description = "";
-        this.panel.FindChildTraverse("CardDescription").text = "" + ability_descriptions + card_description;
+        this.panel.FindChildTraverse("CardDescription").text = "" + card_description;
         var card_lore = $.Localize("#CardLore_" + dig_5_card_id);
         if (card_lore == "" || card_lore == "CardLore_" + dig_5_card_id) {
             this.panel.FindChildTraverse("CardLore").AddClass("Empty");
@@ -221,3 +220,54 @@ var SmallDeckCard = (function () {
     }
     return SmallDeckCard;
 }());
+var ActiveAbilityLabel = (function () {
+    function ActiveAbilityLabel(name, container, owner) {
+        this.name = name;
+        this.owner = owner;
+        this.label = $.CreatePanel("Label", container, "");
+        this.label.AddClass("ActiveAbilityLabel");
+        this.label.AddClass("text-h2");
+        this.label.text = $.Localize("Ability_" + this.name);
+        this.label.SetPanelEvent("onactivate", this.OnClickActiveAbility.bind(this));
+    }
+    ActiveAbilityLabel.prototype.OnClickActiveAbility = function () {
+        // 发送事件到服务器
+        // $.Msg("sending to server", this.name, this.owner);
+        GameEvents.SendCustomGameEventToServer("ds_player_click_active_ability", {
+            AbilityName: this.name,
+            Owner: this.owner
+        });
+    };
+    return ActiveAbilityLabel;
+}());
+var TooltipCard = (function (_super) {
+    __extends(TooltipCard, _super);
+    function TooltipCard(parent, id, uniqueId, cardType, cardData, owner) {
+        _super.call(this, parent, id, cardType, cardData);
+        this.owner = owner;
+    }
+    TooltipCard.prototype.UpdateCardMessage = function () {
+        $.Msg("updating tooltip card message");
+        _super.prototype.UpdateCardMessage.call(this);
+        // this.panel.FindChildTraverse("CardDescription").text = "";
+        var abilities = this.cardData.abilities;
+        var abilities_container = this.panel.FindChildTraverse("CardAbilities");
+        abilities_container.RemoveAndDeleteChildren();
+        if (abilities !== undefined) {
+            for (var aid in abilities) {
+                var ability_data = JSON.parse(abilities[aid]);
+                if (ability_data == null || this.owner == undefined)
+                    continue;
+                if (ability_data.type == "active" && Entities.GetTeamNumber(this.owner) == Players.GetTeam(Players.GetLocalPlayer())) {
+                    var ability_label = new ActiveAbilityLabel(ability_data.name, abilities_container, this.owner);
+                }
+                else {
+                    var ability_label = $.CreatePanel("Label", abilities_container, "");
+                    ability_label.text = $.Localize("Ability_" + ability_data["name"]);
+                    ability_label.AddClass("text-h3");
+                }
+            }
+        }
+    };
+    return TooltipCard;
+}(Card));

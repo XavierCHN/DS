@@ -72,12 +72,31 @@ function DS:Init()
     CustomGameEventManager:RegisterListener("ds_request_deck", Dynamic_Wrap(DS, "OnRequestDeck"))
     CustomGameEventManager:RegisterListener("ds_player_end_phase", Dynamic_Wrap(DS, "OnPlayerClickEndPhase"))
     CustomGameEventManager:RegisterListener("ds_client_request_hero_data", Dynamic_Wrap(DS, "OnClientRequestHeroData")); 
+    CustomGameEventManager:RegisterListener("ds_player_click_ability", Dynamic_Wrap(DS, "OnPlayerClickAbility"));
     
     LinkLuaModifier("modifier_minion_rooted", "engine/modifiers/modifier_minion_rooted", LUA_MODIFIER_MOTION_NONE)
     LinkLuaModifier("modifier_minion_disable_attack", "engine/modifiers/modifier_minion_disable_attack", LUA_MODIFIER_MOTION_NONE)
     LinkLuaModifier("modifier_minion_data", "engine/modifiers/modifier_minion_data", LUA_MODIFIER_MOTION_NONE)
     LinkLuaModifier("modifier_minion_summon_disorder", "engine/modifiers/modifier_minion_summon_disorder", LUA_MODIFIER_MOTION_NONE)
     LinkLuaModifier("modifier_minion_autoattack", "engine/modifiers/modifier_minion_autoattack", LUA_MODIFIER_MOTION_NONE)
+    LinkLuaModifier("modifier_hero_state", "engine/modifiers/modifier_hero_state", LUA_MODIFIER_MOTION_NONE)
+end
+
+function DS:OnPlayerClickAbility(args)
+    local minion = EntIndexToHScript(args.Owner)
+    local player = PlayerResource:GetPlayer(args.ClickPlayer)
+    if not minion:GetTeamNumber() == player:GetTeamNumber() then
+        return 
+    end
+
+    local uid = args.UniqueID
+    local ability = GameRules.AllAbilities[uid]
+
+    if ability then
+        ability:OnActive()
+    else
+        print("ability tracing error on ability", uid);
+    end
 end
 
 function DS:OnClientRequestHeroData()

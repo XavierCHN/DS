@@ -39,6 +39,7 @@
                     </Panel>
                 </Panel>
             </Panel>
+            
             <Panel class="CenterSection">
                 <Panel class="CenterMessage">
                     <Label text="#game_not_start" id="RoundIndicator" />

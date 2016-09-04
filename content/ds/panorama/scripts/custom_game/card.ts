@@ -74,10 +74,8 @@ class Card{
     UpdateCardMessage(){
         let str = ('00000'+this.card_id);
         let dig_5_card_id = str.substring(str.length-5,str.length);
-        
         // 设置卡片图片
         this.panel.FindChildTraverse("CardIllusion").SetImage(`file://{resources}/images/custom_game/cards/${dig_5_card_id}.png`)
-        
         // 设置费用
         let cost_panel = this.panel.FindChildTraverse("CardCost");
         let mana_label = this.panel.FindChildTraverse("CardCost_Mana");
@@ -96,45 +94,27 @@ class Card{
         }else{
             cost_panel.RemoveClass("NoCost");
             attr_panel.RemoveAndDeleteChildren();
-            let total_cost = 0;
-            let images = [];
             if(str_cost !== undefined && str_cost > 0){
                 for( let i:number = 0;i < str_cost; i++){
                     let s = $.CreatePanel("Image", attr_panel, "");
                     s.SetImage("file://{resources}/images/custom_game/card/card_cost_str.png");
-                    images.push(s);
                 }
-                total_cost += str_cost;
             }
             if(agi_cost !== undefined && agi_cost > 0){
                 for( let i:number = 0;i < agi_cost; i++){
                     let s = $.CreatePanel("Image", attr_panel, "");
                     s.SetImage("file://{resources}/images/custom_game/card/card_cost_agi.png");
-                    images.push(s);
                 }
-                total_cost += agi_cost;
             }
             if(int_cost !== undefined && int_cost > 0){
                 for( let i:number = 0;i < int_cost; i++){
                     let s = $.CreatePanel("Image", attr_panel, "");
                     s.SetImage("file://{resources}/images/custom_game/card/card_cost_int.png");
-                    images.push(s);
                 }
-                total_cost += int_cost;
             }
-
             mana_cost = mana_cost || 0;
             mana_label.text = mana_cost;
-
-
-            // if (total_cost > 8){
-            //     for (let x in images){
-            //         images[x].RemoveClass("CostImageNormal");
-            //         images[x].SetHasClass("TooMuchCost", true);
-            //     }
-            // }
         }
-        
 
         // 设置卡片名称和类别
         this.panel.FindChildTraverse("CardName").text = $.Localize(`#CardName_${dig_5_card_id}`);
@@ -156,17 +136,23 @@ class Card{
             this.panel.FindChildTraverse("TimingImage").SetImage("file://{resources}/images/custom_game/card/timing_instant.png");
 
         // 设置卡片描述
+
+        // 技能部分使用互相独立的panel来制作 
+        let ability_container = this.panel.FindChildTraverse("CardAbilities");
         let abilities = this.cardData.abilities;
-        let ability_descriptions = "";
+        ability_container.RemoveAndDeleteChildren();
         if (abilities !== undefined){
             for(let aid in abilities){
-                ability_descriptions += `${$.Localize(`Ability_${abilities[aid]}`)}${aid==abilities.length?"":"\n"}`;
-                // ability_descriptions += " ";
+                let ability_data = JSON.parse(abilities[aid]);
+                if (ability_data == null) continue;
+                let ability_label = $.CreatePanel("Label", ability_container, "");
+                ability_label.text = $.Localize(`Ability_${ability_data["name"]}`);
+                ability_label.AddClass("text-h3");
             }
         }
         let card_description = $.Localize(`#CardDescription_${dig_5_card_id}`);
         if (card_description == `CardDescription_${dig_5_card_id}`) card_description = "";
-        this.panel.FindChildTraverse("CardDescription").text = `${ability_descriptions}${card_description}`;
+        this.panel.FindChildTraverse("CardDescription").text = `${card_description}`;
 
         let card_lore = $.Localize(`#CardLore_${dig_5_card_id}`);
         if (card_lore == "" || card_lore == `CardLore_${dig_5_card_id}`){
@@ -252,5 +238,65 @@ class SmallDeckCard{
     constructor(cardId, count){
         this.cardId = cardId;
         this.cardCount = count;
+    }
+}
+
+class ActiveAbilityLabel {
+    label: Label;
+    name: string;
+    owner: number;
+
+    constructor(name: string, container: Panel, owner:number) {
+        this.name = name;
+        this.owner = owner;
+        this.label = $.CreatePanel("Label", container, "");
+        this.label.AddClass("ActiveAbilityLabel");
+        this.label.AddClass("text-h2");
+        this.label.text = $.Localize(`Ability_${this.name}`);
+        this.label.SetPanelEvent("onactivate", this.OnClickActiveAbility.bind(this));
+    }
+
+    OnClickActiveAbility() {
+        // 发送事件到服务器
+        // $.Msg("sending to server", this.name, this.owner);
+        GameEvents.SendCustomGameEventToServer("ds_player_click_active_ability", {
+            AbilityName: this.name,
+            Owner: this.owner;
+        })
+    }
+}
+
+class TooltipCard extends Card{
+
+    // 这个单位的拥有者
+    owner:number;
+
+    constructor(parent:Panel, id: number, uniqueId: string, cardType: number, cardData:any, owner:number){
+        super(parent, id, cardType, cardData);
+        this.owner = owner;
+    }
+    UpdateCardMessage(){
+        $.Msg("updating tooltip card message");
+        super.UpdateCardMessage();
+        // this.panel.FindChildTraverse("CardDescription").text = "";
+
+        let abilities = this.cardData.abilities;
+        let abilities_container = this.panel.FindChildTraverse("CardAbilities");
+        abilities_container.RemoveAndDeleteChildren();
+        if (abilities !== undefined){
+            for(let aid in abilities){
+                let ability_data = JSON.parse(abilities[aid]);
+                if (ability_data == null || this.owner == undefined) continue;
+
+                if(ability_data.type == "active" && Entities.GetTeamNumber(this.owner) == Players.GetTeam(Players.GetLocalPlayer())){
+                    let ability_label = new ActiveAbilityLabel(ability_data.name, abilities_container, this.owner);
+                }else{
+                    let ability_label = $.CreatePanel("Label", abilities_container, "");
+                    ability_label.text = $.Localize(`Ability_${ability_data["name"]}`);
+                    ability_label.AddClass("text-h3");
+                }
+                
+            }
+        }
     }
 }

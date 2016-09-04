@@ -1,5 +1,5 @@
-if GameRules.CommandRegistered or not IsInToolsMode() then return end
-GameRules.CommandRegistered = true
+-- if GameRules.CommandRegistered or not IsInToolsMode() then return end
+-- GameRules.CommandRegistered = true
 
 Convars:RegisterCommand("debug_force_phase_end", function()
 	GameRules.TurnManager.current_turn:EndPhase()
@@ -41,3 +41,13 @@ Convars:RegisterCommand("debug_set_hero_attribute", function(_, str, agi, int, m
 	hero:SetMaxManaPool(tonumber(mana))
 	hero:FillManaPool()
 end, "debug set hero attribute", FCVAR_CHEAT);
+
+Convars:RegisterCommand("debug_refresh_hand_data", function()
+	local client = Convars:GetCommandClient()
+	local hero = PlayerResource:GetPlayer(client:GetPlayerID()):GetAssignedHero()
+
+	local hand = hero:GetHand()
+	for _, card in pairs(hand.cards) do
+		card:UpdateToClient()
+	end
+end, "", FCVAR_CHEAT)

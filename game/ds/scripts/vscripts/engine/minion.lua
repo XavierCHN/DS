@@ -2,6 +2,8 @@ function CDOTA_BaseNPC:InitDSMinion(card)
     self.has_ordered = nil
     self.card = card
 
+    CustomNetTables:SetTableValue("minion_card_id",tostring(self:entindex()), {value=self.card:GetUniqueID()})
+
     -- 设置血量等各种信息
     self:SetBaseDamageMax(card.data.atk)
     self:SetBaseDamageMin(card.data.atk)
@@ -15,25 +17,6 @@ function CDOTA_BaseNPC:InitDSMinion(card)
     self:AddNewModifier(self, nil, "modifier_minion_data", {})
     self:AddNewModifier(self, nil, "modifier_minion_summon_disorder", {})
     self:AddNewModifier(self, nil, "modifier_phased", {})
-
-    local abilities = self.card.abilities or {}
-    for _, ability_data in pairs(abilities) do
-        if ability_data.type == "static" then
-            self:AddAbility(StaticAbility(ability_data, self))
-        end
-        if ability_data.type == "trigger" then
-            self:AddAbility(TriggerAbility(ability_data, self))
-        end
-        if ability_data.type == "active" then
-            self:AddAbility(ActiveAbility(ability_data, self))
-        end
-    end
-
-    print("creating world panel for entity", self:entindex())
-    WorldPanels:CreateWorldPanelForAll({
-        layout = "file://{resources}/layout/custom_game/world_panels/minion_states.xml",
-        entity = self:entindex(),
-    })
 
     self:StartMinionAIThink()
     self:SetCardID(card:GetUniqueID())
@@ -124,6 +107,10 @@ end
 
 function CDOTA_BaseNPC:SetPlayer(player)
     self.player = player
+end
+
+function CDOTA_BaseNPC:GetPlayer(player)
+    return self.player
 end
 
 function CDOTA_BaseNPC:SetCardID(id)
@@ -252,4 +239,16 @@ function CDOTA_BaseNPC:BuildPath(area)
     self.path = path
 
     return path
+end
+
+function CDOTA_BaseNPC:AddAbility(caster, name, ability)
+    self.abilities = self.abilities or {}
+    self.abilities[name] = ability
+
+    self.abilities_for_client = self.abilities_for_client or {}
+    table.insert(self.abilities_for_client, ability:GetUniqueID()) 
+end
+
+function CDOTA_BaseNPC:GetMinionAbilityByName(name)
+    return self.abilities[name]
 end

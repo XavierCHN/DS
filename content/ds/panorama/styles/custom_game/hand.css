@@ -230,6 +230,14 @@
     background-color: foreColorInt;
 }
 
+#CardAbilities {
+    flow-children: down;
+}
+
+.ActiveAbilityLabel {
+    border: 1px solid red;
+}
+
 .CardDescription_ExtraMessage {
     height: 20px;
     background-color: transparent;

@@ -23,6 +23,8 @@ abilities = {
 		cost = {mana = 2},
 		timing = TIMING_NORMAL,
         OnActive = function(minion)
+			local hero = minion:GetPlayer()
+			print ("Creating")
             hero:GetSelector():Create({
             	type = SELECTOR_UNIT,
             	title = "select_friendly_minion",
@@ -37,7 +39,7 @@ abilities = {
 	            end,
 	            callback = function(target)
 	            	hero:SpendManaCost(cost.mana);
-	            	local bonus = {atk = 1, hp=5}
+	            	local bonus = {atk = 1, hp=1}
 	            	target:AddNewModifier(hero,nil,"modifier_atk_hp_bonus",bonus)
 		        end
             })
@@ -62,6 +64,7 @@ Effect = function(args)
     local caster = args.caster
     local pos = args.target_points[1]
     local card = args.card
+	
     caster:CreateMinion(card, "minion_4", pos)
 end
 

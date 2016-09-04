@@ -54,6 +54,7 @@
     <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/hand.xml" />
     <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/top_panel.xml" />
     <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/card_history.xml" />
+    <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/minion_tooltip.xml" />
 
     <!--selector 和tooltip位于最顶层-->
     <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/selector.xml" />

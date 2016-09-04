@@ -24,11 +24,11 @@
                 <Image id="TimingImage" class="TimingImage" src="file://{resources}/images/custom_game/card/timing_normal.png" />
                 <Label id="CardType" class="text-h1" text="#test_card_type" />
             </Panel>
-
             <Panel class="CardDescriptionPanel">
                 <Panel class="CardDescription_Ability_Lore">
-                    <Label class="text-h2" id="CardDescription" text="#test_card_description" />
-                    <Label class="text-h3" id="CardLore" text="#test_card_lore" />
+                    <Panel id="CardAbilities" />
+                    <Label id="CardDescription" class="text-h3" />
+                    <Label class="text-h4" id="CardLore" text="#test_card_lore" />
                 </Panel>
                 <Panel class="CardDescription_ExtraMessage">
                     <Label class="text-h4" id="CardID" />

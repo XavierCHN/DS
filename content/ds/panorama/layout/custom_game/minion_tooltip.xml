@@ -1,0 +1,13 @@
+<root>
+    <styles>
+        <include src="file://{resources}/styles/custom_game/minion_tooltip.css" />
+    </styles>
+    <scripts>
+        <include src="file://{resources}/scripts/custom_game/card.js" />
+        <include src="file://{resources}/scripts/custom_game/minion_tooltip.js" />
+    </scripts>
+    <Panel class="MinionTooltipRoot Hidden" hittest="false">
+        <Panel id="ModifiersPanel" />
+        <Panel id="CardHolder" hittest="false" />
+    </Panel>
+</root>

@@ -33,6 +33,11 @@ function Hand:AddCard(card)
 end
 
 function Hand:UpdateToClient()
+
+    for _, card in pairs(self.cards) do
+        card:UpdateToClient()
+    end
+
     local serialized_data = {}
     for idx, card in pairs(self.cards) do
         local card_data = {}

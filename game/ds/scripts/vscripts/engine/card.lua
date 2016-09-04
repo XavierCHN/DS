@@ -33,6 +33,9 @@ function Card:constructor(id)
         data.move_speed = data.move_speed or 300
         data.attack_range = data.attack_range or 600
         data.abilities = data.abilities or {}
+        for name, ability_data in pairs(data.abilities) do
+            ability_data.name = name
+        end
     end
     
     self.data = data
@@ -47,12 +50,15 @@ end
 -- 验证一张牌是否能使用（执行技能之前）
 function Card:Validate_BeforeExecute()
 
-    if GameRules.FORCE_VALIDATE then return true end
     local hero = self.owner
 
     if not GameRules.TurnManager:HasGameStarted() then
         return false, "game_havent_started_yet"
     end
+
+
+    -- 强制游戏开始之后才能使用卡牌
+    if GameRules.FORCE_VALIDATE then return true end
 
     meet, reason = GameRules.TurnManager:IsMeetTimingRequirement(hero, self.data.timing)
     if not meet then return meet, reason end
@@ -172,21 +178,19 @@ end
 
 function Card:UpdateToClient()
     local d = {}
+    local ab_index = 1
     for k,v in pairs(self.data) do
         if k == "abilities" then
-            local abilities = {}
+            d.abilities = {}
             for name, ability_data in pairs(v) do
-                abilities[name] = {}
-                for _k, _v in pairs(ability_data) do
-                    if type(_v) ~= "function" then
-                        abilities[name][_k] = _v
-                    end
-                end
+                local safe_table = safe_table(ability_data)
+                safe_table.name = name
+                table.insert(d.abilities, JSON:encode(safe_table))
             end
         elseif type(v) ~= "function" and k ~= "_NAME" and k ~= '_PACKAGE' and k ~= '_M' then
             d[k] = v
         end
     end
-
     CustomNetTables:SetTableValue("card_data", self:GetUniqueID(), d)
 end
+

@@ -10,6 +10,8 @@ function CDOTA_BaseNPC_Hero:InitDSHero()
 	self:FindAbilityByName('ds_point'):SetLevel(1)
 	self:FindAbilityByName('ds_single_target'):SetLevel(1)
 
+	self:AddNewModifier(self, nil, "modifier_hero_state", {})
+
 	self.deck = Deck(self)
 	self.hand = Hand(self)
 	self.selector = Selector(self)

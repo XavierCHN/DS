@@ -50,14 +50,17 @@
     "CardName_00004"       "天辉近战小兵"
     "CardDescription_00004"  ""
     "CardLore_00004"        "这些英勇无畏的战士们，不知死亡为何物。必死则生，幸生则死。"
+    "Ability_a4_1"          "支付2:指定一个我方生物，使其获得+1/+1"
+    "Ability_a4_2"          "当有玩家抽一张牌时，获得+1/+1"
+    
 
     "CardName_00005"       "冰蛙"
     "CardDescription_00005"  "当你从手上打出这张牌的时候，你赢得这场游戏。"
     "CardLore_00005"		"+1s"
 
-    "Ability_ds_flying"     "飞行"
-    "Ability_ds_lifesteal"  "吸血"
-    "Ability_ds_charge"     "冲锋"
+    "Ability_flying"     "飞行"
+    "Ability_lifesteal"  "吸血"
+    "Ability_charge"     "冲锋"
 
     // HUD提示和错误
     // Tooltips and errors
